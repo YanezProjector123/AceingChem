@@ -1,0 +1,568 @@
+/* Define fallback CSS variables if they aren't globally defined */
+:root {
+  --primary-light: #5f2676; /* Example fallback - adjust if needed */
+  --primary: #a259ec;     /* Example fallback - adjust if needed */
+  --accent: #ff5ca7;      /* Example fallback - adjust if needed */
+  --text: #ffffff;         /* Example fallback - adjust if needed */
+  --border-radius: 8px;    /* Example fallback for back-btn */
+}
+
+body {
+  background: linear-gradient(120deg, #191825 0%, #2d0636 100%);
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+}
+
+.periodic-table-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Align content towards the top */
+  justify-content: flex-start;
+  min-height: 100vh;
+  background: transparent; /* Assuming parent body provides gradient */
+  /* Add horizontal padding to prevent touching edges */
+  padding: 2rem 1rem;
+  box-sizing: border-box;
+}
+
+.periodic-table-card {
+  background: #1c1a22;
+  border-radius: 18px;
+  box-shadow: 0 4px 32px 0 #a259ec66, 0 1.5px 16px 0 #ff5ca755;
+  /* Adjust padding */
+  padding: 2rem 1.5rem;
+  /* Use percentage for max-width, allow it to shrink */
+  max-width: 95%;
+  /* Set a preferred large width, but max-width will constrain it */
+  width: 1300px;
+  min-width: 300px; /* Prevent it from becoming too narrow */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Align content to top */
+  border: 1.5px solid #5f2676;
+  /* Center the card horizontally */
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.periodic-table-title {
+  font-size: clamp(2rem, 5vw, 3.2rem); /* Responsive font size */
+  color: #ff5ca7;
+  margin-bottom: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-shadow: 0 4px 18px #11101899, 0 2px 8px #a259ec44;
+  text-align: center;
+}
+
+.ptable-desc {
+  font-size: clamp(0.9rem, 2vw, 1.18rem); /* Responsive font size */
+  color: #f3f3f3;
+  margin-bottom: 1.1rem;
+  text-align: center;
+  max-width: 720px;
+  padding: 0 1rem; /* Add padding for smaller screens */
+  box-sizing: border-box;
+}
+
+.ptable-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7em 1.1em;
+  margin-bottom: 2.1rem;
+  justify-content: center;
+  align-items: center;
+  background: #1c1a22ee;
+  border-radius: 12px;
+  padding: 0.7em 1.2em;
+  box-shadow: 0 2px 12px #a259ec22;
+  /* Ensure legend doesn't overflow container */
+  max-width: 100%;
+  box-sizing: border-box;
+}
+@media (max-width: 700px) {
+  .ptable-legend {
+    gap: 0.4em 0.6em; /* Slightly more space */
+    padding: 0.5em 0.6em; /* Slightly more padding */
+    font-size: 0.8em;
+  }
+  .ptable-legend-item {
+    padding: 0.25em 0.6em;
+    font-size: 0.9em;
+    margin: 0 0.1em;
+    border-width: 1.5px; /* Slightly thinner border */
+  }
+}
+
+
+.ptable-legend-item {
+  display: inline-block;
+  padding: 0.32em 1em;
+  border-radius: 8px;
+  font-weight: 600;
+  color: #fff;
+  font-size: 1.03em;
+  letter-spacing: 0.02em;
+  margin: 0 0.1em;
+  border: 2px solid transparent;
+  box-shadow: 0 1px 6px #0002;
+}
+
+/* Ensure variables are defined or replace them */
+.ptable-legend-item.alkali { background: var(--primary-light); border-color: var(--accent); color: var(--text); }
+.ptable-legend-item.alkaline { background: #a259ec; border-color: #5f2676; color: #fff; }
+.ptable-legend-item.transition { background: var(--primary-light); border-color: var(--primary); color: var(--text); }
+.ptable-legend-item.post-transition { background: #3a1856; border-color: #a259ec; color: #fff; }
+.ptable-legend-item.metalloid { background: #5f2676; border-color: #a259ec; color: #fff; }
+.ptable-legend-item.nonmetal { background: #ff5ca7; border-color: #a259ec; color: #fff; }
+.ptable-legend-item.halogen { background: #ff5ca7; border-color: #fff; color: #fff; }
+.ptable-legend-item.noble { background: #fff; border-color: #ff5ca7; color: #a259ec; }
+.ptable-legend-item.lanthanide { background: #a259ec; border-color: #fff; color: #fff; }
+.ptable-legend-item.actinide { background: #5f2676; border-color: #ff5ca7; color: #fff; }
+
+
+.periodic-table-grid {
+  display: grid;
+  /* Use minmax for responsive columns. Adjust min value (e.g., 32px) as needed */
+  grid-template-columns: repeat(18, minmax(32px, 1fr));
+  gap: 5px; /* Adjust gap as needed */
+  /* Add some padding to prevent touching edges */
+  padding: 0 10px;
+  width: 100%; /* Make grid take full width of its container */
+  max-width: 1200px; /* Optional: set a max-width for very large screens */
+  box-sizing: border-box; /* Include padding in width */
+  margin: 1rem auto; /* Center grid and add vertical margin */
+}
+
+@media (max-width: 700px) {
+  .periodic-table-grid {
+    /* Reduce min size for smaller screens */
+    grid-template-columns: repeat(18, minmax(20px, 1fr));
+    gap: 3px; /* Reduce gap */
+    padding: 0 5px; /* Reduce padding */
+  }
+}
+
+.periodic-table-cell {
+  /* REMOVED fixed width and height */
+  /* ADD aspect-ratio to maintain square shape based on width */
+  aspect-ratio: 1 / 1;
+
+  background: linear-gradient(120deg, #191825 0%, #2d0636 100%);
+  border-radius: 8px; /* Slightly smaller radius might look better when cells are small */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* Center content vertically */
+  text-align: center; /* Center text horizontally */
+  /* Responsive font size: min, preferred (relative to viewport width), max */
+  font-size: clamp(0.6rem, 1.5vw, 1rem);
+  font-weight: 700;
+  color: #fff;
+  box-shadow: 0 2px 10px 0 #a259ec33, 0 1px 8px 0 #ff5ca744; /* Adjusted shadow */
+  border: 1.5px solid rgba(255,255,255,0.12);
+  cursor: pointer;
+  transition: transform 0.13s, box-shadow 0.18s, border 0.13s, background 0.16s;
+  position: relative;
+  backdrop-filter: blur(3px) saturate(1.2);
+  -webkit-backdrop-filter: blur(3px) saturate(1.2);
+  overflow: hidden; /* Prevent content spillover */
+  padding: 2px; /* Add minimal padding inside the cell */
+  box-sizing: border-box;
+}
+
+@media (max-width: 700px) {
+  .periodic-table-cell {
+    /* No need to set width/height here anymore */
+    border-radius: 5px; /* Adjust radius */
+    border-width: 1px; /* Thinner border */
+  }
+  /* Responsive font sizes handled by clamp(), but specific adjustments below */
+  .ptable-atomic-number {
+    top: 2px;
+    left: 3px;
+    font-size: clamp(0.5rem, 1.2vw, 0.75rem); /* Responsive */
+  }
+  .ptable-symbol {
+    font-size: clamp(0.8rem, 2.5vw, 1.3rem); /* Responsive */
+    margin-top: 0; /* Remove fixed margin */
+    line-height: 1.1; /* Adjust line height */
+  }
+  .ptable-name {
+    font-size: clamp(0.45rem, 1vw, 0.65rem); /* Responsive */
+    margin-top: 1px; /* Adjust margin */
+    line-height: 1;
+    /* Hide name completely on very small screens if needed */
+    /* display: none; */
+     white-space: nowrap; /* Prevent wrapping */
+     overflow: hidden;    /* Hide overflow */
+     text-overflow: ellipsis; /* Add ellipsis */
+     max-width: 90%; /* Prevent pushing other elements */
+  }
+}
+
+/* --- Cell Type Styles (ensure variables defined or replaced) --- */
+.periodic-table-cell.alkali-metal,
+.periodic-table-cell.alkali { /* Add class from JS if used */
+  background: var(--primary-light);
+  border-color: var(--primary);
+}
+
+.periodic-table-cell.alkaline-earth-metal,
+.periodic-table-cell.alkaline { /* Add class from JS if used */
+  background: #a259ec; /* Directly using color from legend */
+  border-color: #5f2676; /* Directly using color from legend */
+  color: #fff;
+}
+
+.periodic-table-cell.transition-metal,
+.periodic-table-cell.transition { /* Add class from JS if used */
+  background: var(--primary-light);
+  border-color: var(--primary);
+}
+
+.periodic-table-cell.post-transition-metal,
+.periodic-table-cell.post-transition { /* Add class from JS if used */
+  background: #3a1856;
+  border-color: #a259ec;
+  color: #fff;
+}
+
+.periodic-table-cell.metalloid {
+  background: #5f2676;
+  border-color: #a259ec;
+  color: #fff;
+}
+
+.periodic-table-cell.nonmetal {
+  background: #ff5ca7;
+  border-color: #a259ec;
+  color: #fff;
+}
+
+.periodic-table-cell.halogen {
+  background: #ff5ca7;
+  border-color: #fff;
+  color: #fff;
+}
+
+.periodic-table-cell.noble-gas,
+.periodic-table-cell.noble { /* Add class from JS if used */
+  background: #fff;
+  border-color: #ff5ca7;
+  color: #a259ec;
+}
+
+.periodic-table-cell.lanthanide {
+  background: #a259ec; /* Directly using color from legend */
+  border-color: #fff; /* Directly using color from legend */
+  color: #fff;
+}
+
+.periodic-table-cell.actinide {
+  background: #5f2676; /* Directly using color from legend */
+  border-color: #ff5ca7; /* Directly using color from legend */
+  color: #fff;
+}
+
+/* --- Text Color Overrides based on cell type --- */
+.periodic-table-cell.noble-gas .ptable-symbol, .periodic-table-cell.noble .ptable-symbol,
+.periodic-table-cell.noble-gas .ptable-atomic-number, .periodic-table-cell.noble .ptable-atomic-number,
+.periodic-table-cell.noble-gas .ptable-name, .periodic-table-cell.noble .ptable-name {
+  color: #a259ec !important;
+  text-shadow: none; /* Remove shadow for light background */
+}
+.periodic-table-cell.alkali .ptable-symbol, .periodic-table-cell.alkali .ptable-atomic-number, .periodic-table-cell.alkali .ptable-name {
+  color: var(--text) !important; /* Use text color variable */
+  /* text-shadow: 0 1px 4px #0004; */ /* Optional shadow */
+}
+.periodic-table-cell.alkaline .ptable-symbol, .periodic-table-cell.alkaline .ptable-atomic-number, .periodic-table-cell.alkaline .ptable-name {
+  color: #fff !important; /* White text on purple */
+  text-shadow: 0 1px 4px #0004;
+}
+/* Default white text for others is usually fine, add overrides if needed */
+.periodic-table-cell.transition .ptable-symbol, .periodic-table-cell.transition .ptable-atomic-number, .periodic-table-cell.transition .ptable-name,
+.periodic-table-cell.post-transition .ptable-symbol, .periodic-table-cell.post-transition .ptable-atomic-number, .periodic-table-cell.post-transition .ptable-name,
+.periodic-table-cell.metalloid .ptable-symbol, .periodic-table-cell.metalloid .ptable-atomic-number, .periodic-table-cell.metalloid .ptable-name,
+.periodic-table-cell.nonmetal .ptable-symbol, .periodic-table-cell.nonmetal .ptable-atomic-number, .periodic-table-cell.nonmetal .ptable-name,
+.periodic-table-cell.halogen .ptable-symbol, .periodic-table-cell.halogen .ptable-atomic-number, .periodic-table-cell.halogen .ptable-name,
+.periodic-table-cell.lanthanide .ptable-symbol, .periodic-table-cell.lanthanide .ptable-atomic-number, .periodic-table-cell.lanthanide .ptable-name,
+.periodic-table-cell.actinide .ptable-symbol, .periodic-table-cell.actinide .ptable-atomic-number, .periodic-table-cell.actinide .ptable-name {
+  color: #fff !important;
+  text-shadow: 0 1px 4px #0004;
+}
+
+/* --- Hover Effect --- */
+.periodic-table-cell:hover {
+  transform: scale(1.07); /* Slightly adjusted scale */
+  box-shadow: 0 4px 24px #ff5ca7bb, 0 1.5px 16px #a259ec88; /* Adjusted hover shadow */
+  border-color: var(--accent); /* Use variable or specific color like #ff5ca7 */
+  z-index: 2; /* Bring to front */
+  filter: brightness(1.15) saturate(1.25); /* Enhance colors */
+  /* Optional: Change background on hover */
+  /* background: var(--accent); */
+}
+
+/* --- Text Elements Inside Cell --- */
+.ptable-atomic-number {
+  position: absolute;
+  top: 5px; /* Adjust positioning */
+  left: 5px; /* Adjust positioning */
+  /* Responsive font size */
+  font-size: clamp(0.6rem, 1.2vw, 0.8rem);
+  font-weight: 700; /* Slightly less heavy */
+  color: #fff; /* Default color */
+  text-shadow: 0 1px 4px #0009; /* Simplified shadow */
+  opacity: 0.93;
+  letter-spacing: 0.02em;
+}
+
+.ptable-symbol {
+  /* Responsive font size */
+  font-size: clamp(1rem, 3.5vw, 1.8rem);
+  font-weight: 900;
+  color: #fff; /* Default color */
+  text-shadow: 0 1px 8px #000a; /* Simplified shadow */
+  /* Use percentage for relative positioning */
+  /* Adjust based on content, maybe remove explicit margin-top if centering works */
+  /* margin-top: 15%; */
+  display: block;
+  line-height: 1; /* Prevent large line height issues */
+  margin-bottom: 2%; /* Add slight space below symbol */
+}
+
+/* Correctly placed ptable-mass style */
+.ptable-mass {
+  /* Responsive font size */
+  font-size: clamp(0.5rem, 1.3vw, 0.8rem);
+  color: #e9d7fa;
+  font-style: italic;
+  margin-top: 1px;
+  margin-bottom: 1px;
+  opacity: 0.85;
+  display: block; /* Ensure it's block for margin */
+  line-height: 1;
+}
+
+.ptable-name {
+  /* Responsive font size */
+  font-size: clamp(0.55rem, 1.5vw, 0.9rem);
+  font-weight: 600;
+  color: #fff; /* Default color */
+  /* Use percentage or small fixed value */
+  margin-top: 2px;
+  text-shadow: 0 1px 4px #0009; /* Simplified shadow */
+  opacity: 0.93;
+  display: block;
+  line-height: 1; /* Prevent large line height issues */
+  /* Handle overflow */
+  width: 90%; /* Limit width to prevent pushing */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.periodic-table-cell.empty {
+  background: transparent;
+  border-color: transparent; /* Make border transparent too */
+  box-shadow: none;
+  cursor: default; /* No pointer for empty cells */
+}
+
+/* --- Lanthanide / Actinide Rows --- */
+.lanth-act-row {
+  display: flex;
+  align-items: center;
+  margin-top: 15px; /* Adjust spacing */
+  margin-bottom: 15px; /* Add bottom margin */
+  justify-content: center;
+  width: 100%; /* Take full width */
+  padding: 0 10px; /* Match main grid horizontal padding */
+  box-sizing: border-box;
+}
+
+.lanth-act-grid {
+  display: grid;
+  /* Use minmax for responsive columns, match main grid min size */
+  grid-template-columns: repeat(15, minmax(32px, 1fr));
+  gap: 5px; /* Match main grid gap */
+  /* Optional max-width, less than main grid */
+  max-width: 1000px;
+  width: 100%; /* Fill container */
+  box-sizing: border-box;
+}
+@media (max-width: 700px) {
+  .lanth-act-grid {
+    /* Adjust min size and gap for smaller screens */
+    grid-template-columns: repeat(15, minmax(20px, 1fr));
+    gap: 3px;
+  }
+}
+
+/* Cells in these grids inherit .periodic-table-cell styles */
+.lanth-act-grid .periodic-table-cell {
+  /* Override specific styles ONLY if needed */
+}
+
+/* --- Remaining Styles (Keep or Adjust as needed) --- */
+.row-label {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #ccc; /* Lighter color for dark theme */
+  width: 64px; /* Keep if you need fixed label width */
+  text-align: right;
+  margin-right: 12px;
+  /* Hide on smaller screens if layout becomes tight */
+  /* @media (max-width: 800px) { display: none; } */
+}
+
+/* These seem related to the popup/modal, keep as is */
+.element-number {
+  font-size: 10px;
+  color: #888;
+}
+.element-name {
+  font-size: 12px;
+  color: #333;
+}
+
+/* Back Button Style */
+.back-btn, .ptable-btn /* Added class from JS */ {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--border-radius); /* Use variable */
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600; /* Increased weight slightly */
+  margin: 0.7rem 0 1.5rem 0;
+  box-shadow: 0 2px 8px #ff5ca766; /* Adjusted shadow */
+  transition: background 0.18s, color 0.18s, transform 0.14s, box-shadow 0.18s;
+  cursor: pointer;
+}
+
+.back-btn:hover, .ptable-btn:hover {
+  background: var(--primary-light); /* Use variable */
+  color: #fff;
+  transform: scale(1.06);
+  box-shadow: 0 4px 12px #ff5ca788; /* Enhanced hover shadow */
+}
+
+/* Style from JS for Back button seems different, consolidate or choose one */
+/* Example using the gradient from JS button style */
+.ptable-btn {
+  background: linear-gradient(90deg,#c9b6f8 0,#b6f8e0 100%);
+  color: #23234a;
+  font-weight: 800;
+  border-radius: 10px;
+  font-size: 1.1em; /* Slightly smaller */
+  padding: 10px 24px; /* Adjusted padding */
+  box-shadow: 0 2px 10px #b6f8e055;
+  border: 1.5px solid #b6f8e0;
+  letter-spacing: 0.5px;
+  margin-bottom: 18px; /* Added from JS */
+}
+.ptable-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px #b6f8e077;
+  filter: brightness(1.05);
+  background: linear-gradient(90deg,#d3c3fc 0,#c3fced 100%); /* Lighter hover */
+}
+
+
+/* --- Modal Styles (Add basic structure if missing) --- */
+.ptable-modal {
+  position: fixed;
+  inset: 0; /* Cover entire screen */
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* Ensure it's on top */
+  padding: 1rem;
+}
+
+.ptable-modal-content {
+  background: #2a2833; /* Darker background for contrast */
+  padding: 2rem 2.5rem;
+  border-radius: 15px;
+  border: 1px solid #a259ec;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.4);
+  max-width: 500px;
+  width: 90%;
+  position: relative;
+  color: #f0f0f0;
+}
+
+.ptable-modal-header {
+  color: var(--accent); /* Use accent color */
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+  font-weight: 700;
+  border-bottom: 1px solid #a259ec55;
+  padding-bottom: 0.8rem;
+}
+.ptable-modal-header span {
+  color: #ccc;
+  font-weight: 500;
+  font-size: 1.5rem;
+}
+
+.ptable-modal-details span {
+  display: block;
+  margin-bottom: 0.6rem;
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+.ptable-modal-details span strong {
+  color: #b6f8e0; /* Use a highlight color */
+  font-weight: 600;
+  min-width: 120px; /* Align values */
+  display: inline-block;
+}
+
+.close-info {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 2.5rem;
+  font-weight: 300;
+  color: #aaa;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  transition: color 0.2s;
+}
+.close-info:hover {
+  color: var(--accent); /* Use accent color */
+}
+
+
+/* Deprecated? Style for .element */
+/*
+.element {
+  background: #3a1856;
+  color: #fff;
+  border-radius: 8px;
+  padding: 0.5rem 0.2rem;
+  text-align: center;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: background 0.2s, transform 0.2s;
+  cursor: pointer;
+}
+
+.element:hover {
+  background: #ff5ca7;
+  color: #222;
+  transform: scale(1.08);
+}
+*/
