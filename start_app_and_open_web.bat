@@ -20,4 +20,4 @@ start cmd /k "npm start"
 timeout /t 5 /nobreak >nul
 
 :: Open Google Chrome to the web app URL (replace with your actual deployed link)
-start chrome localhost:3000
+start http://localhost:3000
