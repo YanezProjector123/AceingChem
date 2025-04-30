@@ -16,6 +16,7 @@ import TransitionMetalIonicTutorial from './TransitionMetalIonicTutorial';
 import TransitionMetalIonicActivity from './TransitionMetalIonicActivity';
 import TransitionMetalFormulaToNameActivity from './TransitionMetalFormulaToNameActivity';
 import AtomicRadiusActivity from './AtomicRadiusActivity';
+import IonizationEnergyActivity from './IonizationEnergyActivity';
 
 
 function App() {
@@ -85,6 +86,7 @@ function App() {
           onTransitionMetalIonicTutorial={() => setScreen('transitionMetalIonicTutorial')}
           onTransitionMetalIonicActivity={() => setScreen('transitionMetalIonicActivity')}
           onTransitionMetalFormulaToNameActivity={() => setScreen('transitionMetalFormulaToNameActivity')}
+          onIonizationEnergyActivity={() => setScreen('ionizationEnergyActivity')}
         />
       )} 
       {screen === 'ionicNamingInstructions' && (
@@ -149,11 +151,13 @@ function App() {
       {screen === 'covalentNameToFormulaActivity' && (
         <CovalentNameToFormulaActivity
           onBack={() => setScreen('topics')}
+          onPeriodicTable={() => { setHistoryStack(h => [...h, {screen: 'covalentNameToFormulaActivity'}]); handleTransition('ptable'); }}
         />
       )}
       {screen === 'covalentFormulaToNameActivity' && (
         <CovalentFormulaToNameActivity
           onBack={() => setScreen('topics')}
+          onPeriodicTable={() => { setHistoryStack(h => [...h, {screen: 'covalentFormulaToNameActivity'}]); handleTransition('ptable'); }}
         />
       )}
       {screen === 'transitionMetalIonicTutorial' && (
@@ -164,10 +168,16 @@ function App() {
       {screen === 'transitionMetalIonicActivity' && (
         <TransitionMetalIonicActivity
           onBack={() => setScreen('topics')}
+          onPeriodicTable={() => { setHistoryStack(h => [...h, {screen: 'transitionMetalIonicActivity'}]); handleTransition('ptable'); }}
         />
       )}
       {screen === 'transitionMetalFormulaToNameActivity' && (
         <TransitionMetalFormulaToNameActivity
+          onBack={() => setScreen('topics')}
+        />
+      )}
+      {screen === 'ionizationEnergyActivity' && (
+        <IonizationEnergyActivity
           onBack={() => setScreen('topics')}
         />
       )}

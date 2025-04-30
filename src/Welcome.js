@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 // Add floaty animation keyframes to the document if not present
 if (typeof document !== 'undefined' && !document.getElementById('floaty-keyframes')) {
@@ -25,7 +25,9 @@ if (typeof document !== 'undefined' && !document.getElementById('floaty-keyframe
   document.head.appendChild(style);
 }
 
+
 export default function Welcome({ onNext }) {
+  const [showUpdateLog, setShowUpdateLog] = useState(false);
   return (
     <div style={{
       textAlign: 'center',
@@ -143,8 +145,93 @@ export default function Welcome({ onNext }) {
             <span role="img" aria-label="start" style={{ marginRight: 10, filter: 'drop-shadow(0 2px 6px #ff5ca7)' }}>🚀</span>
             Start Learning
           </button>
+
+          {/* Update Log Button */}
+          <button
+            className="glow-btn"
+            style={{
+              marginTop: 22,
+              background: 'linear-gradient(90deg, #a5b4fc 0%, #38bdf8 100%)',
+              color: '#fff',
+              fontWeight: 700,
+              fontSize: '1.06em',
+              letterSpacing: 1.1,
+              border: 'none',
+              borderRadius: 18,
+              boxShadow: '0 2px 18px #38bdf8cc, 0 1px 0 #fff',
+              padding: '13px 32px',
+              cursor: 'pointer',
+              transition: 'background 0.2s',
+              outline: 'none',
+              filter: 'drop-shadow(0 2px 12px #a5b4fc99)',
+              zIndex: 10,
+            }}
+            onClick={() => setShowUpdateLog(true)}
+          >
+            <span role="img" aria-label="log" style={{ marginRight: 9, filter: 'drop-shadow(0 2px 6px #38bdf8)' }}>📝</span>
+            Update Log
+          </button>
+
+          {/* Update Log Modal is now rendered at root */}
+
+        </div>
+      {/* Update Log Modal rendered at root for correct stacking */}
+    {showUpdateLog && (
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        background: 'rgba(24, 30, 48, 0.68)',
+        backdropFilter: 'blur(6px)',
+        zIndex: 9999,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
+        <div style={{
+          background: 'linear-gradient(120deg, #232946cc 80%, #38bdf8 120%)',
+          borderRadius: 32,
+          boxShadow: '0 8px 44px #38bdf899, 0 2px 24px #a5b4fc99',
+          padding: '38px 32px 30px 32px',
+          maxWidth: 440,
+          width: '90vw',
+          textAlign: 'center',
+          position: 'relative',
+          border: '2.5px solid #38bdf8',
+          color: '#fff',
+          fontSize: '1.18em',
+          fontWeight: 700,
+          letterSpacing: 1.05,
+          textShadow: '0 2px 18px #38bdf8cc, 0 1px 0 #fff',
+        }}>
+          <button
+            onClick={() => setShowUpdateLog(false)}
+            style={{
+              position: 'absolute',
+              top: 14,
+              right: 18,
+              background: 'none',
+              border: 'none',
+              color: '#fff',
+              fontSize: 26,
+              cursor: 'pointer',
+              filter: 'drop-shadow(0 2px 6px #a5b4fc)',
+            }}
+            aria-label="Close update log"
+          >
+            ×
+          </button>
+          <div style={{ marginTop: 10, marginBottom: 6 }}>
+            <span role="img" aria-label="sparkle" style={{ marginRight: 8, fontSize: 24 }}>✨</span>
+            <span>Major update: Enjoy a vastly expanded set of atomic radius questions, a comprehensive periodic table, new question types, and a beautiful, streamlined user experience—making AcingChem more powerful and engaging than ever.</span>
+            <span role="img" aria-label="rocket" style={{ marginLeft: 8, fontSize: 24 }}>🚀</span>
+          </div>
         </div>
       </div>
+    )}
+    </div>
       {/* Footer */}
       <div style={{
         position: 'absolute',

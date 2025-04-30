@@ -23,7 +23,7 @@ function getRandomCovalentFormulaToNameProblem() {
   return covalentProblems[Math.floor(Math.random() * covalentProblems.length)];
 }
 
-export default function CovalentFormulaToNameActivity({ onBack, onCovalentNameToFormulaActivity }) {
+export default function CovalentFormulaToNameActivity({ onBack, onCovalentNameToFormulaActivity, onPeriodicTable }) {
   const [problem, setProblem] = useState(getRandomCovalentFormulaToNameProblem());
   const [userAnswer, setUserAnswer] = useState('');
   const [feedback, setFeedback] = useState('');
@@ -61,6 +61,7 @@ export default function CovalentFormulaToNameActivity({ onBack, onCovalentNameTo
       </form>
       {feedback && <div style={{ margin: '10px 0', fontWeight: 600, color: feedback.startsWith('✅') ? '#5eead4' : '#ff5ca7' }}>{feedback}</div>}
       <button className="ptable-btn" style={{ marginTop: 18, marginRight: 8 }} onClick={handleNext}>Try Another</button>
+      <button className="ptable-btn" style={{ marginTop: 18, background: '#23234a', marginRight: 8 }} onClick={() => onPeriodicTable && onPeriodicTable()}>Show Periodic Table</button>
       <button className="back-btn" onClick={onBack} style={{ marginTop: 18, fontWeight: 600, fontSize: '1.08em', borderRadius: 10, boxShadow: '0 2px 10px #23234a55' }}>Back</button>
     </div>
   );

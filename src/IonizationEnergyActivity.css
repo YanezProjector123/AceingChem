@@ -1,0 +1,256 @@
+/* === Base Styles (Keep and Refine) === */
+.ie-activity-root {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #2a234a;
+  border-radius: 18px;
+}
+
+/* Center the periodic table button if needed */
+.ie-activity-root > .ie-periodic-table-button {
+  display: block; /* Or inline-block if you prefer */
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 24px; /* Add space below it */
+}
+
+.ie-question-card {
+  background: rgba(40, 40, 80, 0.9);
+  border-radius: 14px;
+  padding: 24px;
+  margin: 20px 0;
+}
+
+.ie-question {
+  font-size: 1.2em;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+.ie-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.ie-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background: rgba(56, 189, 248, 0.1);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.ie-option:hover {
+  background: rgba(56, 189, 248, 0.2);
+}
+
+.ie-select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  background: #23234a;
+  color: #fff;
+  border: 1px solid #38bdf8;
+}
+
+.ie-feedback {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.correct {
+  color: #5eead4;
+}
+
+.incorrect {
+  color: #ff5ca7;
+}
+
+.ie-table-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.ie-table-container {
+  background: #23234a;
+  padding: 30px;
+  border-radius: 18px;
+  max-width: 900px;
+  max-height: 90vh;
+  overflow: auto;
+}
+
+.ie-question-type {
+  color: #facc15; /* Yellow */
+  font-weight: 700;
+  font-size: 1.1em; /* Slightly larger */
+  margin-bottom: 12px; /* More space below */
+  letter-spacing: 0.5px;
+}
+
+.ie-question-prompt {
+  margin: 0 0 24px 0; /* Increased bottom margin */
+  font-size: 1.15em; /* Slightly larger */
+  color: #fff;
+  line-height: 1.4; /* Improve readability */
+}
+
+.ie-educational-content {
+  background: rgba(40, 40, 80, 0.9);
+  border-radius: 14px;
+  padding: 24px;
+  margin: 20px 0;
+}
+
+.ie-trends ul {
+  padding-left: 20px;
+  line-height: 1.6;
+}
+
+.ie-examples-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.ie-example-item {
+  background: rgba(56, 189, 248, 0.1);
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.ie-example-element {
+  font-weight: bold;
+  color: #38bdf8;
+  display: block;
+}
+
+.ie-element-info {
+  background: rgba(56, 189, 248, 0.1);
+  padding: 16px;
+  border-radius: 12px;
+  margin: 20px 0;
+  border-left: 4px solid #38bdf8;
+}
+
+/* === Answer Group Styling (Major Fixes) === */
+.ie-answer-group {
+  margin: 0 0 16px 0;
+  border: none;
+  padding: 0;
+  width: 100%;
+}
+
+.ie-answer-group legend {
+  font-weight: 600;
+  color: #38bdf8;
+  font-size: 1.08em;
+  padding: 0;
+  margin-bottom: 12px;
+}
+
+.ie-answer-option {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  padding: 8px 12px;
+  background: rgba(56, 189, 248, 0.1);
+  border-radius: 6px;
+}
+
+.ie-answer-option:hover {
+  background: rgba(56, 189, 248, 0.2);
+}
+
+.ie-answer-option input[type="radio"] {
+  margin-right: 12px;
+  accent-color: #38bdf8;
+}
+
+.ie-answer-option label {
+  color: #fff;
+  font-size: 1.05em;
+  cursor: pointer;
+}
+
+/* === Button Styling (New) === */
+.ie-button {
+  display: block; /* Make buttons take full width */
+  width: 100%;
+  padding: 12px 20px;
+  margin-top: 12px; /* Space between buttons */
+  border: none;
+  border-radius: 8px;
+  font-size: 1.05em;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease; /* Smooth transitions */
+}
+.ie-button:active {
+  transform: scale(0.98); /* Slight press effect */
+}
+
+.ie-periodic-table-button {
+  background-color: #38bdf8; /* Light blue */
+  color: #1e1a36; /* Dark text */
+  /* Adjust width if needed, remove width: 100% if using inline-block */
+  /* width: auto; */ /* Example if inline-block */
+  /* display: inline-block; */
+}
+.ie-periodic-table-button:hover {
+  background-color: #7dd3fc; /* Lighter blue on hover */
+}
+
+.ie-button-submit,
+.ie-button-next {
+  background-color: #4c1d95; /* Darker purple */
+  color: #e9d5ff; /* Lighter purple/white text */
+}
+.ie-button-submit:hover,
+.ie-button-next:hover {
+  background-color: #581c87; /* Slightly lighter purple on hover */
+}
+
+/* Ensure first button inside card has more top margin */
+.ie-question-card > .ie-button:first-of-type {
+  margin-top: 24px;
+}
+
+/* === Feedback Styling (Keep) === */
+.ie-feedback {
+  margin: 16px 0 0 0; /* Add margin top */
+  padding: 10px;
+  border-radius: 6px;
+  font-weight: 600;
+  text-align: center;
+  color: #5eead4; /* Teal */
+  background-color: rgba(45, 212, 191, 0.1); /* Light teal background */
+}
+
+/* (Optional) Unused class from original CSS - keep or remove */
+.ie-question-data {
+  background: #1e1a36;
+  border-radius: 8px;
+  padding: 10px 16px;
+  margin-bottom: 12px;
+  color: #b6f8e0;
+  font-size: 1.08em;
+}

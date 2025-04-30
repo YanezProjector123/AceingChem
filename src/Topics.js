@@ -14,7 +14,8 @@ export default function Topics({
   onTransitionMetalIonicTutorial,
   onTransitionMetalIonicActivity,
   onTransitionMetalFormulaToNameActivity,
-  onAtomicRadiusActivityPeriodicTable // <-- Add this prop
+  onAtomicRadiusActivityPeriodicTable,
+  onIonizationEnergyActivity
 }) {
   // State for collapsible sections
   const [showNomenclatureDropdown, setShowNomenclatureDropdown] = useState(false);
@@ -199,7 +200,6 @@ export default function Topics({
                         <b style={{ fontSize: '1.09em', color: '#23234a' }}>Activities</b>
                       </div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 8 }}>
-                        {/* *** CORRECTED BUTTON *** */}
                         <button
                           className="ptable-btn periodic-btn"
                           style={{
@@ -222,12 +222,31 @@ export default function Topics({
                           }}
                           onClick={() => setPeriodicActivity('atomic-radius')} // Added onClick handler
                         >
-                          <span role="img" aria-label="radius">🟡</span> Atomic Radius Practice
-                          {/* Removed coming soon span to make it clickable */}
+                          <span role="img" aria-label="radius">🟡</span> Atomic Radius
                         </button>
-                        {/* Other Placeholder Buttons */}
-                        <button className="ptable-btn periodic-btn" style={{ /* ... existing styles ... */ opacity: 0.6, cursor: 'not-allowed' }} disabled> {/* Added opacity/cursor */}
-                          <span role="img" aria-label="ionization">⚡</span> Ionization Energy Practice <span style={{ marginLeft: 'auto', fontWeight: 400, fontSize: '0.96em', color: '#0095b0' }}>(coming soon)</span>
+                        <button
+                          className="ptable-btn periodic-btn"
+                          style={{
+                            width: '100%',
+                            borderRadius: 12,
+                            fontWeight: 700,
+                            fontSize: '1.07em',
+                            background: 'linear-gradient(90deg,#0095b0 0,#38bdf8 100%)',
+                            color: '#fff',
+                            border: '2px solid #0095b0',
+                            boxShadow: '0 1px 8px #38bdf833',
+                            letterSpacing: 0.5,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 10,
+                            padding: '12px 18px',
+                            cursor: 'pointer',
+                            transition: 'all .18s',
+                            outline: 'none',
+                          }}
+                          onClick={typeof onIonizationEnergyActivity === 'function' ? onIonizationEnergyActivity : undefined}
+                        >
+                          <span role="img" aria-label="ionization">⚡</span> Ionization Energy
                         </button>
                         <button className="ptable-btn periodic-btn" style={{ /* ... existing styles ... */ opacity: 0.6, cursor: 'not-allowed' }} disabled> {/* Added opacity/cursor */}
                           <span role="img" aria-label="electronegativity">🧲</span> Electronegativity Trends <span style={{ marginLeft: 'auto', fontWeight: 400, fontSize: '0.96em', color: '#a21caf' }}>(coming soon)</span>
