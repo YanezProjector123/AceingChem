@@ -16,9 +16,7 @@ import TransitionMetalIonicTutorial from './TransitionMetalIonicTutorial';
 import TransitionMetalIonicActivity from './TransitionMetalIonicActivity';
 import TransitionMetalFormulaToNameActivity from './TransitionMetalFormulaToNameActivity';
 import AtomicRadiusActivity from './AtomicRadiusActivity';
-import AtomicRadiusMenu from './AtomicRadiusMenu';
-import AtomicRadiusTrendExplorer from './AtomicRadiusTrendExplorer';
-import AtomicRadiusExplanation from './AtomicRadiusExplanation';
+
 
 function App() {
   const [screen, setScreen] = useState('welcome');
@@ -142,28 +140,11 @@ function App() {
         />
       )}
       {screen === 'ptable' && <PeriodicTable onBack={handlePTableBack} />}
-      {/* Atomic Radius Menu/Activities */}
       {screen === 'atomicRadiusActivity' && (
-        atomicRadiusScreen === null ? (
-          // Show menu first
-          <AtomicRadiusMenu
-            onSelect={opt => setAtomicRadiusScreen(opt)}
-            onBack={() => setScreen('topics')}
-          />
-        ) : atomicRadiusScreen === 'standard' ? (
-          <AtomicRadiusActivity
-            onBack={() => setAtomicRadiusScreen(null)}
-            onPeriodicTable={() => { setHistoryStack(h => [...h, {screen: 'atomicRadiusActivity'}]); handleTransition('ptable'); }}
-          />
-        ) : atomicRadiusScreen === 'trend' ? (
-          <AtomicRadiusTrendExplorer
-            onBack={() => setAtomicRadiusScreen(null)}
-          />
-        ) : atomicRadiusScreen === 'explanation' ? (
-          <AtomicRadiusExplanation
-            onBack={() => setAtomicRadiusScreen(null)}
-          />
-        ) : null
+        <AtomicRadiusActivity
+          onBack={() => setScreen('topics')}
+          onPeriodicTable={() => { setHistoryStack(h => [...h, {screen: 'atomicRadiusActivity'}]); handleTransition('ptable'); }}
+        />
       )}
       {screen === 'covalentNameToFormulaActivity' && (
         <CovalentNameToFormulaActivity
