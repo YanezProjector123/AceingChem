@@ -1,0 +1,181 @@
+/* IonicNameToFormula.css - Modern, playful, and educational styles for the IonicNameToFormula example modal and navigation */
+
+.ionictutor-example-btn {
+  background: linear-gradient(90deg, #a259ec 0%, #ff5ca7 100%);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  padding: 1rem 2.3rem;
+  font-size: 1.13rem;
+  font-weight: 700;
+  margin: 0.9rem 0 1.3rem 0;
+  box-shadow: 0 3px 18px #a259ec33;
+  transition: background 0.18s, transform 0.16s, color 0.18s;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+  outline: none;
+}
+.ionictutor-example-btn:hover {
+  background: linear-gradient(90deg, #ff5ca7 0%, #a259ec 100%);
+  color: #fff;
+  transform: scale(1.07);
+}
+
+.ionictutor-example-modal-bg {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(18, 9, 34, 0.85);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s;
+  backdrop-filter: blur(7px) saturate(1.2);
+  -webkit-backdrop-filter: blur(7px) saturate(1.2);
+}
+
+@keyframes gradientGlow {
+  0% { box-shadow: 0 0 32px 4px #a259ec66, 0 0 0 #ff5ca7; border-color: #a259ec; background-position: 0% 50%; }
+  50% { box-shadow: 0 0 48px 12px #ff5ca799, 0 0 18px #a259ec; border-color: #ff5ca7; background-position: 100% 50%; }
+  100% { box-shadow: 0 0 32px 4px #a259ec66, 0 0 0 #ff5ca7; border-color: #a259ec; background-position: 0% 50%; }
+}
+
+.ionictutor-modal-glow {
+  border: 4px solid #ff5ca7;
+  box-shadow: 0 0 32px 6px #ff5ca799, 0 0 0 #a259ec;
+  animation: gradientGlow 3.2s ease-in-out infinite;
+  background: linear-gradient(135deg, #3a1856 60%, #2d0636 100%);
+  background-size: 200% 200%;
+  transition: box-shadow 0.3s, border-color 0.3s;
+}
+
+.ionictutor-example-modal {
+  background: linear-gradient(135deg, #3a1856 60%, #2d0636 100%);
+  border-radius: 22px;
+  padding: 2.7rem 2.7rem 2.3rem 2.7rem;
+  color: #fff;
+  min-width: 320px;
+  max-width: 98vw;
+  box-shadow: 0 10px 38px #a259ec99, 0 2px 18px #ff5ca788, 0 0 32px #ff5ca755;
+  border: 3px solid #ff5ca7;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: popIn 0.33s;
+  font-size: 1.15em;
+  line-height: 1.8;
+  position: relative;
+  overflow: hidden;
+}
+.ionictutor-example-modal {
+  background: linear-gradient(135deg, #3a1856 60%, #2d0636 100%);
+  border-radius: 22px;
+  padding: 2.7rem 2.7rem 2.3rem 2.7rem;
+  color: #fff;
+  min-width: 320px;
+  max-width: 98vw;
+  box-shadow: 0 10px 38px #a259ec99, 0 2px 18px #ff5ca788;
+  border: 3px solid #ff5ca7;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: popIn 0.33s;
+  font-size: 1.15em;
+  line-height: 1.8;
+  position: relative;
+}
+.ionictutor-example-modal h2 {
+  color: #ff5ca7;
+  margin-bottom: 0.7rem;
+  font-size: 2.15em;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  text-align: center;
+}
+.ionictutor-example-steps {
+  width: 100%;
+  margin: 1.1em 0 0.5em 0;
+  padding-left: 0;
+}
+.ionictutor-example-step {
+  background: rgba(162,89,236,0.09);
+  border-left: 6px solid #ff5ca7;
+  border-radius: 10px;
+  margin-bottom: 1.1em;
+  padding: 1.1em 1.2em 1.1em 1.4em;
+  font-size: 1.09em;
+  box-shadow: 0 1px 7px #a259ec22;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7em;
+}
+.ionictutor-step-icon {
+  font-size: 1.3em;
+  margin-right: 0.6em;
+  color: #ff5ca7;
+  flex-shrink: 0;
+}
+.ionictutor-highlight {
+  background: #a259ec;
+  color: #fff;
+  border-radius: 6px;
+  padding: 2px 7px;
+  font-weight: 700;
+}
+.ionictutor-example-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2em;
+  margin-bottom: 1em;
+}
+.ionictutor-nav-btn {
+  background: #ff5ca7;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.5em 1.3em;
+  font-size: 1.1em;
+  font-weight: 700;
+  box-shadow: 0 1px 6px #ff5ca755;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, transform 0.14s;
+  outline: none;
+}
+.ionictutor-nav-btn:disabled {
+  background: #a259ec99;
+  color: #fff;
+  cursor: not-allowed;
+}
+.ionictutor-nav-btn:hover:not(:disabled) {
+  background: #a259ec;
+  color: #fff;
+  transform: scale(1.06);
+}
+.ionictutor-example-modal .ionictutor-close-btn {
+  background: #ff5ca7;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.7em 1.7em;
+  font-size: 1.13em;
+  font-weight: 700;
+  margin-top: 1.8em;
+  box-shadow: 0 1px 6px #ff5ca755;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, transform 0.14s;
+  outline: none;
+}
+.ionictutor-example-modal .ionictutor-close-btn:hover {
+  background: #a259ec;
+  color: #fff;
+  transform: scale(1.06);
+}
+.ionictutor-example-modal .ionictutor-tip {
+  color: #ff5ca7;
+  font-weight: 700;
+  margin-top: 1.1em;
+  font-size: 1.07em;
+  display: block;
+  text-align: center;
+}
