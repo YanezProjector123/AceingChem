@@ -16,12 +16,17 @@ import TransitionMetalIonicTutorial from './TransitionMetalIonicTutorial';
 import TransitionMetalIonicActivity from './TransitionMetalIonicActivity';
 import TransitionMetalFormulaToNameActivity from './TransitionMetalFormulaToNameActivity';
 import AtomicRadiusActivity from './AtomicRadiusActivity';
+import AtomicRadiusMenu from './AtomicRadiusMenu';
+import AtomicRadiusTrendExplorer from './AtomicRadiusTrendExplorer';
+import AtomicRadiusExplanation from './AtomicRadiusExplanation';
 
 function App() {
   const [screen, setScreen] = useState('welcome');
   const [fade, setFade] = useState(true);
   // historyStack now stores objects: {screen, state}
   const [historyStack, setHistoryStack] = useState([]);
+  // For Atomic Radius menu/activities
+  const [atomicRadiusScreen, setAtomicRadiusScreen] = useState(null); // null|'menu'|'standard'|'trend'|'explanation'
   // state for tutorial/problem screens
   const [ionicNamingState, setIonicNamingState] = useState({});
   const [covalentNamingState, setCovalentNamingState] = useState({});
@@ -137,11 +142,28 @@ function App() {
         />
       )}
       {screen === 'ptable' && <PeriodicTable onBack={handlePTableBack} />}
+      {/* Atomic Radius Menu/Activities */}
       {screen === 'atomicRadiusActivity' && (
-        <AtomicRadiusActivity
-          onBack={() => setScreen('topics')}
-          onPeriodicTable={() => { setHistoryStack(h => [...h, {screen: 'atomicRadiusActivity'}]); handleTransition('ptable'); }}
-        />
+        atomicRadiusScreen === null ? (
+          // Show menu first
+          <AtomicRadiusMenu
+            onSelect={opt => setAtomicRadiusScreen(opt)}
+            onBack={() => setScreen('topics')}
+          />
+        ) : atomicRadiusScreen === 'standard' ? (
+          <AtomicRadiusActivity
+            onBack={() => setAtomicRadiusScreen(null)}
+            onPeriodicTable={() => { setHistoryStack(h => [...h, {screen: 'atomicRadiusActivity'}]); handleTransition('ptable'); }}
+          />
+        ) : atomicRadiusScreen === 'trend' ? (
+          <AtomicRadiusTrendExplorer
+            onBack={() => setAtomicRadiusScreen(null)}
+          />
+        ) : atomicRadiusScreen === 'explanation' ? (
+          <AtomicRadiusExplanation
+            onBack={() => setAtomicRadiusScreen(null)}
+          />
+        ) : null
       )}
       {screen === 'covalentNameToFormulaActivity' && (
         <CovalentNameToFormulaActivity
