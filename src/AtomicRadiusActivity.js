@@ -214,9 +214,32 @@ function getRandomQuestion() {
 
 
 export default function AtomicRadiusActivity({ onBack, onPeriodicTable }) {
+  const RECENT_HISTORY_LIMIT = 30; // How many questions to remember
+
   const [score, setScore] = useState(0);
   const [round, setRound] = useState(1);
-  const [question, setQuestion] = useState(getRandomQuestion());
+  const [recentQuestions, setRecentQuestions] = useState([]);
+  // Initialize question state using the non-repeating logic
+  const [question, setQuestion] = useState(() => {
+    // Initial generation needs the loop too, though history is empty
+    let initialQ;
+    let attempts = 0;
+    const maxAttempts = 10; // Safety for initial load
+    do {
+      initialQ = getRandomQuestion();
+      attempts++;
+      if (attempts > maxAttempts) {
+        console.warn("Max attempts reached during initial question generation.");
+        break;
+      }
+    } while (!initialQ?.prompt); // Ensure initial question is valid
+
+    // Set initial history (just this first question)
+    if (initialQ?.prompt) {
+      setRecentQuestions([initialQ.prompt]);
+    }
+    return initialQ;
+  });
   const [feedback, setFeedback] = useState(null); // {type, message, ...}
   const [showNext, setShowNext] = useState(false);
   const [arrangeOrder, setArrangeOrder] = useState([]); // for arrange questions
@@ -267,7 +290,38 @@ export default function AtomicRadiusActivity({ onBack, onPeriodicTable }) {
   }
 
   function handleNext() {
-    setQuestion(getRandomQuestion());
+    const previousQuestionPrompt = question?.prompt; // Store previous prompt
+
+    let nextQ;
+    let attempts = 0;
+    const maxAttempts = 20; // Safety net
+
+    do {
+      nextQ = getRandomQuestion();
+      attempts++;
+      if (attempts > maxAttempts) {
+        console.warn(`Max attempts (${maxAttempts}) reached trying to find a non-recent question. Allowing potential repeat.`);
+        break;
+      }
+      // Loop if the new question prompt is null, same as previous, or in recent history
+    } while (
+      !nextQ?.prompt ||
+      (elements.length > RECENT_HISTORY_LIMIT && // Only check history if enough elements exist
+       (nextQ.prompt === previousQuestionPrompt || recentQuestions.includes(nextQ.prompt)))
+    );
+
+    // Update History
+    if (nextQ?.prompt) {
+      const updatedHistory = [...recentQuestions, nextQ.prompt];
+      if (updatedHistory.length > RECENT_HISTORY_LIMIT) {
+        setRecentQuestions(updatedHistory.slice(-RECENT_HISTORY_LIMIT)); // Keep only the last N
+      } else {
+        setRecentQuestions(updatedHistory);
+      }
+    }
+
+    // Set New Question and Reset UI State
+    setQuestion(nextQ);
     setFeedback(null);
     setShowNext(false);
     setArrangeOrder([]);
@@ -373,69 +427,59 @@ export default function AtomicRadiusActivity({ onBack, onPeriodicTable }) {
             ))}
           </div>
         )}
-        {['arrange_increasing', 'arrange_decreasing'].includes(question.type) && (
+        {['arrange_increasing', 'arrange_decreasing'].includes(question.type) && question.elements && (
           <div style={{ margin: '12px 0 8px 0', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
-              {(arrangeOrder.length ? arrangeOrder : [0, 1, 2]).map((idx, pos) => (
+            <div style={{ display: 'flex', gap: 8, marginBottom: 8, flexWrap: 'wrap', justifyContent: 'center' }}>
+              {question.elements.map((el, idx) => (
                 <button
-                  key={pos}
+                  key={el.symbol}
                   className="ptable-btn"
                   style={{
-                    minWidth: 54,
-                    minHeight: 38,
-                    fontSize: '1em',
-                    fontWeight: 700,
-                    borderRadius: 7,
-                    background: 'linear-gradient(100deg,#fde68a 60%,#bae6fd 100%)',
-                    color: '#23234a',
+                    minWidth: 54, minHeight: 38, fontSize: '1em', fontWeight: 700, borderRadius: 7,
+                    background: arrangeOrder.includes(idx) ? '#6b7280' : 'linear-gradient(100deg,#fde68a 60%,#bae6fd 100%)',
+                    color: arrangeOrder.includes(idx) ? '#e5e7eb' : '#23234a',
                     border: '1px solid #60a5fa',
                     boxShadow: '0 1px 4px #23234a22',
                     letterSpacing: 1,
                     transition: 'all .18s',
                     outline: 'none',
                     marginBottom: 3,
+                    cursor: feedback || arrangeOrder.includes(idx) ? 'not-allowed' : 'pointer',
+                    opacity: feedback || arrangeOrder.includes(idx) ? 0.6 : 1,
                   }}
                   onClick={() => {
-                    if (feedback) return;
-                    if (arrangeOrder.includes(idx)) return;
+                    if (feedback || arrangeOrder.includes(idx)) return;
                     setArrangeOrder([...arrangeOrder, idx]);
                   }}
                   disabled={feedback || arrangeOrder.includes(idx)}
                   tabIndex={0}
-                  aria-label={`Choose ${question.elements[idx]?.name}`}
+                  aria-label={`Select ${el.name}`}
                 >
-                  {question.elements[idx]?.symbol}
-                  <div style={{ fontSize: '0.7em', fontWeight: 400, marginTop: 1 }}>{question.elements[idx]?.name}</div>
+                  {el.symbol}
+                  <div style={{ fontSize: '0.7em', fontWeight: 400, marginTop: 1 }}>{el.name}</div>
                 </button>
               ))}
             </div>
+            {arrangeOrder.length > 0 && (
+              <div style={{ fontSize: '0.9em', color: '#93c5fd', marginTop: 4, marginBottom: 8, display: 'flex', alignItems: 'center', gap: '10px', justifyContent: 'center', width: '100%' }}>
+                <span>Your Order: {arrangeOrder.map(idx => question.elements[idx]?.symbol).join(' → ')}</span>
+                {!feedback && (
+                  <button onClick={() => setArrangeOrder([])} style={{ background: 'none', border: 'none', color: '#f472b6', cursor: 'pointer', fontSize: '1.2em', padding: '0 5px' }} title="Reset Order">↺</button>
+                )}
+              </div>
+            )}
             <button
               className="ptable-btn"
               style={{
-                background: 'linear-gradient(90deg,#f472b6 0,#60a5fa 100%)',
-                color: '#fff',
-                fontWeight: 700,
-                fontSize: '0.96em',
-                borderRadius: 6,
-                boxShadow: '0 1px 4px #f472b611',
-                padding: '6px 18px',
-                margin: '0 0 7px 0',
-                border: 'none',
-                letterSpacing: 1,
-                cursor: arrangeOrder.length === 3 && !feedback ? 'pointer' : 'not-allowed',
-                outline: 'none',
-                transition: 'all .18s',
+                background: 'linear-gradient(90deg,#f472b6 0,#60a5fa 100%)', color: '#fff', fontWeight: 700, fontSize: '0.96em', borderRadius: 6, boxShadow: '0 1px 4px #f472b611', padding: '6px 18px', margin: '5px 0 7px 0', border: 'none', letterSpacing: 1, outline: 'none', transition: 'all .18s',
+                cursor: arrangeOrder.length === question.elements.length && !feedback ? 'pointer' : 'not-allowed',
+                opacity: arrangeOrder.length === question.elements.length && !feedback ? 1 : 0.5,
               }}
-              onClick={() => !feedback && arrangeOrder.length === 3 && handleArrangeSubmit()}
-              disabled={!!feedback || arrangeOrder.length !== 3}
+              onClick={handleArrangeSubmit}
+              disabled={!!feedback || arrangeOrder.length !== question.elements.length}
             >
               Submit Order
             </button>
-            {arrangeOrder.length > 0 && !feedback && (
-              <div style={{ fontSize: '0.9em', color: '#60a5fa', marginTop: 4 }}>
-                Your Order: {arrangeOrder.map(idx => question.elements[idx].symbol).join(' → ')}
-              </div>
-            )}
           </div>
         )}
         {question.type === 'true_false' && (
