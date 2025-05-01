@@ -99,23 +99,186 @@ const generateMultiStageQuestion = () => {
     explanation: 'This sequence explores ionization energy trends and their consequences.'
   };
 };
-const generators = [ generateTrendQuestion, generateRankQuestion, generateExceptionQuestion, generateMultiStageQuestion ];
+// --- NEW: Generator for IE Jumps ---
+const generateIEJumpQuestion = () => {
+  // Find elements with at least 3 IE values
+  const elementsWithEnoughIE = periodicTable.filter(e =>
+    e.ionizationEnergies && e.ionizationEnergies.length >= 3 && e.number <= 36 // Limit to first few periods for clarity
+  );
+  if (elementsWithEnoughIE.length < 1) return generateTrendQuestion(); // Fallback
+
+  const element = elementsWithEnoughIE[getRandomInt(elementsWithEnoughIE.length)];
+  const ies = element.ionizationEnergies;
+
+  let maxRatio = 0;
+  let jumpIndex = 0; // Where the jump occurs (after removing the jumpIndex electron)
+
+  for (let i = 0; i < ies.length - 1; i++) {
+    if (ies[i] > 0) { // Avoid division by zero or using null values
+      const ratio = ies[i+1] / ies[i];
+      if (ratio > maxRatio) {
+        maxRatio = ratio;
+        jumpIndex = i + 1; // Jump happens after removing the (i+1)th electron
+      }
+    }
+  }
+
+  // Ensure a significant jump was found, otherwise fallback
+  if (maxRatio < 2.5 || jumpIndex === 0) {
+    return generateTrendQuestion(); // Fallback if no clear jump
+  }
+
+  const numberWords = ['zeroth', 'first', 'second', 'third', 'fourth', 'fifth']; // For options/explanation
+  const correctOption = numberWords[jumpIndex] || `${jumpIndex}th`;
+
+  // Create plausible distractors
+  let options = new Set([correctOption]);
+  if (jumpIndex > 1 && numberWords[jumpIndex - 1]) options.add(numberWords[jumpIndex - 1]);
+  if (numberWords[jumpIndex + 1] && (jumpIndex+1) < ies.length) options.add(numberWords[jumpIndex + 1]);
+  while (options.size < 3 && options.size < numberWords.length-1) {
+    let randomIdx = getRandomInt(Math.min(ies.length, numberWords.length-1)) + 1; // +1 avoid zeroth
+    if(numberWords[randomIdx]) options.add(numberWords[randomIdx]);
+    else break; // stop if we run out of words
+  }
+
+  return {
+    type: 'ie_jump',
+    question: `For element ${element.symbol} (${element.name}), the largest jump in successive ionization energies occurs *after* removing which electron?`,
+    options: shuffle(Array.from(options)),
+    correct: correctOption,
+    explanation: `The largest jump occurs after removing the ${correctOption} electron because this involves removing an electron from a stable inner shell (noble gas configuration), requiring significantly more energy.`
+  };
+};
+
+// --- NEW: Generator to Identify Group from IE Values ---
+const generateIdentifyGroupQuestion = () => {
+  // Focus on groups 1, 2, 13, 14 where jumps are clearer
+  const targetGroups = [1, 2, 13, 14];
+  const elementsWithEnoughIE = periodicTable.filter(e =>
+    e.group && targetGroups.includes(e.group) &&
+    e.ionizationEnergies && e.ionizationEnergies.length >= 4 && // Need at least 4 IEs
+    e.period >= 2 && e.period <= 4 // Limit scope
+  );
+
+  if (elementsWithEnoughIE.length < 1) return generateRankQuestion(); // Fallback
+
+  const element = elementsWithEnoughIE[getRandomInt(elementsWithEnoughIE.length)];
+  const ies = element.ionizationEnergies.slice(0, 4).map(ie => Math.round(ie / 10) * 10); // Use first 4, round slightly
+
+  let maxRatio = 0;
+  let jumpIndex = 0;
+  for (let i = 0; i < ies.length - 1; i++) {
+    if (ies[i] > 0) {
+      const ratio = ies[i+1] / ies[i];
+      if (ratio > maxRatio) {
+        maxRatio = ratio;
+        jumpIndex = i + 1; // Jump occurs after removing (i+1)th electron
+      }
+    }
+  }
+
+  // Determine the likely group based on the jump index
+  let correctGroup;
+  if (jumpIndex === 1) correctGroup = 1;
+  else if (jumpIndex === 2) correctGroup = 2;
+  else if (jumpIndex === 3) correctGroup = 13;
+  else if (jumpIndex === 4) correctGroup = 14; // Jump after 4th means group 14
+  else return generateRankQuestion(); // Unexpected jump, fallback
+
+  // Create options including the correct group and plausible distractors
+  let options = new Set([`Group ${correctGroup}`]);
+  const potentialDistractors = [1, 2, 13, 14, 15, 16];
+  potentialDistractors.forEach(g => {
+    if (g !== correctGroup && options.size < 4) {
+      options.add(`Group ${g}`);
+    }
+  });
+
+  return {
+    type: 'identify_group',
+    question: `An element has successive ionization energies (kJ/mol): ${ies.join(', ')}. To which group does this element likely belong?`,
+    options: shuffle(Array.from(options)),
+    correct: `Group ${correctGroup}`,
+    explanation: `The largest jump occurs between IE${jumpIndex} and IE${jumpIndex + 1}, indicating the element has ${jumpIndex} valence electron(s) and likely belongs to Group ${correctGroup}.`
+  };
+};
+
+// --- NEW: Generator for True/False Conceptual Questions ---
+const trueFalseStatements = [
+  { statement: 'Ionization energy generally increases from left to right across a period.', correct: true, explanation: 'True. Increasing effective nuclear charge across a period holds valence electrons more tightly, increasing IE.' },
+  { statement: 'Ionization energy always increases smoothly from left to right across a period without exceptions.', correct: false, explanation: 'False. Exceptions occur, like between Group 2 (Be, Mg) and Group 13 (B, Al), and between Group 15 (N, P) and Group 16 (O, S), due to electron configurations (full/half-full subshells).' },
+  { statement: 'Ionization energy generally decreases down a group.', correct: true, explanation: 'True. Electrons are added to higher energy levels further from the nucleus, and shielding increases, making valence electrons easier to remove.' },
+  { statement: 'The second ionization energy (IE2) of an element is always lower than its first ionization energy (IE1).', correct: false, explanation: 'False. Removing an electron from a positive ion (IE2) always requires more energy than removing one from a neutral atom (IE1) due to increased effective nuclear charge.' },
+  { statement: 'Sodium (Na) has a very large second ionization energy compared to its first.', correct: true, explanation: 'True. After removing the first electron (valence), the second electron must be removed from a stable inner shell (like Neon), requiring much more energy.' },
+  { statement: 'Magnesium (Mg) has a larger jump between IE2 and IE3 than between IE1 and IE2.', correct: true, explanation: 'True. Mg is in Group 2. Removing the first two valence electrons is easier than removing the third, which comes from a stable inner shell.' },
+  { statement: 'Noble gases have the lowest first ionization energies in their respective periods.', correct: false, explanation: 'False. Noble gases have complete, stable electron shells and the highest effective nuclear charge in their period, giving them the highest first ionization energies.' },
+  { statement: 'Elements with low ionization energies tend to be nonmetals.', correct: false, explanation: 'False. Elements with low ionization energies easily lose electrons to form positive ions, which is characteristic of metals.' },
+];
+
+const generateTrueFalseQuestion = () => {
+  const selected = trueFalseStatements[getRandomInt(trueFalseStatements.length)];
+  return {
+    type: 'true_false',
+    question: `True or False: ${selected.statement}`,
+    options: ['True', 'False'],
+    correct: selected.correct ? 'True' : 'False',
+    explanation: selected.explanation
+  };
+};
+
+// --- NEW: Generator for Comparing Second Ionization Energies ---
+const generateIE2CompareQuestion = () => {
+  // Find elements with at least 2 IE values
+  const elementsWithIE2 = periodicTable.filter(e =>
+    e.ionizationEnergies && e.ionizationEnergies.length >= 2 && e.period <= 4 && e.ionizationEnergies[1] // Ensure IE2 exists
+  );
+  if (elementsWithIE2.length < 2) return generateTrendQuestion(); // Fallback
+
+  const elements = shuffle(elementsWithIE2).slice(0, 2);
+  const [a, b] = elements;
+
+  // Compare IE2 values
+  const correctElement = a.ionizationEnergies[1] > b.ionizationEnergies[1] ? a : b;
+  const incorrectElement = correctElement === a ? b : a;
+
+  // Basic explanation - can be enhanced later
+  let explanation = `${correctElement.symbol} has a higher second ionization energy (IE2) than ${incorrectElement.symbol}. `;
+  if (correctElement.group === 1 && incorrectElement.group === 2) {
+    explanation += `Removing the second electron from ${correctElement.symbol} (Group 1) involves breaking a stable noble gas configuration, requiring much more energy than removing the second valence electron from ${incorrectElement.symbol} (Group 2).`;
+  } else {
+    explanation += 'Factors like effective nuclear charge and electron configuration after the first ionization influence IE2.';
+  }
+
+  return {
+    type: 'compare_ie2',
+    question: `Which element has a higher *second* ionization energy (IE2): ${a.symbol} or ${b.symbol}?`,
+    options: [a.symbol, b.symbol],
+    correct: correctElement.symbol,
+    explanation: explanation
+  };
+};
+
+// --- UPDATED generators array ---
+const generators = [
+  generateTrendQuestion,
+  generateRankQuestion,
+  generateExceptionQuestion,
+  generateMultiStageQuestion,
+  generateIEJumpQuestion,       // <-- ADDED
+  generateIdentifyGroupQuestion,// <-- ADDED
+  generateTrueFalseQuestion,    // <-- ADDED
+  generateIE2CompareQuestion    // <-- ADDED
+];
 // --- End of Question Generators ---
 
+
+const RECENT_HISTORY_LIMIT = 30; // How many questions to remember
 
 const IonizationEnergyActivity = ({ onBack }) => {
   const [showTable, setShowTable] = useState(false);
   const [multiStageQuestion, setMultiStageQuestion] = useState(null);
   const [currentStage, setCurrentStage] = useState(0);
-  const [question, setQuestion] = useState(() => {
-    const result = generators[getRandomInt(generators.length)]();
-    if (result.type === 'multi-stage') {
-      setMultiStageQuestion(result);
-      setCurrentStage(0);
-      return result.stages[0];
-    }
-    return result;
-  });
+  const [question, setQuestion] = useState(generateTrendQuestion());
   const [userAnswer, setUserAnswer] = useState('');
   const [showFeedback, setShowFeedback] = useState(false);
   const [score, setScore] = useState(0);
@@ -146,7 +309,8 @@ const IonizationEnergyActivity = ({ onBack }) => {
       setQuestion(multiStageQuestion.stages[nextStage]); // Show next stage
       setUserAnswer('');
       setShowFeedback(false);
-      return; // Don't generate a new top-level question yet
+      // Don't update history here, it's part of the same conceptual question
+      return;
     }
 
     // --- Logic for generating a NEW top-level question ---
@@ -154,10 +318,11 @@ const IonizationEnergyActivity = ({ onBack }) => {
     setMultiStageQuestion(null);
     setCurrentStage(0);
 
-    let nextQuestionData;    // Will hold the full object returned by the generator
-    let finalQuestionObject; // Will hold the specific question object to display (e.g., stages[0])
-    let attempts = 0;        // Safety counter
-    const maxAttempts = 10;  // Try up to 10 times to get a different question
+    let nextQuestionData;
+    let finalQuestionObject = null; // Initialize outside the loop
+    let attempts = 0;
+    // Increase maxAttempts slightly to account for history checks
+    const maxAttempts = 20;
 
     do {
       // 1. Select a random generator function
@@ -166,40 +331,55 @@ const IonizationEnergyActivity = ({ onBack }) => {
 
       // 2. Determine the actual question object to display and compare
       if (nextQuestionData.type === 'multi-stage') {
-        // For multi-stage, the first stage is what we display/compare initially
         finalQuestionObject = nextQuestionData.stages[0];
       } else {
-        // For single-stage questions, it's the direct result
         finalQuestionObject = nextQuestionData;
       }
 
       attempts++;
       if (attempts > maxAttempts) {
-        console.warn("Max attempts reached trying to find a different question. Allowing potential repeat.");
+        console.warn(`Max attempts (${maxAttempts}) reached trying to find a non-recent question. Allowing potential repeat.`);
         break; // Prevent infinite loop
       }
 
-      // 3. Loop Condition:
+      // 3. Loop Condition: REVISED
       // Continue looping IF:
-      // - There's more than one generator type (a choice exists)
-      // - AND the final question object we determined exists
-      // - AND the previous question text exists
-      // - AND the final question object's text is identical to the previous one
+      // - More than one generator type exists (variety possible)
+      // - AND the determined question object is valid
+      // - AND ( EITHER the question is identical to the immediately preceding one
+      //         OR the question text is found within the recent history )
     } while (
       generators.length > 1 &&
-      finalQuestionObject &&
-      previousQuestionText &&
-      finalQuestionObject.question === previousQuestionText
+      finalQuestionObject?.question && // Ensure we have a question text to check
+      (
+        (previousQuestionText && finalQuestionObject.question === previousQuestionText) ||
+        recentQuestions.includes(finalQuestionObject.question) // Check if in history
+      )
     );
+
+    // --- Update History BEFORE setting the new question ---
+    if (finalQuestionObject?.question) { // Check if we have a valid question object
+      const currentQuestionText = finalQuestionObject.question;
+      // Create the updated history
+      const updatedHistory = [...recentQuestions, currentQuestionText];
+      // Trim the history if it exceeds the limit
+      if (updatedHistory.length > RECENT_HISTORY_LIMIT) {
+        // Use slice to get the last RECENT_HISTORY_LIMIT elements
+        setRecentQuestions(updatedHistory.slice(updatedHistory.length - RECENT_HISTORY_LIMIT));
+      } else {
+        setRecentQuestions(updatedHistory);
+      }
+    }
 
     // 4. Set the state with the chosen question data (determined after the loop)
     if (nextQuestionData.type === 'multi-stage') {
-      setMultiStageQuestion(nextQuestionData); // Store the full multi-stage sequence
-      setCurrentStage(0);                      // Start at stage 0
-      setQuestion(nextQuestionData.stages[0]); // Display the first stage
+      setMultiStageQuestion(nextQuestionData);
+      setCurrentStage(0);
+      setQuestion(nextQuestionData.stages[0]);
     } else {
-      setMultiStageQuestion(null);             // Ensure multi-stage state is clear
-      setQuestion(nextQuestionData);           // Display the single-stage question
+      // Ensure multi-stage state is clear if it's a single question
+      // setMultiStageQuestion(null); // Already done above
+      setQuestion(nextQuestionData);
     }
 
     // Reset UI elements for the new question
@@ -213,7 +393,10 @@ const IonizationEnergyActivity = ({ onBack }) => {
   };
 
   // Determine which types use radio buttons
-  const radioTypes = ['compare', 'exception', 'reasoning', 'categorize', 'trend', 'application'];
+  const radioTypes = [
+    'compare', 'exception', 'reasoning', 'categorize', 'trend', 'application',
+    'ie_jump', 'identify_group', 'true_false', 'compare_ie2'
+  ];
 
   return (
     // Apply the root class for overall container styling
