@@ -228,24 +228,24 @@ export default function Welcome({ onNext }) {
           <h3 style={{ textAlign: 'center', marginTop: 0, marginBottom: '18px', color: '#fde047', letterSpacing: 1 }}>
             Latest Updates! <span role="img" aria-label="tada">🎉</span>
           </h3>
-          <ul style={{ paddingLeft: '25px', margin: 0, lineHeight: 1.6 }}>
-            <li style={{ marginBottom: '8px' }}>
-              <span role="img" aria-label="atom" style={{ marginRight: '8px'}}>⚛️</span>
-              Added **Ionization Energy** activity with multiple question types (comparison, ranking, exceptions, reasoning).
-            </li>
-            <li style={{ marginBottom: '8px' }}>
-             <span role="img" aria-label="repeat" style={{ marginRight: '8px'}}>🔁</span>
-              Improved question variety: It's now much harder to get the exact same question twice in a row!
-            </li>
-            <li style={{ marginBottom: '8px' }}>
-              <span role="img" aria-label="paint" style={{ marginRight: '8px'}}>🎨</span>
-              Refined UI styling and layout across activities for a cleaner, more engaging look.
-            </li>
-             <li>
-               <span role="img" aria-label="bug" style={{ marginRight: '8px'}}>🐛</span>
-              Fixed various minor bugs and improved overall stability.
-            </li>
-          </ul>
+            <ul style={{ paddingLeft: '25px', margin: 0, lineHeight: 1.6 }}>
+              <li style={{ marginBottom: '10px' }}> 
+                <span role="img" aria-label="chart increasing" style={{ marginRight: '8px'}}>📈</span>
+                Dive into the new **Ionization Energy** activity, featuring diverse question formats covering trends, exceptions, IE jumps, and more!
+              </li>
+              <li style={{ marginBottom: '10px' }}>
+               <span role="img" aria-label="atom symbol" style={{ marginRight: '8px'}}>⚛️</span>
+               **Atomic Radius Bug Fix:** Corrected an issue where element choices sometimes disappeared in the "arrange elements" question type. Thanks for the feedback!
+              </li>
+              <li style={{ marginBottom: '10px' }}>
+               <span role="img" aria-label="shuffle" style={{ marginRight: '8px'}}>🔀</span>
+               **Smarter Questions:** Implemented tracking to significantly reduce the chance of seeing the exact same question repeated too soon.
+              </li>
+               <li>
+                 <span role="img" aria-label="wrench" style={{ marginRight: '8px'}}>🔧</span>
+                Ongoing improvements to UI consistency and overall performance.
+              </li>
+            </ul>
            {/* --- END OF UPDATED TEXT --- */}
         </div>
       </div>
