@@ -172,93 +172,85 @@ export default function Welcome({ onNext }) {
             Update Log
           </button>
 
-          {/* Update Log Modal is now rendered at root */}
+        </div> {/* End glass-card */}
+      </div> {/* End Main Card Wrapper */}
 
-        </div>
       {/* Update Log Modal rendered at root for correct stacking */}
-    {showUpdateLog && (
-      <div style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100vw',
-        height: '100vh',
-        background: 'rgba(24, 30, 48, 0.68)',
-        backdropFilter: 'blur(6px)',
-        zIndex: 9999,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}>
-        <div style={{
-          background: 'linear-gradient(120deg, #232946cc 80%, #38bdf8 120%)',
-          borderRadius: 32,
-          boxShadow: '0 8px 44px #38bdf899, 0 2px 24px #a5b4fc99',
-          padding: '38px 32px 30px 32px',
-          maxWidth: 440,
-          width: '90vw',
-          textAlign: 'left', // Adjusted for better readability of list
-          position: 'relative',
-          border: '2.5px solid #38bdf8',
-          color: '#fff',
-          fontSize: '1.05em', // Slightly adjusted size
-          fontWeight: 600,   // Adjusted weight
-          letterSpacing: 0.5, // Adjusted spacing
-          textShadow: '0 1px 4px #00000066', // Simpler shadow for readability
+      {showUpdateLog && (
+        <div style={{ /* ... modal background styles ... */
+          position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(24, 30, 48, 0.75)', backdropFilter: 'blur(8px) saturate(1.2)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'fadeIn 0.3s'
         }}>
-          <button
-            onClick={() => setShowUpdateLog(false)}
-            style={{
-              position: 'absolute',
-              top: 14,
-              right: 18,
-              background: 'none',
-              border: 'none',
-              color: '#fff',
-              fontSize: 26,
-              cursor: 'pointer',
-              filter: 'drop-shadow(0 2px 6px #a5b4fc)',
-              textShadow: '0 0 3px black', // Make X more visible
-            }}
-            aria-label="Close update log"
-          >
-            ×
-          </button>
-           {/* --- UPDATED TEXT BELOW --- */}
-          <h3 style={{ textAlign: 'center', marginTop: 0, marginBottom: '18px', color: '#fde047', letterSpacing: 1 }}>
-            Latest Updates! <span role="img" aria-label="tada">🎉</span>
-          </h3>
-            <ul style={{ paddingLeft: '25px', margin: 0, lineHeight: 1.6 }}>
-              <li style={{ marginBottom: '10px' }}> 
-                <span role="img" aria-label="chart increasing" style={{ marginRight: '8px'}}>📈</span>
-                Dive into the new **Ionization Energy** activity, featuring diverse question formats covering trends, exceptions, IE jumps, and more!
-              </li>
-              <li style={{ marginBottom: '10px' }}>
-               <span role="img" aria-label="atom symbol" style={{ marginRight: '8px'}}>⚛️</span>
-               **Atomic Radius Bug Fix:** Corrected an issue where element choices sometimes disappeared in the "arrange elements" question type. Thanks for the feedback!
-              </li>
-              <li style={{ marginBottom: '10px' }}>
-               <span role="img" aria-label="shuffle" style={{ marginRight: '8px'}}>🔀</span>
-               **Smarter Questions:** Implemented tracking to significantly reduce the chance of seeing the exact same question repeated too soon.
-              </li>
-               <li>
-                 <span role="img" aria-label="wrench" style={{ marginRight: '8px'}}>🔧</span>
-                Ongoing improvements to UI consistency and overall performance.
-              </li>
-            </ul>
-           {/* --- END OF UPDATED TEXT --- */}
-        </div>
-      </div>
-    )}
-    </div>
+          <div style={{ /* ... modal content styles ... */
+            background: 'linear-gradient(135deg, #1e293b 60%, #0f172a 100%)', // Darker gradient
+            borderRadius: 28, // Slightly smaller radius
+            boxShadow: '0 10px 50px #38bdf866, 0 4px 20px #a5b4fc55',
+            padding: '34px 30px 28px 30px', // Adjusted padding
+            maxWidth: 480, // Increased max width slightly
+            width: '90vw',
+            textAlign: 'left',
+            position: 'relative',
+            border: '2px solid #60a5fa', // Different border color
+            color: '#e2e8f0', // Lighter text color
+            fontSize: '1.03em', // Base font size
+            fontWeight: 500, // Normal weight for list items
+            lineHeight: 1.65, // Slightly increased line height
+            textShadow: '0 1px 2px #00000044',
+            animation: 'popIn 0.35s cubic-bezier(.25,1.5,.5,1)' // Add pop animation
+          }}>
+            <button
+              onClick={() => setShowUpdateLog(false)}
+              style={{ /* ... close button styles ... */
+                position: 'absolute', top: 12, right: 15, background: 'transparent', border: 'none', color: '#94a3b8', fontSize: 30, cursor: 'pointer', textShadow: '0 0 4px #0009', lineHeight: 1, padding: '0 5px'
+              }}
+              aria-label="Close update log"
+            >
+              ×
+            </button>
+
+            <h3 style={{ /* ... update log title style ... */
+              textAlign: 'center', marginTop: 0, marginBottom: '20px', color: '#facc15', // Bright title color
+              fontWeight: 700, letterSpacing: 1.2, fontSize: '1.3em', textShadow: '0 1px 3px #0006'
+             }}>
+              Latest Updates! <span role="img" aria-label="tada">🎉</span>
+            </h3>
+
+             {/* --- UPDATED LOG CONTENT --- */}
+             <ul style={{ paddingLeft: '20px', margin: 0, listStyle: 'none' }}> {/* Remove default bullets */}
+                <li style={{ marginBottom: '12px', display: 'flex', alignItems: 'flex-start' }}>
+                   <span role="img" aria-label="chart increasing" style={{ marginRight: '10px', marginTop:'2px', color: '#6ee7b7', fontSize: '1.1em'}}>📈</span>
+                   <span>**NEW Activity: Ionization Energy!** Explore trends, exceptions, successive IEs, configuration links, and more with diverse, randomized questions.</span>
+                </li>
+                 <li style={{ marginBottom: '12px', display: 'flex', alignItems: 'flex-start' }}>
+                    <span role="img" aria-label="atom symbol" style={{ marginRight: '10px', marginTop:'2px', color:'#fca5a5', fontSize: '1.1em'}}>⚛️</span>
+                   <span>**ENHANCED Activity: Atomic Radius!** Added new question types testing trend understanding (Why bigger/smaller? Primary factor?) alongside direct comparisons and ranking.</span>
+                </li>
+                <li style={{ marginBottom: '12px', display: 'flex', alignItems: 'flex-start' }}>
+                  <span role="img" aria-label="bug" style={{ marginRight: '10px', marginTop:'2px', color: '#fde047', fontSize: '1.1em' }}>🐛</span>
+                 <span>**Bug Fix (Atomic Radius):** Resolved issue where element buttons could vanish in ranking questions.</span>
+                </li>
+               <li style={{ marginBottom: '12px', display: 'flex', alignItems: 'flex-start' }}>
+                  <span role="img" aria-label="shuffle" style={{ marginRight: '10px', marginTop:'2px', color:'#a5b4fc', fontSize: '1.1em'}}>🔀</span>
+                 <span>**Smarter Question Selection:** Significantly reduced immediate question repeats by tracking specific question content.</span>
+               </li>
+                <li style={{ marginBottom: '8px', display: 'flex', alignItems: 'flex-start' }}>
+                   <span role="img" aria-label="wrench" style={{ marginRight: '10px', marginTop:'2px', color: '#94a3b8', fontSize: '1.1em' }}>🔧</span>
+                  <span>Ongoing UI tweaks & stability improvements.</span>
+                </li>
+             </ul>
+            {/* --- END OF UPDATED LOG CONTENT --- */}
+
+          </div> {/* End modal content div */}
+        </div> // End modal background div
+      )}
+
       {/* Footer */}
       <div style={{
         position: 'absolute',
         bottom: 32,
-        left: '50%', // Center horizontally
-        transform: 'translateX(-50%)', // Center horizontally
-        width: 'auto', // Adjust width based on content
-        maxWidth: '90%', // Prevent overflow on small screens
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: 'auto',
+        maxWidth: '90%',
         textAlign: 'center',
         color: '#fff',
         fontSize: '1.45em',
@@ -269,12 +261,8 @@ export default function Welcome({ onNext }) {
         pointerEvents: 'none',
         background: 'linear-gradient(90deg, #38bdf8 0%, #ff5ca7 100%)',
         borderRadius: 18,
-        // margin: '0 auto', // Not needed with position absolute & transform
-        padding: '12px 25px', // Added horizontal padding
+        padding: '12px 25px',
         boxShadow: '0 4px 32px #38bdf8aa, 0 2px 16px #ff5ca7aa',
-        // maxWidth: 420, // Removed fixed max-width for flexibility
-        // left: '50%', // Moved up
-        // transform: 'translateX(-50%)', // Moved up
       }}>
         <span role="img" aria-label="author" style={{marginRight: 8, filter: 'drop-shadow(0 2px 6px #38bdf8)'}}>👨‍🔬</span>
         Created by Adonis Yanez

@@ -19,6 +19,8 @@ import AtomicRadiusActivity from './AtomicRadiusActivity';
 import IonizationEnergyActivity from './IonizationEnergyActivity';
 
 
+
+
 function App() {
   const [screen, setScreen] = useState('welcome');
   const [fade, setFade] = useState(true);
@@ -179,6 +181,10 @@ function App() {
       {screen === 'ionizationEnergyActivity' && (
         <IonizationEnergyActivity
           onBack={() => setScreen('topics')}
+          onPeriodicTable={() => { 
+            setHistoryStack(h => [...h, {screen: 'ionizationEnergyActivity'}]); 
+            handleTransition('ptable'); 
+          }}
         />
       )}
     </div>
