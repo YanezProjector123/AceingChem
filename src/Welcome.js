@@ -197,14 +197,14 @@ export default function Welcome({ onNext }) {
           padding: '38px 32px 30px 32px',
           maxWidth: 440,
           width: '90vw',
-          textAlign: 'center',
+          textAlign: 'left', // Adjusted for better readability of list
           position: 'relative',
           border: '2.5px solid #38bdf8',
           color: '#fff',
-          fontSize: '1.18em',
-          fontWeight: 700,
-          letterSpacing: 1.05,
-          textShadow: '0 2px 18px #38bdf8cc, 0 1px 0 #fff',
+          fontSize: '1.05em', // Slightly adjusted size
+          fontWeight: 600,   // Adjusted weight
+          letterSpacing: 0.5, // Adjusted spacing
+          textShadow: '0 1px 4px #00000066', // Simpler shadow for readability
         }}>
           <button
             onClick={() => setShowUpdateLog(false)}
@@ -218,16 +218,35 @@ export default function Welcome({ onNext }) {
               fontSize: 26,
               cursor: 'pointer',
               filter: 'drop-shadow(0 2px 6px #a5b4fc)',
+              textShadow: '0 0 3px black', // Make X more visible
             }}
             aria-label="Close update log"
           >
             ×
           </button>
-          <div style={{ marginTop: 10, marginBottom: 6 }}>
-            <span role="img" aria-label="sparkle" style={{ marginRight: 8, fontSize: 24 }}>✨</span>
-            <span>Major update: Enjoy a vastly expanded set of atomic radius questions, a comprehensive periodic table, new question types, and a beautiful, streamlined user experience—making AcingChem more powerful and engaging than ever.</span>
-            <span role="img" aria-label="rocket" style={{ marginLeft: 8, fontSize: 24 }}>🚀</span>
-          </div>
+           {/* --- UPDATED TEXT BELOW --- */}
+          <h3 style={{ textAlign: 'center', marginTop: 0, marginBottom: '18px', color: '#fde047', letterSpacing: 1 }}>
+            Latest Updates! <span role="img" aria-label="tada">🎉</span>
+          </h3>
+          <ul style={{ paddingLeft: '25px', margin: 0, lineHeight: 1.6 }}>
+            <li style={{ marginBottom: '8px' }}>
+              <span role="img" aria-label="atom" style={{ marginRight: '8px'}}>⚛️</span>
+              Added **Ionization Energy** activity with multiple question types (comparison, ranking, exceptions, reasoning).
+            </li>
+            <li style={{ marginBottom: '8px' }}>
+             <span role="img" aria-label="repeat" style={{ marginRight: '8px'}}>🔁</span>
+              Improved question variety: It's now much harder to get the exact same question twice in a row!
+            </li>
+            <li style={{ marginBottom: '8px' }}>
+              <span role="img" aria-label="paint" style={{ marginRight: '8px'}}>🎨</span>
+              Refined UI styling and layout across activities for a cleaner, more engaging look.
+            </li>
+             <li>
+               <span role="img" aria-label="bug" style={{ marginRight: '8px'}}>🐛</span>
+              Fixed various minor bugs and improved overall stability.
+            </li>
+          </ul>
+           {/* --- END OF UPDATED TEXT --- */}
         </div>
       </div>
     )}
@@ -236,8 +255,10 @@ export default function Welcome({ onNext }) {
       <div style={{
         position: 'absolute',
         bottom: 32,
-        left: 0,
-        width: '100vw',
+        left: '50%', // Center horizontally
+        transform: 'translateX(-50%)', // Center horizontally
+        width: 'auto', // Adjust width based on content
+        maxWidth: '90%', // Prevent overflow on small screens
         textAlign: 'center',
         color: '#fff',
         fontSize: '1.45em',
@@ -248,12 +269,12 @@ export default function Welcome({ onNext }) {
         pointerEvents: 'none',
         background: 'linear-gradient(90deg, #38bdf8 0%, #ff5ca7 100%)',
         borderRadius: 18,
-        margin: '0 auto',
-        padding: '12px 0',
+        // margin: '0 auto', // Not needed with position absolute & transform
+        padding: '12px 25px', // Added horizontal padding
         boxShadow: '0 4px 32px #38bdf8aa, 0 2px 16px #ff5ca7aa',
-        maxWidth: 420,
-        left: '50%',
-        transform: 'translateX(-50%)',
+        // maxWidth: 420, // Removed fixed max-width for flexibility
+        // left: '50%', // Moved up
+        // transform: 'translateX(-50%)', // Moved up
       }}>
         <span role="img" aria-label="author" style={{marginRight: 8, filter: 'drop-shadow(0 2px 6px #38bdf8)'}}>👨‍🔬</span>
         Created by Adonis Yanez

@@ -1,256 +1,240 @@
 /* === Base Styles (Keep and Refine) === */
 .ie-activity-root {
   max-width: 600px;
-  margin: 20px auto;
+  margin: 40px auto; /* More vertical margin */
   padding: 20px;
-  background: #2a234a;
+  background: #1e1a36; /* Slightly different dark purple */
   border-radius: 18px;
-}
-
-/* Center the periodic table button if needed */
-.ie-activity-root > .ie-periodic-table-button {
-  display: block; /* Or inline-block if you prefer */
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 24px; /* Add space below it */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); /* Add subtle shadow */
+  color: #e0e0ff; /* Default text color */
 }
 
 .ie-question-card {
-  background: rgba(40, 40, 80, 0.9);
+  background: rgba(40, 40, 80, 0.8); /* Slightly more transparent */
   border-radius: 14px;
   padding: 24px;
   margin: 20px 0;
+  border: 1px solid #4c1d95; /* Add subtle border */
 }
 
-.ie-question {
-  font-size: 1.2em;
-  margin-bottom: 20px;
+/* Score/Round styling (Added) */
+.ie-score-round {
+ margin: 5px 0 15px 0;
+ font-size: 0.95em;
+ color: #a5b4fc;
+ font-weight: 600;
+ letter-spacing: 0.5px;
+ text-align: center;
+}
+.ie-score-round span {
+    color: #fde047;
+    font-weight: 700;
+}
+
+
+.ie-question-prompt {
+  margin: 0 0 24px 0; /* Increased bottom margin */
+  font-size: 1.15em; /* Slightly larger */
   color: #fff;
-}
-
-.ie-options {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.ie-option {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px;
-  background: rgba(56, 189, 248, 0.1);
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.ie-option:hover {
-  background: rgba(56, 189, 248, 0.2);
+  line-height: 1.5; /* Improve readability */
+  font-weight: 500; /* Normal weight */
+  text-align: center;
 }
 
 .ie-select {
   width: 100%;
-  padding: 10px;
+  padding: 12px 15px; /* More padding */
   margin-bottom: 20px;
   border-radius: 8px;
-  background: #23234a;
+  background: #2a234a; /* Darker background */
   color: #fff;
-  border: 1px solid #38bdf8;
+  border: 1px solid #7c3aed; /* Purple border */
+  font-size: 1.05em;
+  cursor: pointer;
+  appearance: none; /* Remove default arrow */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='%23a5b4fc' class='w-6 h-6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5' /%3E%3C/svg%3E%0A"); /* Custom arrow */
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+  background-size: 1.2em;
+}
+.ie-select:focus {
+    outline: 2px solid #a5b4fc;
+    outline-offset: 2px;
 }
 
-.ie-feedback {
-  margin-top: 20px;
-  padding: 15px;
+
+/* === Answer Group Styling (Major Fixes) === */
+.ie-answer-group {
+  margin: 0 0 20px 0; /* More bottom margin */
+  border: none;
+  padding: 0;
+  width: 100%;
+}
+
+/* Hide legend if not used, or style if you add it */
+.ie-answer-group legend {
+  /* font-weight: 600; */
+  /* color: #38bdf8; */
+  /* font-size: 1.08em; */
+  /* padding: 0; */
+  /* margin-bottom: 12px; */
+  display: none; /* Hides if empty or not present */
+}
+
+.ie-answer-option {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px; /* Increased spacing */
+  padding: 12px 15px; /* Increased padding */
+  background: rgba(99, 102, 241, 0.1); /* Indigo tint */
+  border: 1px solid transparent; /* Placeholder for hover/focus */
+  border-radius: 8px; /* More rounded */
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.ie-answer-option:hover {
+  background: rgba(99, 102, 241, 0.2); /* Darker indigo on hover */
+  border-color: #7c3aed; /* Purple border on hover */
+}
+
+.ie-answer-option input[type="radio"] {
+  margin-right: 12px;
+  accent-color: #7c3aed; /* Purple accent */
+  width: 18px; /* Slightly larger radio */
+  height: 18px;
+  cursor: pointer;
+}
+
+.ie-answer-option label {
+  color: #e0e0ff; /* Light text */
+  font-size: 1.05em;
+  cursor: pointer;
+  flex-grow: 1; /* Allow label to take remaining space */
+}
+
+/* === Button Styling (Refined) === */
+.ie-button {
+  display: block; /* Make buttons take full width by default */
+  width: 100%;
+  padding: 12px 20px;
+  margin-top: 12px; /* Space between buttons if stacked */
+  border: none;
   border-radius: 8px;
+  font-size: 1.05em;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease; /* Smooth transitions */
+  box-shadow: 0 2px 5px rgba(0,0,0, 0.2); /* Add default shadow */
+}
+.ie-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+.ie-button:active {
+  transform: scale(0.98); /* Slight press effect */
+  box-shadow: none; /* Remove shadow on press */
 }
 
-.correct {
-  color: #5eead4;
+/* Specific button types */
+.ie-periodic-table-button {
+  background: linear-gradient(to right, #60a5fa, #3b82f6); /* Blue gradient */
+  color: white;
+  /* Keep width: auto and flex-grow: 1 in inline style if used side-by-side */
+}
+.ie-periodic-table-button:hover {
+  background: linear-gradient(to right, #3b82f6, #2563eb); /* Darker blue */
 }
 
-.incorrect {
-  color: #ff5ca7;
+.ie-button-submit,
+.ie-button-next {
+  background: linear-gradient(to right, #a855f7, #7e22ce); /* Purple gradient */
+  color: white;
+}
+.ie-button-submit:hover,
+.ie-button-next:hover {
+  background: linear-gradient(to right, #9333ea, #6b21a8); /* Darker purple */
 }
 
+/* Example for a "Back" button (adjust as needed) */
+.ie-button-back {
+  background: linear-gradient(to right, #ef4444, #dc2626); /* Red gradient */
+  color: white;
+}
+.ie-button-back:hover {
+    background: linear-gradient(to right, #dc2626, #b91c1c); /* Darker red */
+}
+
+
+/* Ensure first button inside card has more top margin */
+.ie-question-card form + .ie-feedback + div > .ie-button:first-child, /* Button after feedback */
+.ie-question-card form > .ie-button:first-of-type { /* First button in form */
+  margin-top: 24px;
+}
+
+
+/* === Feedback Styling (Refined) === */
+.ie-feedback {
+  margin: 20px 0 0 0; /* More margin top */
+  padding: 12px 15px; /* Adjust padding */
+  border-radius: 8px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.ie-feedback .correct {
+  color: #10b981; /* Emerald green */
+  background-color: rgba(16, 185, 129, 0.1); /* Light green background */
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.ie-feedback .incorrect {
+  color: #f43f5e; /* Rose red */
+  background-color: rgba(244, 63, 94, 0.1); /* Light red background */
+  border: 1px solid rgba(244, 63, 94, 0.3);
+}
+.ie-feedback .incorrect br { /* Add space around the line break */
+    content: "";
+    display: block;
+    margin: 5px 0;
+}
+
+
+/* === Modal Styling (Keep) === */
 .ie-table-modal {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0,0,0,0.7);
+  background: rgba(0,0,0,0.75); /* Darker backdrop */
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  padding: 20px; /* Padding for smaller screens */
 }
 
 .ie-table-container {
-  background: #23234a;
-  padding: 30px;
-  border-radius: 18px;
-  max-width: 900px;
+  background: #2a234a; /* Match card background */
+  padding: 20px; /* Adjust padding */
+  border-radius: 14px; /* Match card radius */
+  max-width: 95%; /* Max width relative to viewport */
   max-height: 90vh;
   overflow: auto;
+  border: 1px solid #4c1d95; /* Match card border */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); /* Stronger shadow for modal */
 }
 
-.ie-question-type {
-  color: #facc15; /* Yellow */
-  font-weight: 700;
-  font-size: 1.1em; /* Slightly larger */
-  margin-bottom: 12px; /* More space below */
-  letter-spacing: 0.5px;
-}
-
-.ie-question-prompt {
-  margin: 0 0 24px 0; /* Increased bottom margin */
-  font-size: 1.15em; /* Slightly larger */
-  color: #fff;
-  line-height: 1.4; /* Improve readability */
-}
-
-.ie-educational-content {
-  background: rgba(40, 40, 80, 0.9);
-  border-radius: 14px;
-  padding: 24px;
-  margin: 20px 0;
-}
-
-.ie-trends ul {
-  padding-left: 20px;
-  line-height: 1.6;
-}
-
-.ie-examples-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  gap: 12px;
-  margin-top: 12px;
-}
-
-.ie-example-item {
-  background: rgba(56, 189, 248, 0.1);
-  padding: 10px;
-  border-radius: 8px;
-  text-align: center;
-}
-
-.ie-example-element {
-  font-weight: bold;
-  color: #38bdf8;
-  display: block;
-}
-
-.ie-element-info {
-  background: rgba(56, 189, 248, 0.1);
-  padding: 16px;
-  border-radius: 12px;
-  margin: 20px 0;
-  border-left: 4px solid #38bdf8;
-}
-
-/* === Answer Group Styling (Major Fixes) === */
-.ie-answer-group {
-  margin: 0 0 16px 0;
-  border: none;
-  padding: 0;
-  width: 100%;
-}
-
-.ie-answer-group legend {
-  font-weight: 600;
-  color: #38bdf8;
-  font-size: 1.08em;
-  padding: 0;
-  margin-bottom: 12px;
-}
-
-.ie-answer-option {
-  display: flex;
-  align-items: center;
-  margin-bottom: 8px;
-  padding: 8px 12px;
-  background: rgba(56, 189, 248, 0.1);
-  border-radius: 6px;
-}
-
-.ie-answer-option:hover {
-  background: rgba(56, 189, 248, 0.2);
-}
-
-.ie-answer-option input[type="radio"] {
-  margin-right: 12px;
-  accent-color: #38bdf8;
-}
-
-.ie-answer-option label {
-  color: #fff;
-  font-size: 1.05em;
-  cursor: pointer;
-}
-
-/* === Button Styling (New) === */
-.ie-button {
-  display: block; /* Make buttons take full width */
-  width: 100%;
-  padding: 12px 20px;
-  margin-top: 12px; /* Space between buttons */
-  border: none;
-  border-radius: 8px;
-  font-size: 1.05em;
-  font-weight: 600;
-  text-align: center;
-  cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease; /* Smooth transitions */
-}
-.ie-button:active {
-  transform: scale(0.98); /* Slight press effect */
-}
-
-.ie-periodic-table-button {
-  background-color: #38bdf8; /* Light blue */
-  color: #1e1a36; /* Dark text */
-  /* Adjust width if needed, remove width: 100% if using inline-block */
-  /* width: auto; */ /* Example if inline-block */
-  /* display: inline-block; */
-}
-.ie-periodic-table-button:hover {
-  background-color: #7dd3fc; /* Lighter blue on hover */
-}
-
-.ie-button-submit,
-.ie-button-next {
-  background-color: #4c1d95; /* Darker purple */
-  color: #e9d5ff; /* Lighter purple/white text */
-}
-.ie-button-submit:hover,
-.ie-button-next:hover {
-  background-color: #581c87; /* Slightly lighter purple on hover */
-}
-
-/* Ensure first button inside card has more top margin */
-.ie-question-card > .ie-button:first-of-type {
-  margin-top: 24px;
-}
-
-/* === Feedback Styling (Keep) === */
-.ie-feedback {
-  margin: 16px 0 0 0; /* Add margin top */
-  padding: 10px;
-  border-radius: 6px;
-  font-weight: 600;
-  text-align: center;
-  color: #5eead4; /* Teal */
-  background-color: rgba(45, 212, 191, 0.1); /* Light teal background */
-}
-
-/* (Optional) Unused class from original CSS - keep or remove */
-.ie-question-data {
-  background: #1e1a36;
-  border-radius: 8px;
-  padding: 10px 16px;
-  margin-bottom: 12px;
-  color: #b6f8e0;
-  font-size: 1.08em;
-}
+/* --- Remove unused classes if desired --- */
+/*
+.ie-question-type { ... }
+.ie-educational-content { ... }
+.ie-trends ul { ... }
+.ie-examples-grid { ... }
+.ie-example-item { ... }
+.ie-example-element { ... }
+.ie-element-info { ... }
+.ie-question-data { ... }
+*/
