@@ -217,24 +217,20 @@ export default function Welcome({ onNext }) {
              {/* --- UPDATED LOG CONTENT --- */}
              <ul style={{ paddingLeft: '20px', margin: 0, listStyle: 'none' }}> {/* Remove default bullets */}
                 <li style={{ marginBottom: '12px', display: 'flex', alignItems: 'flex-start' }}>
-                   <span role="img" aria-label="chart increasing" style={{ marginRight: '10px', marginTop:'2px', color: '#6ee7b7', fontSize: '1.1em'}}>📈</span>
-                   <span>**NEW Activity: Ionization Energy!** Explore trends, exceptions, successive IEs, configuration links, and more with diverse, randomized questions.</span>
-                </li>
-                 <li style={{ marginBottom: '12px', display: 'flex', alignItems: 'flex-start' }}>
-                    <span role="img" aria-label="atom symbol" style={{ marginRight: '10px', marginTop:'2px', color:'#fca5a5', fontSize: '1.1em'}}>⚛️</span>
-                   <span>**ENHANCED Activity: Atomic Radius!** Added new question types testing trend understanding (Why bigger/smaller? Primary factor?) alongside direct comparisons and ranking.</span>
+                   <span role="img" aria-label="sparkles" style={{ marginRight: '10px', marginTop:'2px', color: '#facc15', fontSize: '1.1em'}}>✨</span>
+                   <span><b>Major Visual Update:</b> Every activity now has a unique, educational, and engaging style! Each screen is more vibrant and learning-friendly, with its own color palette and highlights.</span>
                 </li>
                 <li style={{ marginBottom: '12px', display: 'flex', alignItems: 'flex-start' }}>
-                  <span role="img" aria-label="bug" style={{ marginRight: '10px', marginTop:'2px', color: '#fde047', fontSize: '1.1em' }}>🐛</span>
-                 <span>**Bug Fix (Atomic Radius):** Resolved issue where element buttons could vanish in ranking questions.</span>
+                   <span role="img" aria-label="table" style={{ marginRight: '10px', marginTop:'2px', color: '#38bdf8', fontSize: '1.1em'}}>🧪</span>
+                   <span><b>Periodic Table Modal:</b> Improved modal overlays in all activities. Only the intended buttons show, and both "Close" and "Back" are now functional where present.</span>
                 </li>
-               <li style={{ marginBottom: '12px', display: 'flex', alignItems: 'flex-start' }}>
-                  <span role="img" aria-label="shuffle" style={{ marginRight: '10px', marginTop:'2px', color:'#a5b4fc', fontSize: '1.1em'}}>🔀</span>
-                 <span>**Smarter Question Selection:** Significantly reduced immediate question repeats by tracking specific question content.</span>
-               </li>
-                <li style={{ marginBottom: '8px', display: 'flex', alignItems: 'flex-start' }}>
-                   <span role="img" aria-label="wrench" style={{ marginRight: '10px', marginTop:'2px', color: '#94a3b8', fontSize: '1.1em' }}>🔧</span>
-                  <span>Ongoing UI tweaks & stability improvements.</span>
+                <li style={{ marginBottom: '12px', display: 'flex', alignItems: 'flex-start' }}>
+                   <span role="img" aria-label="broom" style={{ marginRight: '10px', marginTop:'2px', color: '#a5b4fc', fontSize: '1.1em'}}>🧹</span>
+                   <span><b>UI Cleanup:</b> Removed stray UI fragments (like "// End Main Fragment") from all screens for a cleaner experience.</span>
+                </li>
+                <li style={{ marginBottom: '12px', display: 'flex', alignItems: 'flex-start' }}>
+                   <span role="img" aria-label="rocket" style={{ marginRight: '10px', marginTop:'2px', color: '#5eead4', fontSize: '1.1em'}}>🚀</span>
+                   <span>All previous activities and bug fixes remain, with even more polish and stability improvements!</span>
                 </li>
              </ul>
             {/* --- END OF UPDATED LOG CONTENT --- */}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PeriodicTable from './PeriodicTable';
 
 // Covalent compounds: only nonmetals, use prefixes (mono-, di-, tri-, etc.)
 const covalentProblems = [
@@ -83,6 +84,7 @@ export default function CovalentNameToFormulaActivity({ onBack, onCovalentFormul
   const [problem, setProblem] = useState(getRandomCovalentNameToFormulaProblem());
   const [userAnswer, setUserAnswer] = useState('');
   const [feedback, setFeedback] = useState('');
+  const [showTable, setShowTable] = useState(false);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -101,36 +103,68 @@ export default function CovalentNameToFormulaActivity({ onBack, onCovalentFormul
   }
 
   return (
-    <div className="center-container fade-in slide-up" style={{ textAlign: 'center', maxWidth: 540, margin: '0 auto' }}>
-      <h2 className="ptable-title">Covalent Compound: Name → Formula</h2>
-      <div style={{ margin: '20px 0', fontWeight: 600, fontSize: '1.13em' }}>Name: <span style={{ color: '#38bdf8', fontWeight: 700 }}>{problem.name}</span></div>
-      <form onSubmit={handleSubmit}>
-        <input
-          className="ptable-btn"
-          style={{ fontSize: '1.15em', margin: '8px 0', padding: '10px 18px', borderRadius: 7 }}
-          type="text"
-          placeholder="Enter formula (e.g. CO₂)"
-          value={userAnswer}
-          onChange={e => setUserAnswer(e.target.value)}
-        />
-        <div style={{ margin: '6px 0', display: 'flex', justifyContent: 'center', gap: 4 }}>
-          {["₀","₁","₂","₃","₄","₅","₆","₇","₈","₉"].map((sub, idx) => (
-            <button
-              key={sub}
-              type="button"
-              className="ptable-btn"
-              style={{ minWidth: 34, padding: '4px 0', fontSize: '1.18em', borderRadius: 6, fontWeight: 700, background: '#f3e8ff', color: '#23234a', border: '1.5px solid #e0b6f8', margin: 0 }}
-              onClick={() => setUserAnswer(userAnswer + sub)}
-              tabIndex={-1}
-            >{sub}</button>
-          ))}
+    <>
+      <div className="center-container fade-in slide-up cn2f-activity-root" style={{ textAlign: 'center', maxWidth: 540, margin: '0 auto', filter: showTable ? 'blur(3px)' : 'none', transition: 'filter 0.3s ease-out' }}>
+        <h2 className="ptable-title">Covalent Compound: Name → Formula</h2>
+        <div style={{ margin: '20px 0', fontWeight: 600, fontSize: '1.13em' }}>Name: <span style={{ color: '#38bdf8', fontWeight: 700 }}>{problem.name}</span></div>
+        <form onSubmit={handleSubmit}>
+          <input
+            className="ptable-btn"
+            style={{ fontSize: '1.15em', margin: '8px 0', padding: '10px 18px', borderRadius: 7 }}
+            type="text"
+            placeholder="Enter formula (e.g. CO₂)"
+            value={userAnswer}
+            onChange={e => setUserAnswer(e.target.value)}
+          />
+          <div style={{ margin: '6px 0', display: 'flex', justifyContent: 'center', gap: 4 }}>
+            {["₀","₁","₂","₃","₄","₅","₆","₇","₈","₉"].map((sub, idx) => (
+              <button
+                key={sub}
+                type="button"
+                className="ptable-btn"
+                style={{ minWidth: 34, padding: '4px 0', fontSize: '1.18em', borderRadius: 6, fontWeight: 700, background: '#f3e8ff', color: '#23234a', border: '1.5px solid #e0b6f8', margin: 0 }}
+                onClick={() => setUserAnswer(userAnswer + sub)}
+                tabIndex={-1}
+              >{sub}</button>
+            ))}
+          </div>
+          <button className="ptable-btn" type="submit" style={{ margin: '8px 0' }}>Submit</button>
+        </form>
+        {feedback && <div style={{ margin: '10px 0', fontWeight: 600, color: feedback.startsWith('✅') ? '#5eead4' : '#ff5ca7' }}>{feedback}</div>}
+        <button className="ptable-btn" style={{ marginTop: 18, marginRight: 8 }} onClick={handleNext} disabled={showTable}>Try Another</button>
+        {!showTable && (
+          <button className="ptable-btn" style={{ marginTop: 18, background: '#23234a', marginRight: 8 }} onClick={() => setShowTable(true)}>Show Periodic Table</button>
+        )}
+        {!showTable && (
+          <button className="back-btn" onClick={onBack} style={{ marginTop: 18, fontWeight: 600, fontSize: '1.08em', borderRadius: 10, boxShadow: '0 2px 10px #23234a55' }}>Back</button>
+        )}
+      </div>
+      {/* Periodic Table Modal Overlay */}
+      {showTable && (
+        <div className="cn2f-modal" style={{
+          position: 'fixed',
+          top: 0, left: 0, right: 0, bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.6)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 100,
+        }}>
+            <div style={{
+                background: '#1e293b',
+                padding: '15px',
+                borderRadius: '8px',
+                boxShadow: '0 10px 25px rgba(0,0,0,0.5)',
+                maxWidth: '95%',
+                maxHeight: '90vh',
+                overflow: 'auto',
+                position: 'relative'
+            }}>
+                <PeriodicTable onBack={() => setShowTable(false)} />
+                <button className="ptable-btn" style={{position:'absolute', top:18, right:18, background:'#b6f8e0', color:'#23234a', fontWeight:700, borderRadius:10}} onClick={()=>setShowTable(false)}>Close</button>
+            </div>
         </div>
-        <button className="ptable-btn" type="submit" style={{ margin: '8px 0' }}>Submit</button>
-      </form>
-      {feedback && <div style={{ margin: '10px 0', fontWeight: 600, color: feedback.startsWith('✅') ? '#5eead4' : '#ff5ca7' }}>{feedback}</div>}
-      <button className="ptable-btn" style={{ marginTop: 18, marginRight: 8 }} onClick={handleNext}>Try Another</button>
-      <button className="ptable-btn" style={{ marginTop: 18, background: '#23234a', marginRight: 8 }} onClick={() => onPeriodicTable && onPeriodicTable()}>Show Periodic Table</button>
-      <button className="back-btn" onClick={onBack} style={{ marginTop: 18, fontWeight: 600, fontSize: '1.08em', borderRadius: 10, boxShadow: '0 2px 10px #23234a55' }}>Back</button>
-    </div>
+      )}
+    </>
   );
 }

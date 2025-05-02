@@ -24,10 +24,11 @@ import IonizationEnergyActivity from './IonizationEnergyActivity';
 function App() {
   const [screen, setScreen] = useState('welcome');
   const [fade, setFade] = useState(true);
+  const [periodicActivity, setPeriodicActivity] = useState(null);
   // historyStack now stores objects: {screen, state}
   const [historyStack, setHistoryStack] = useState([]);
   // For Atomic Radius menu/activities
-  const [atomicRadiusScreen, setAtomicRadiusScreen] = useState(null); // null|'menu'|'standard'|'trend'|'explanation'
+  const [atomicRadiusScreen, setAtomicRadiusScreen] = useState(null); // null|'menu'|'standard'|'trend'|'explanation')
   // state for tutorial/problem screens
   const [ionicNamingState, setIonicNamingState] = useState({});
   const [covalentNamingState, setCovalentNamingState] = useState({});
@@ -47,6 +48,13 @@ function App() {
   const goToPeriodicTable = (fromScreen, state) => {
     setHistoryStack(h => [...h, {screen: fromScreen, state}]);
     handleTransition('ptable');
+  };
+
+  // Periodic Activity Handler
+  const handlePeriodicActivity = (activity) => {
+    console.log(`Setting Periodic Activity: ${activity}`);
+    setPeriodicActivity(activity);
+    handleTransition('topics');
   };
 
   // Restore the previous screen and state
@@ -90,7 +98,7 @@ function App() {
           onTransitionMetalFormulaToNameActivity={() => setScreen('transitionMetalFormulaToNameActivity')}
           onIonizationEnergyActivity={() => setScreen('ionizationEnergyActivity')}
         />
-      )} 
+      )}
       {screen === 'ionicNamingInstructions' && (
         <IonicNamingInstructions
           onBack={() => setScreen('topics')}

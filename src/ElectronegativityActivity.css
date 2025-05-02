@@ -1,0 +1,258 @@
+/* ElectronegativityActivity.css */
+
+/* Use root variables from your main style.css if possible, otherwise define them here */
+:root {
+  --primary: #2d0636;      /* midnight purple */
+  --primary-light: #5f2676; /* lighter midnight purple */
+  --secondary: #232323;    /* dark gray */
+  --accent: #ff5ca7;       /* pink */
+  --accent-purple: #a855f7; /* Added for EN button theme */
+  --text: #f3f3f3;         /* almost white */
+  --background: #111018;   /* black */
+  --card-bg: #23202a;      /* dark gray card background */
+  --card-bg-glassy: rgba(36, 28, 54, 0.92); /* Glassy card background */
+  --border-radius: 14px;
+  --border-radius-lg: 18px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.25);
+  --shadow-glow-purple: 0 6px 24px #a855f744;
+  --shadow-glow-pink: 0 6px 24px #ff5ca744;
+  --border-color-purple: #5f2676;
+  --border-color-accent-purple: #a855f7;
+  --border-color-accent-pink: #ec4899;
+}
+
+.en-activity-root {
+  width: 100%;
+  max-width: 700px;
+  margin: 2rem auto;
+}
+
+/* --- Question Prompt Styles --- */
+.en-question-prompt {
+  font-size: 1.25rem; /* Slightly larger */
+  line-height: 1.6;
+  margin-bottom: 2rem; /* More space before options */
+  text-align: center;
+  color: #e7e6f3;
+  font-weight: 600; /* Slightly bolder */
+}
+
+/* --- Answer Option Styles --- */
+.en-answer-option {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem; /* Space between custom radio and label */
+  background-color: rgba(45, 6, 54, 0.4); /* Slightly more visible background */
+  padding: 0.9rem 1.3rem; /* Slightly more padding */
+  border-radius: var(--border-radius);
+  border: 2px solid var(--border-color-purple); /* Thicker border */
+  transition: all 0.2s ease; /* Animate all properties */
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  margin-bottom: 0.75rem; /* Space between options */
+}
+
+.en-answer-option:hover {
+  background-color: rgba(95, 38, 118, 0.6); /* Lighter purple */
+  border-color: var(--accent-purple);
+  transform: translateY(-2px) scale(1.01); /* Lift effect */
+  box-shadow: 0 4px 10px rgba(168, 85, 247, 0.2); /* Subtle glow */
+}
+
+/* Style for the SELECTED answer option */
+.en-answer-option.selected {
+  background: linear-gradient(90deg, var(--accent-purple) 0%, var(--accent) 100%);
+  border-color: var(--accent);
+  box-shadow: 0 4px 15px var(--shadow-glow-pink); /* Pink glow when selected */
+  transform: translateY(-1px) scale(1.02); /* Slight pop */
+}
+
+.en-answer-option.selected label {
+  color: #fff; /* White text when selected */
+  font-weight: 600;
+}
+
+/* Custom Radio Button Indicator */
+.en-custom-radio {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--accent-purple); /* Match hover border */
+  background-color: transparent;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  flex-shrink: 0; /* Prevent shrinking */
+}
+
+.en-custom-radio.checked {
+  background-color: var(--accent-purple); /* Fill when checked */
+  border-color: var(--accent-purple);
+}
+
+.en-answer-option label {
+  font-size: 1.05rem;
+  color: var(--text);
+  flex-grow: 1;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+/* --- Action Buttons Styles --- */
+.en-action-buttons {
+  display: flex;
+  justify-content: space-between; /* Space out Back and PTable */
+  align-items: center;
+  margin-top: 2.5rem; /* More space above buttons */
+  padding-top: 1.5rem; /* More padding above buttons */
+  border-top: 1.5px solid rgba(255, 255, 255, 0.15); /* Slightly thicker separator */
+}
+
+.en-button {
+  padding: 0.8rem 1.8rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.en-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.en-periodic-table-button {
+  background: linear-gradient(90deg,#fef9c3 0,#f59e42 100%);
+  color: #422006; /* Dark text for light button */
+  border: 2px solid #facc15;
+  box-shadow: 0 1px 8px #f59e4233;
+}
+
+.en-periodic-table-button:hover:not(:disabled) {
+  background: linear-gradient(90deg,#fde68a 0,#fb923c 100%);
+  box-shadow: 0 3px 12px #f59e4255;
+  transform: translateY(-1px);
+}
+
+.en-button-back {
+  background: var(--secondary); /* Dark gray */
+  color: var(--text);
+  border: 1px solid #444;
+  box-shadow: 0 2px 10px #23234a55;
+}
+
+.en-button-back:hover:not(:disabled) {
+  background: #444;
+  border-color: #666;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.en-question-card {
+  background: var(--card-bg-glassy);
+  border-radius: var(--border-radius-lg);
+  box-shadow: 0 6px 32px rgba(46, 26, 71, 0.5), 0 1.5px 12px rgba(168, 85, 247, 0.2);
+  border: 2.5px solid var(--border-color-accent-purple);
+  backdrop-filter: blur(6px) saturate(1.1);
+  -webkit-backdrop-filter: blur(6px) saturate(1.1);
+  padding: 2rem 1.5rem 1.5rem 1.5rem;
+  color: var(--text);
+  transition: opacity 0.3s ease-in-out;
+  position: relative;
+  overflow: hidden;
+}
+
+.en-question-card.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.en-card-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+  text-align: center;
+  letter-spacing: 1px;
+  text-shadow: 0 1px 8px var(--shadow-glow-pink);
+}
+
+.en-score-round-display {
+  font-size: 0.95rem;
+  color: var(--text);
+  opacity: 0.8;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.score-value {
+  font-weight: bold;
+  color: #fff;
+}
+
+.en-question-prompt {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  margin-bottom: 1.8rem;
+  text-align: center;
+  color: #e7e6f3;
+  font-weight: 500;
+}
+
+.en-answer-form {
+  margin-bottom: 1.5rem;
+}
+
+.en-answer-group {
+  border: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.en-answer-option {
+  display: flex;
+  align-items: center;
+  background-color: rgba(45, 6, 54, 0.3);
+  padding: 0.8rem 1.2rem;
+  border-radius: var(--border-radius);
+  border: 1.5px solid var(--border-color-purple);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  cursor: pointer;
+}
+
+.en-answer-option:hover {
+  background-color: rgba(95, 38, 118, 0.5);
+  border-color: var(--accent-purple);
+}
+
+.en-answer-option input[type="radio"] {
+  margin-right: 0.8rem;
+  accent-color: var(--accent-purple);
+  width: 1.1em;
+  height: 1.1em;
+  cursor: pointer;
+}
+
+.en-answer-option input[type="radio"]:disabled {
+  cursor: not-allowed;
+}
+
+.en-answer-option label {
+  font-size: 1.05rem;
+  color: var(--text);
+  flex-grow: 1;
+  cursor: pointer;
+}
+
+.en-answer-option input[type="radio"]:disabled + label {
+   cursor: not-allowed;
+   opacity: 0.7;
+}
+
+/* Additional styles remain the same as in the previous CSS */

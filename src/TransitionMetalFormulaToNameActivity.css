@@ -1,0 +1,111 @@
+/* TransitionMetalFormulaToNameActivity.css - Unique, educational, and engaging style */
+
+.tmf2n-activity-root {
+  background: linear-gradient(135deg, #23234a 0%, #b6f8e0 100%);
+  border-radius: 22px;
+  box-shadow: 0 8px 32px #b6f8e055, 0 2px 16px #ff5ca755;
+  padding: 2.7rem 2.2rem 2.2rem 2.2rem;
+  margin: 48px auto;
+  max-width: 540px;
+  color: #fff;
+  position: relative;
+  animation: popIn 0.6s cubic-bezier(.4,2,.6,1);
+  border: 2.5px solid #b6f8e0;
+}
+
+.tmf2n-activity-root h2.ptable-title {
+  color: #ff5ca7;
+  font-size: 2.1rem;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-shadow: 0 2px 16px #b6f8e099;
+  margin-bottom: 1.1rem;
+}
+
+.tmf2n-activity-root input[type="text"] {
+  background: rgba(255,255,255,0.12);
+  border: 2px solid #b6f8e0;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 1.13em;
+  padding: 0.7rem 1.1rem;
+  margin-bottom: 0.7rem;
+  box-shadow: 0 1px 8px #b6f8e044;
+  outline: none;
+  transition: border 0.18s, box-shadow 0.18s;
+}
+.tmf2n-activity-root input[type="text"]:focus {
+  border: 2.5px solid #ff5ca7;
+  box-shadow: 0 4px 18px #ff5ca799;
+}
+
+.tmf2n-activity-root button.ptable-btn {
+  background: linear-gradient(90deg, #b6f8e0 0%, #ff5ca7 100%);
+  color: #23234a;
+  border: none;
+  border-radius: 12px;
+  padding: 0.9rem 2.2rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0.7rem 0.5rem 0.7rem 0;
+  box-shadow: 0 1px 8px #b6f8e044;
+  transition: background 0.18s, transform 0.16s, color 0.18s;
+  cursor: pointer;
+  text-shadow: 0 2px 10px #b6f8e040;
+}
+.tmf2n-activity-root button.ptable-btn:hover {
+  background: linear-gradient(90deg, #ff5ca7 0%, #b6f8e0 100%);
+  color: #fff;
+  transform: scale(1.06);
+}
+
+.tmf2n-activity-root button.back-btn {
+  background: #ff5ca7;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0.7rem 0;
+  box-shadow: 0 1px 6px #ff5ca755;
+  transition: background 0.18s, color 0.18s, transform 0.14s;
+  cursor: pointer;
+}
+.tmf2n-activity-root button.back-btn:hover {
+  background: #b6f8e0;
+  color: #23234a;
+}
+
+.tmf2n-activity-root .tmf2n-feedback {
+  margin: 18px 0 0 0;
+  padding: 12px 15px;
+  border-radius: 10px;
+  font-weight: 700;
+  text-align: center;
+  font-size: 1.08em;
+  background: rgba(182,248,224,0.10);
+  border: 1.5px solid #b6f8e0;
+  color: #fff;
+  box-shadow: 0 2px 10px #b6f8e022;
+}
+
+.tmf2n-modal {
+  background: rgba(30, 41, 59, 0.98) !important;
+  border-radius: 18px;
+  box-shadow: 0 10px 32px #b6f8e099, 0 2px 16px #ff5ca755;
+  padding: 30px 18px 18px 18px;
+  max-width: 95vw;
+  max-height: 90vh;
+  overflow: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: popIn 0.5s cubic-bezier(.4,2,.6,1);
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.95); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+} 
