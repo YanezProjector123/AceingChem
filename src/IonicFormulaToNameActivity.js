@@ -134,10 +134,11 @@ export default function IonicFormulaToNameActivity({ onBack, onPeriodicTable }) 
     if (input.trim().toLowerCase() === problem.answer.toLowerCase()) {
       setFeedback('✅ Correct!');
     } else {
-      let msg = '❌ Not quite. Try again.';
+      let msg = '❌ Not quite.';
       if (problem.explanation) {
-        msg += ' Explanation: ' + problem.explanation + ' (Tip: Use the Polyatomic Ion Reference if needed!)';
+        msg += ' Explanation: ' + problem.explanation;
       }
+      msg += '\n\uD83D\uDCA1 Tip: For ionic names, name the cation (metal) first, then the anion (nonmetal or polyatomic ion). Use Roman numerals for transition metals. Use the Polyatomic Ion Reference if needed!';
       setFeedback(msg);
     }
   }
@@ -166,7 +167,9 @@ export default function IonicFormulaToNameActivity({ onBack, onPeriodicTable }) 
           />
         </form>
         {feedback && (
-          <div className={feedback.startsWith('✅') ? 'feedback-correct' : 'feedback-incorrect'}>{feedback}</div>
+          <div className={feedback.startsWith('✅') ? 'feedback-correct' : 'feedback-incorrect'} style={{ whiteSpace: 'pre-line', fontSize: '1.08em', borderRadius: 16, margin: '16px 0', padding: '18px 16px', textAlign: 'left', maxWidth: 420, width: '100%', boxSizing: 'border-box', background: feedback.startsWith('✅') ? undefined : 'linear-gradient(90deg,#ff5ca7 0,#a259ec 100%)', color: feedback.startsWith('✅') ? undefined : '#fff', boxShadow: feedback.startsWith('✅') ? undefined : '0 2px 16px #a259ec55' }}>
+            {feedback}
+          </div>
         )}
         <button className="ptable-btn" onClick={handleNext}>Try Another</button>
         <button className="back-btn" onClick={onBack}>Back</button>

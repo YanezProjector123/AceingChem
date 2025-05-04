@@ -29,7 +29,7 @@ export default function PrefixPracticeActivity({ onBack }) {
       setFeedback('✅ Correct!');
       setShowAnswer(true);
     } else {
-      setFeedback(`❌ Not quite. The correct prefix for ${problem.number} is "${problem.prefix}".`);
+      setFeedback(`❌ Not quite. The correct prefix for ${problem.number} is "${problem.prefix}".\n\uD83D\uDCA1 Tip: Try memorizing the Greek prefixes for 1-10. For example: mono-, di-, tri-, tetra-, penta-, hexa-, hepta-, octa-, nona-, deca-.`);
       setShowAnswer(true);
     }
   }
@@ -61,7 +61,9 @@ export default function PrefixPracticeActivity({ onBack }) {
           />
         </form>
         {feedback && (
-          <div className={feedback.startsWith('✅') ? 'feedback-correct' : 'feedback-incorrect'} style={{ margin: '12px 0', fontWeight: 600 }}>{feedback}</div>
+          <div className={feedback.startsWith('✅') ? 'feedback-correct' : 'feedback-incorrect'} style={{ whiteSpace: 'pre-line', fontSize: '1.08em', borderRadius: 16, margin: '12px 0', fontWeight: 600, padding: '18px 16px', textAlign: 'left', maxWidth: 420, width: '100%', boxSizing: 'border-box', background: feedback.startsWith('✅') ? undefined : 'linear-gradient(90deg,#ff5ca7 0,#a259ec 100%)', color: feedback.startsWith('✅') ? undefined : '#fff', boxShadow: feedback.startsWith('✅') ? undefined : '0 2px 16px #a259ec55' }}>
+            {feedback}
+          </div>
         )}
         <button className="ptable-btn" onClick={handleNext} style={{ marginTop: 8 }}>{showAnswer ? 'Next' : 'Try Another'}</button>
         <button className="back-btn" onClick={onBack} style={{ marginTop: 18 }}>Back</button>

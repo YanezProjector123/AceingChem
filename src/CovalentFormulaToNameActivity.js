@@ -41,7 +41,7 @@ export default function CovalentFormulaToNameActivity({ onBack, onCovalentNameTo
     if (correct) {
       setFeedback('✅ Correct!');
     } else {
-      setFeedback(`❌ Incorrect. The correct answer is ${problem.answer}. Explanation: ${problem.explanation}\nHow to get it right next time: Use the subscripts to determine the number of atoms for each element, and apply the correct prefixes for each.`);
+      setFeedback(`❌ Incorrect. The correct answer is ${problem.answer}.\nExplanation: ${problem.explanation}\n\uD83D\uDCA1 Tip: Use the subscripts to determine the number of atoms for each element, and apply the correct prefixes for each. For example, 2 oxygens = "di-", 3 chlorines = "tri-".`);
     }
   }
 
@@ -70,7 +70,9 @@ export default function CovalentFormulaToNameActivity({ onBack, onCovalentNameTo
           />
         </form>
         {feedback && (
-          <div className={feedback.startsWith('✅') ? 'feedback-correct' : 'feedback-incorrect'}>{feedback}</div>
+          <div className={feedback.startsWith('✅') ? 'feedback-correct' : 'feedback-incorrect'} style={{ whiteSpace: 'pre-line', fontSize: '1.08em', borderRadius: 16, margin: '16px 0', padding: '18px 16px', textAlign: 'left', maxWidth: 420, width: '100%', boxSizing: 'border-box', background: feedback.startsWith('✅') ? undefined : 'linear-gradient(90deg,#ff5ca7 0,#a259ec 100%)', color: feedback.startsWith('✅') ? undefined : '#fff', boxShadow: feedback.startsWith('✅') ? undefined : '0 2px 16px #a259ec55' }}>
+            {feedback}
+          </div>
         )}
         <button className="ptable-btn" onClick={handleNext}>Try Another</button>
         <button className="back-btn" onClick={onBack}>Back</button>
