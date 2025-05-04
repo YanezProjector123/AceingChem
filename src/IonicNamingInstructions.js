@@ -89,7 +89,22 @@ export default function IonicNamingInstructions({ onBack, onPeriodicTable, saved
                 value={input}
                 onChange={e=>setInput(e.target.value)}
                 placeholder="Type the name here"
-                style={{fontSize:'1.1em', width:'90%', maxWidth:340, marginBottom:10}}
+                style={{
+                  width: '94vw',
+                  maxWidth: 420,
+                  fontSize: '1.15em',
+                  background: '#fff',
+                  color: '#23234a',
+                  border: '2px solid #b6f8e0',
+                  borderRadius: 10,
+                  padding: '12px 14px',
+                  margin: '0 auto 4px auto',
+                  fontWeight: 600,
+                  boxSizing: 'border-box',
+                  outline: 'none',
+                  boxShadow: '0 1px 8px #b6f8e022',
+                  display: 'block',
+                }}
               />
               <div className="button-row">
                 <button className="ptable-btn" type="submit">Submit</button>

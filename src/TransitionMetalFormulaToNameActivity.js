@@ -71,6 +71,22 @@ export default function TransitionMetalFormulaToNameActivity({ onBack }) {
               value={userAnswer}
               onChange={e => setUserAnswer(e.target.value)}
               disabled={showTable}
+              style={{
+                width: '94vw',
+                maxWidth: 420,
+                fontSize: '1.15em',
+                background: '#fff',
+                color: '#23234a',
+                border: '2px solid #b6f8e0',
+                borderRadius: 10,
+                padding: '12px 14px',
+                margin: '0 auto 4px auto',
+                fontWeight: 600,
+                boxSizing: 'border-box',
+                outline: 'none',
+                boxShadow: '0 1px 8px #b6f8e022',
+                display: 'block',
+              }}
             />
             <button className="ptable-btn" type="submit" disabled={showTable}>Submit</button>
           </form>
