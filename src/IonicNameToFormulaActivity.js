@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import PeriodicTable from './PeriodicTable';
+import PolyatomicIonReference from './PolyatomicIonReference';
 
 // Demo problems for Ionic Name to Formula
 function getRandomIonicNameToFormulaProblem() {
@@ -109,6 +110,7 @@ export default function IonicNameToFormulaActivity({ onBack, onPeriodicTable }) 
   const [feedback, setFeedback] = useState('');
   const inputRef = useRef(null);
   const [showTable, setShowTable] = useState(false);
+  const [showPolyatomic, setShowPolyatomic] = useState(false);
 
   function insertSubscript(sub) {
     const el = inputRef.current;
@@ -128,7 +130,11 @@ export default function IonicNameToFormulaActivity({ onBack, onPeriodicTable }) 
     if (input.trim().replace(/\s/g,'').toLowerCase() === problem.answer.replace(/\s/g,'').toLowerCase()) {
       setFeedback('✅ Correct!');
     } else {
-      setFeedback('❌ Not quite. Try again.');
+      let msg = '❌ Not quite. Try again.';
+      if (problem.explanation) {
+        msg += ' Explanation: ' + problem.explanation + ' (Tip: Use the Polyatomic Ion Reference if needed!)';
+      }
+      setFeedback(msg);
     }
   }
 
@@ -151,8 +157,49 @@ export default function IonicNameToFormulaActivity({ onBack, onPeriodicTable }) 
               onChange={e => setInput(e.target.value)}
               placeholder="Type the formula here"
               ref={inputRef}
+              style={{
+                width: '94vw',
+                maxWidth: '100vw',
+                width: '100vw',
+                fontSize: '1.35em',
+                background: '#fff',
+                color: '#23234a',
+                border: '2px solid #b6f8e0',
+                borderRadius: 10,
+                padding: '14px 16px',
+                marginBottom: 4,
+                fontWeight: 600,
+                boxSizing: 'border-box',
+                outline: 'none',
+                boxShadow: '0 1px 8px #b6f8e022',
+                marginLeft: 'calc(-1 * (50vw - 50%))',
+                marginRight: 'calc(-1 * (50vw - 50%))',
+              }}
             />
-            <div style={{ marginBottom: 8 }}>
+            <div style={{
+              marginBottom: 16,
+              marginTop: 4,
+              overflowX: 'auto',
+              WebkitOverflowScrolling: 'touch',
+              background: '#fff',
+              borderRadius: 10,
+              border: '1.5px solid #b6f8e0',
+              padding: '6px 0 6px 6px',
+              display: 'flex',
+              flexDirection: 'row',
+              gap: 8,
+              minHeight: 54,
+              alignItems: 'center',
+              boxShadow: '0 2px 8px #b6f8e022',
+              maxWidth: '100vw',
+              width: '100vw',
+              whiteSpace: 'nowrap',
+              boxSizing: 'border-box',
+              marginLeft: 'calc(-1 * (50vw - 50%))',
+              marginRight: 'calc(-1 * (50vw - 50%))',
+              scrollbarColor: '#b6f8e0 #fff',
+              scrollbarWidth: 'thin',
+            }}>
               {['₀','₁','₂','₃','₄','₅','₆','₇','₈','₉'].map((sub, idx) => (
                 <button
                   key={sub}
@@ -160,22 +207,24 @@ export default function IonicNameToFormulaActivity({ onBack, onPeriodicTable }) 
                   className="ptable-btn"
                   onClick={() => insertSubscript(sub)}
                   tabIndex={-1}
+                  style={{ minWidth: 44, minHeight: 38, fontSize: '1.5em', color: '#23234a', background: '#e0f7fa', border: '1.5px solid #b6f8e0', borderRadius: 8, margin: 0, padding: 0, flex: '0 0 auto' }}
                 >{sub}</button>
               ))}
             </div>
-            <button className="ptable-btn" type="submit">Submit</button>
+            <button className="ptable-btn" type="submit" style={{ width: '100%', marginBottom: 6 }}>Submit</button>
           </form>
           {feedback && (
-            <div className={feedback.startsWith('✅') ? 'feedback-correct' : 'feedback-incorrect'}>
+            <div className={feedback.startsWith('✅') ? 'feedback-correct' : 'feedback-incorrect'} style={{ marginTop: 8, fontSize: '1.08em' }}>
               {feedback}
             </div>
           )}
-          <button className="ptable-btn" onClick={handleNext} disabled={showTable}>Try Another</button>
-          {!showTable && (
-            <button className="ptable-btn" onClick={() => setShowTable(true)}>Show Periodic Table</button>
+          <button className="ptable-btn" onClick={handleNext} disabled={showTable || showPolyatomic} style={{ width: '100%', marginTop: 8 }}>Try Another</button>
+          <button className="ptable-btn" onClick={() => setShowPolyatomic(true)} style={{ width: '100%', marginTop: 8 }}>Show Polyatomic Ion Reference</button>
+          {!showTable && !showPolyatomic && (
+            <button className="ptable-btn" onClick={() => setShowTable(true)} style={{ width: '100%', marginTop: 8 }}>Show Periodic Table</button>
           )}
-          {!showTable && (
-            <button className="back-btn" onClick={onBack}>Back</button>
+          {!showTable && !showPolyatomic && (
+            <button className="back-btn" onClick={onBack} style={{ width: '100%', marginTop: 8 }}>Back</button>
           )}
         </div>
       </div>
@@ -184,6 +233,11 @@ export default function IonicNameToFormulaActivity({ onBack, onPeriodicTable }) 
           <div className="glass-card" style={{ maxWidth: '95vw', maxHeight: '90vh', overflow: 'auto' }}>
             <PeriodicTable onBack={() => setShowTable(false)} />
           </div>
+        </div>
+      )}
+      {showPolyatomic && (
+        <div className="ptable-modal">
+          <PolyatomicIonReference onClose={() => setShowPolyatomic(false)} />
         </div>
       )}
     </>
