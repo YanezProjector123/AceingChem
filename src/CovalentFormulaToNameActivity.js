@@ -52,46 +52,30 @@ export default function CovalentFormulaToNameActivity({ onBack, onCovalentNameTo
   }
 
   return (
-    // Wrap in a fragment or div to contain the modal
-    <>
-      <div className="center-container fade-in slide-up">
-        <div className="glass-card">
-          <h2 className="ptable-title">Covalent Compound: Formula → Name</h2>
-          <div style={{ margin: '20px 0', fontWeight: 600, fontSize: '1.13em' }}>Formula: <span style={{ color: 'var(--accent)', fontWeight: 700 }}>{problem.formula}</span></div>
-          <form onSubmit={handleSubmit}>
-            <input
-              className="glow-input"
-              type="text"
-              placeholder="Enter name (e.g. Carbon dioxide)"
-              value={input}
-              onChange={e => setInput(e.target.value)}
-              disabled={!!feedback}
-              ref={inputRef}
-            />
-            <button className="ptable-btn" type="submit" disabled={!!feedback || !input.trim()}>Submit</button>
-          </form>
-          {feedback && (
-            <div className={feedback.startsWith('✅') ? 'feedback-correct' : 'feedback-incorrect'}>
-              {feedback}
-            </div>
-          )}
-          <button className="ptable-btn" onClick={handleNext} disabled={showTable}>Try Another</button>
-          {!showTable && (
-            <button className="ptable-btn" onClick={() => setShowTable(true)}>Show Periodic Table</button>
-          )}
-          {!showTable && (
-            <button className="back-btn" onClick={onBack}>Back</button>
-          )}
-        </div>
+    <div className="center-container fade-in slide-up" style={{ position: 'relative', overflow: 'hidden' }}>
+      <span className="floating-chem-icon" style={{ left: '8vw', top: '12vh', fontSize: '2.2em', animationDelay: '1.2s' }}>🧪</span>
+      <div className="glass-card pop-in">
+        <h2 className="ptable-title">Covalent Compound: Formula → Name</h2>
+        <div style={{ margin: '20px 0', fontWeight: 600, fontSize: '1.13em' }}>Formula: <span style={{ color: 'var(--accent)', fontWeight: 700 }}>{problem.formula}</span></div>
+        <form onSubmit={handleSubmit}>
+          <input
+            className="glow-input"
+            type="text"
+            placeholder="Enter name (e.g. Carbon dioxide)"
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            disabled={!!feedback}
+            ref={inputRef}
+            style={{ width: '100%', maxWidth: 420 }}
+          />
+        </form>
+        {feedback && (
+          <div className={feedback.startsWith('✅') ? 'feedback-correct' : 'feedback-incorrect'}>{feedback}</div>
+        )}
+        <button className="ptable-btn" onClick={handleNext}>Try Another</button>
+        <button className="back-btn" onClick={onBack}>Back</button>
       </div>
-      {showTable && (
-        <div className="ptable-modal">
-          <div className="glass-card" style={{ maxWidth: '95vw', maxHeight: '90vh', overflow: 'auto' }}>
-            <PeriodicTable onBack={() => setShowTable(false)} />
-          </div>
-        </div>
-      )}
-    </>
+    </div>
   );
 }
 

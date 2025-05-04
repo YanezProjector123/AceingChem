@@ -48,7 +48,12 @@ export default function Topics({
   console.log(`Rendering Topics Component. State -> periodicActivity: ${periodicActivity}, showNomenclatureDropdown: ${showNomenclatureDropdown}, showPeriodicDropdown: ${showPeriodicDropdown}, showingFullscreenTable: ${showingFullscreenTable}`);
 
   return (
-    <div className="center-container fade-in slide-up" style={{ textAlign: 'center', width: '100%', minHeight: '100vh' /* Ensure container can fill height */ }}>
+    <div className="center-container fade-in slide-up" style={{ position: 'relative', overflow: 'hidden' }}>
+      {/* Floating chemistry icons */}
+      <span className="floating-chem-icon" style={{ left: '6vw', top: '10vh', fontSize: '2.2em', animationDelay: '0.5s' }}>🧪</span>
+      <span className="floating-chem-icon" style={{ left: '85vw', top: '15vh', fontSize: '2em', animationDelay: '2.5s' }}>🧫</span>
+      <span className="floating-chem-icon" style={{ left: '18vw', top: '80vh', fontSize: '2.5em', animationDelay: '1.2s' }}>🧬</span>
+      <span className="floating-chem-icon" style={{ left: '70vw', top: '85vh', fontSize: '2.1em', animationDelay: '3.2s' }}>⚗️</span>
       {showingFullscreenTable ? (
         // Render Fullscreen Periodic Table as an overlay instead of replacing content
         <div style={{position:'fixed', top:0, left:0, width:'100vw', height:'100vh', background:'rgba(0,0,0,0.60)', zIndex:1000, display:'flex', alignItems:'center', justifyContent:'center'}}>
@@ -106,37 +111,37 @@ export default function Topics({
                     {/* Main Group Ionic */}
                     <div style={{ background: 'linear-gradient(100deg,#f3e8ff 60%,#e0f7fa 100%)', borderRadius: 18, boxShadow: '0 2px 16px #b6f8e044', padding: '18px 18px 12px 18px', border: '1.5px solid #b6f8e0' }}>
                       <div style={{ display: 'flex', alignItems: 'center', marginBottom: 10 }}><span role="img" aria-label="standard" style={{ fontSize: '1.6em', marginRight: 10 }}>🟦</span><b style={{ fontSize: '1.19em', letterSpacing: 0.5, color: '#23234a' }}>Standard: Main Group Ionic Compounds</b></div>
-                      <ul style={{ margin: '8px 0 0 0', padding: 0, listStyle: 'none' }}>
-                        <li><button className="ptable-btn" onClick={onIonicNaming} style={{ /*...*/ }}>Tutorial: Ionic Naming Instructions</button></li>
-                        <li><button className="ptable-btn" onClick={onIonicFormula} style={{ /*...*/ }}>Tutorial: Ionic Formula Instructions</button></li>
-                        <li><button className="ptable-btn" onClick={onIonicNameToFormulaActivity} style={{ /*...*/ }}>Activity: Name to Formula (Main Group)</button></li>
-                        <li><button className="ptable-btn" onClick={() => { onIonicFormulaToNameActivity(); setPeriodicActivity('ionic-formula-to-name'); }} style={{ /*...*/ }}>Activity: Formula to Name (Main Group)</button></li>
+                      <ul className="topic-btn-group">
+                        <li><button className="ptable-btn" onClick={onIonicNaming}>Tutorial: Ionic Naming Instructions</button></li>
+                        <li><button className="ptable-btn" onClick={onIonicFormula}>Tutorial: Ionic Formula Instructions</button></li>
+                        <li><button className="ptable-btn" onClick={onIonicNameToFormulaActivity}>Activity: Name to Formula (Main Group)</button></li>
+                        <li><button className="ptable-btn" onClick={() => { onIonicFormulaToNameActivity(); setPeriodicActivity('ionic-formula-to-name'); }}>Activity: Formula to Name (Main Group)</button></li>
                       </ul>
                     </div>
                     {/* Transition Metal Ionic */}
                     <div style={{ background: 'linear-gradient(100deg,#e0f7fa 60%,#f3e8ff 100%)', borderRadius: 18, boxShadow: '0 2px 16px #e0b6f844', padding: '18px 18px 12px 18px', border: '1.5px solid #e0b6f8' }}>
                       <div style={{ display: 'flex', alignItems: 'center', marginBottom: 10 }}><span role="img" aria-label="standard" style={{ fontSize: '1.6em', marginRight: 10 }}>🟩</span><b style={{ fontSize: '1.19em', letterSpacing: 0.5, color: '#23234a' }}>Standard: Transition Metal Ionic Compounds</b></div>
-                      <ul style={{ margin: '8px 0 0 0', padding: 0, listStyle: 'none' }}>
-                        <li><button className="ptable-btn" onClick={onTransitionMetalIonicTutorial} style={{ /*...*/ }}>Tutorial: Transition Metal Ionic</button></li>
-                        <li><button className="ptable-btn" onClick={onTransitionMetalIonicActivity} style={{ /*...*/ }}>Activity: Name to Formula (Transition Metal)</button></li>
-                        <li><button className="ptable-btn" onClick={onTransitionMetalFormulaToNameActivity} style={{ /*...*/ }}>Activity: Formula to Name (Transition Metal)</button></li>
+                      <ul className="topic-btn-group">
+                        <li><button className="ptable-btn" onClick={onTransitionMetalIonicTutorial}>Tutorial: Transition Metal Ionic</button></li>
+                        <li><button className="ptable-btn" onClick={onTransitionMetalIonicActivity}>Activity: Name to Formula (Transition Metal)</button></li>
+                        <li><button className="ptable-btn" onClick={onTransitionMetalFormulaToNameActivity}>Activity: Formula to Name (Transition Metal)</button></li>
                       </ul>
                     </div>
                     {/* Covalent Compounds */}
                     <div style={{ background: 'linear-gradient(100deg,#ffe0fa 60%,#f3e8ff 100%)', borderRadius: 18, boxShadow: '0 2px 16px #e0b6f844', padding: '18px 18px 12px 18px', border: '1.5px solid #e0b6f8' }}>
                       <div style={{ display: 'flex', alignItems: 'center', marginBottom: 10 }}><span role="img" aria-label="standard" style={{ fontSize: '1.6em', marginRight: 10 }}>🟪</span><b style={{ fontSize: '1.19em', letterSpacing: 0.5, color: '#23234a' }}>Standard: Covalent Compounds</b></div>
-                      <ul style={{ margin: '8px 0 0 0', padding: 0, listStyle: 'none' }}>
-                        <li><button className="ptable-btn" onClick={onCovalentNaming} style={{ /*...*/ }}>Tutorial: Covalent Naming Instructions</button></li>
-                        <li><button className="ptable-btn" onClick={onCovalentFormula} style={{ /*...*/ }}>Tutorial: Covalent Formula Instructions</button></li>
-                        <li><button className="ptable-btn" onClick={onCovalentNameToFormulaActivity} style={{ /*...*/ }}>Activity: Name to Formula (Covalent)</button></li>
-                        <li><button className="ptable-btn" onClick={() => { onCovalentFormulaToNameActivity(); setPeriodicActivity('covalent-formula-to-name'); }} style={{ /*...*/ }}>Activity: Formula to Name (Covalent)</button></li>
+                      <ul className="topic-btn-group">
+                        <li><button className="ptable-btn" onClick={onCovalentNaming}>Tutorial: Covalent Naming Instructions</button></li>
+                        <li><button className="ptable-btn" onClick={onCovalentFormula}>Tutorial: Covalent Formula Instructions</button></li>
+                        <li><button className="ptable-btn" onClick={onCovalentNameToFormulaActivity}>Activity: Name to Formula (Covalent)</button></li>
+                        <li><button className="ptable-btn" onClick={() => { onCovalentFormulaToNameActivity(); setPeriodicActivity('covalent-formula-to-name'); }}>Activity: Formula to Name (Covalent)</button></li>
                       </ul>
                     </div>
                     {/* Prefix Practice - its own subcategory */}
                     <div style={{ background: 'linear-gradient(100deg,#e0f7fa 60%,#ffe0fa 100%)', borderRadius: 18, boxShadow: '0 2px 16px #a5b4fc44', padding: '18px 18px 12px 18px', border: '2px solid #a259ec', marginTop: 18 }}>
                       <div style={{ display: 'flex', alignItems: 'center', marginBottom: 10 }}><span role="img" aria-label="prefixes" style={{ fontSize: '1.6em', marginRight: 10 }}>🔤</span><b style={{ fontSize: '1.19em', letterSpacing: 0.5, color: '#23234a' }}>Prefixes (AP/Honors Must-Know)</b></div>
-                      <ul style={{ margin: '8px 0 0 0', padding: 0, listStyle: 'none' }}>
-                        <li><button className="ptable-btn" onClick={onPrefixPracticeActivity} style={{ /*...*/ }}>Prefix Practice Activity</button></li>
+                      <ul className="topic-btn-group">
+                        <li><button className="ptable-btn" onClick={onPrefixPracticeActivity}>Prefix Practice Activity</button></li>
                       </ul>
                     </div>
                   </div>

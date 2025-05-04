@@ -42,8 +42,9 @@ export default function PrefixPracticeActivity({ onBack }) {
   }
 
   return (
-    <div className="center-container fade-in slide-up" style={{ textAlign: 'center', minHeight: 400 }}>
-      <div className="glass-card">
+    <div className="center-container fade-in slide-up" style={{ position: 'relative', overflow: 'hidden', textAlign: 'center' }}>
+      <span className="floating-chem-icon" style={{ left: '8vw', top: '12vh', fontSize: '2.2em', animationDelay: '1.2s' }}>🧪</span>
+      <div className="glass-card pop-in">
         <h2 className="ptable-title">Prefix Practice (AP/Honors Must-Know)</h2>
         <div style={{ margin: '20px 0', fontWeight: 600, fontSize: '1.13em' }}>
           What is the Greek prefix for <span style={{ color: 'var(--accent)', fontWeight: 700, fontSize: '1.2em' }}>{problem.number}</span>?
@@ -56,13 +57,11 @@ export default function PrefixPracticeActivity({ onBack }) {
             placeholder="Type the prefix here (e.g. di)"
             autoFocus
             disabled={showAnswer}
+            style={{ width: '100%', maxWidth: 420 }}
           />
-          <button className="ptable-btn" type="submit" disabled={showAnswer}>Submit</button>
         </form>
         {feedback && (
-          <div className={feedback.startsWith('✅') ? 'feedback-correct' : 'feedback-incorrect'} style={{ margin: '12px 0', fontWeight: 600 }}>
-            {feedback}
-          </div>
+          <div className={feedback.startsWith('✅') ? 'feedback-correct' : 'feedback-incorrect'} style={{ margin: '12px 0', fontWeight: 600 }}>{feedback}</div>
         )}
         <button className="ptable-btn" onClick={handleNext} style={{ marginTop: 8 }}>{showAnswer ? 'Next' : 'Try Another'}</button>
         <button className="back-btn" onClick={onBack} style={{ marginTop: 18 }}>Back</button>
