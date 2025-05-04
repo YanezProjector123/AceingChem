@@ -1,5 +1,20 @@
 /* style.css - Centered, dark theme: black, gray, purple, pink */
 
+/*
+INSTRUCTIONS FOR UNIFIED ACTIVITY AESTHETIC (2024):
+---------------------------------------------------
+1. All activities use a glassmorphism card (.glass-card) inside a flex-centered container (.center-container).
+2. Headings use .ptable-title for consistent font, size, and color.
+3. All main action buttons use .ptable-btn, and navigation uses .back-btn.
+4. Inputs use .glow-input for a modern, glowing effect.
+5. Feedback uses .feedback-correct and .feedback-incorrect for color and style.
+6. Modals (e.g., Periodic Table) use .ptable-modal and .glass-card for overlay.
+7. All buttons are centered and evenly spaced using .button-row or .activity-actions.
+8. Remove inline color overrides; use CSS variables (e.g., --accent) for theme.
+9. Responsive: All layouts and buttons are mobile-friendly and scale well.
+10. Remove redundant or conflicting CSS imports from JS files; use only style.css for global styles.
+*/
+
 :root {
   --primary: #2d0636; /* midnight purple */
   --primary-light: #5f2676; /* lighter midnight purple */
@@ -716,4 +731,61 @@ a:hover {
 ::-webkit-scrollbar-thumb {
   background: var(--primary-light);
   border-radius: 4px;
+}
+
+/* Utility for button alignment */
+.button-row, .activity-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin: 18px 0 0 0;
+  flex-wrap: wrap;
+}
+
+.ptable-btn, .back-btn {
+  margin: 0 8px 12px 8px;
+  min-width: 120px;
+  text-align: center;
+}
+
+/* Center form submit button in all activities */
+form .ptable-btn[type="submit"] {
+  display: block;
+  margin: 18px auto 12px auto;
+}
+
+/* Center Try Another, Show Periodic Table, Back buttons */
+.ptable-btn, .back-btn {
+  display: inline-block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Ensure modal overlays center content */
+.ptable-modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 100;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .glass-card {
+    padding: 12px 4vw;
+    min-width: unset;
+    max-width: 98vw;
+  }
+  .ptable-btn, .back-btn {
+    min-width: 90px;
+    font-size: 1em;
+  }
+  .button-row, .activity-actions {
+    gap: 10px;
+  }
 }

@@ -676,11 +676,9 @@ const IonizationEnergyActivity = ({ onBack, onPeriodicTable = () => {} }) => {
 
     // Main Render Output
     return (
-        <div className="ie-activity-root" style={{ textAlign: 'center' }}>
-             {isLoading && <div className="loading-overlay">Loading...</div>}
-            <div className={`ie-question-card ${isLoading ? 'loading' : ''}`}>
-                {/* Header: Title, Score/Round */}
-                <h2 className="ie-card-title">Ionization Energy Practice</h2>
+        <div className="center-container fade-in slide-up">
+            <div className="glass-card">
+                <h2 className="ptable-title">Ionization Energy Activity</h2>
                 <div className="ie-score-round-display">
                   Score: <span className="score-value">{score}</span> | Question: {round}
                   {multiStageQuestion && ` (Step ${currentStage + 1} of ${multiStageQuestion.stages.length})`}
@@ -788,7 +786,6 @@ const IonizationEnergyActivity = ({ onBack, onPeriodicTable = () => {} }) => {
                      </button>
                  )}
 
-
                 {/* Action Buttons: Periodic Table / Back */}
                  <div className="ie-action-buttons">
                     <button type="button" className="ie-button ie-periodic-table-button" onClick={togglePeriodicTable} disabled={isLoading}>
@@ -803,8 +800,8 @@ const IonizationEnergyActivity = ({ onBack, onPeriodicTable = () => {} }) => {
 
             {/* Periodic Table Modal */}
              {showTable && (
-                <div className="ie-table-modal">
-                    <div className="ie-table-container">
+                <div className="ptable-modal">
+                    <div className="glass-card" style={{ maxWidth: '95vw', maxHeight: '90vh', overflow: 'auto' }}>
                          <PeriodicTable onBack={togglePeriodicTable} /> {/* Pass toggle function */}
                      </div>
                  </div>

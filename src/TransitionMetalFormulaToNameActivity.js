@@ -59,52 +59,36 @@ export default function TransitionMetalFormulaToNameActivity({ onBack }) {
 
   return (
     <>
-      <div className="center-container fade-in slide-up tmf2n-activity-root" style={{ textAlign: 'center', maxWidth: 540, margin: '0 auto', filter: showTable ? 'blur(3px)' : 'none', transition: 'filter 0.3s ease-out' }}>
-        <h2 className="ptable-title">Transition Metal Ionic: Formula → Name</h2>
-        <div style={{ margin: '20px 0', fontWeight: 600, fontSize: '1.13em' }}>Formula: <span style={{ color: '#38bdf8', fontWeight: 700 }}>{problem.formula}</span></div>
-        <form onSubmit={handleSubmit}>
-          <input
-            className="ptable-btn"
-            style={{ fontSize: '1.15em', margin: '8px 0', padding: '10px 18px', borderRadius: 7 }}
-            type="text"
-            placeholder="Enter name (e.g. Iron(III) chloride)"
-            value={userAnswer}
-            onChange={e => setUserAnswer(e.target.value)}
-            disabled={showTable}
-          />
-          <button className="ptable-btn" type="submit" style={{ margin: '8px 0' }} disabled={showTable}>Submit</button>
-        </form>
-        {feedback && <div style={{ margin: '10px 0', fontWeight: 600, color: feedback.startsWith('✅') ? '#5eead4' : '#ff5ca7' }}>{feedback}</div>}
-        {!showTable && <>
-          <button className="ptable-btn" style={{ marginTop: 18, marginRight: 8 }} onClick={handleNext}>Try Another</button>
-          <button className="ptable-btn" style={{ marginTop: 18, background: '#4e46a1', marginRight: 8 }} onClick={() => setShowTable(true)}>Show Periodic Table</button>
-          <button className="back-btn" onClick={onBack} style={{ marginTop: 18, fontWeight: 600, fontSize: '1.08em', borderRadius: 10, boxShadow: '0 2px 10px #23234a55' }}>Back</button>
-        </>}
-      </div>
-      {/* Periodic Table Modal Overlay */}
-      {showTable && (
-        <div className="tmf2n-modal" style={{
-          position: 'fixed',
-          top: 0, left: 0, right: 0, bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.6)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 100,
-        }}>
-            <div style={{
-                background: '#1e293b',
-                padding: '15px',
-                borderRadius: '8px',
-                boxShadow: '0 10px 25px rgba(0,0,0,0.5)',
-                maxWidth: '95%',
-                maxHeight: '90vh',
-                overflow: 'auto',
-                position: 'relative'
-            }}>
-                <PeriodicTable onBack={() => setShowTable(false)} />
-                <button className="ptable-btn" style={{position:'absolute', top:18, right:18, background:'#b6f8e0', color:'#23234a', fontWeight:700, borderRadius:10}} onClick={()=>setShowTable(false)}>Close</button>
+      <div className="center-container fade-in slide-up">
+        <div className="glass-card">
+          <h2 className="ptable-title">Transition Metal Ionic: Formula → Name</h2>
+          <div style={{ margin: '20px 0', fontWeight: 600, fontSize: '1.13em' }}>Formula: <span style={{ color: 'var(--accent)', fontWeight: 700 }}>{problem.formula}</span></div>
+          <form onSubmit={handleSubmit}>
+            <input
+              className="glow-input"
+              type="text"
+              placeholder="Enter name (e.g. Iron(III) chloride)"
+              value={userAnswer}
+              onChange={e => setUserAnswer(e.target.value)}
+              disabled={showTable}
+            />
+            <button className="ptable-btn" type="submit" disabled={showTable}>Submit</button>
+          </form>
+          {feedback && (
+            <div className={feedback.startsWith('✅') ? 'feedback-correct' : 'feedback-incorrect'}>
+              {feedback}
             </div>
+          )}
+          <button className="ptable-btn" onClick={handleNext} disabled={showTable}>Try Another</button>
+          {!showTable && <button className="ptable-btn" onClick={() => setShowTable(true)}>Show Periodic Table</button>}
+          {!showTable && <button className="back-btn" onClick={onBack}>Back</button>}
+        </div>
+      </div>
+      {showTable && (
+        <div className="ptable-modal">
+          <div className="glass-card" style={{ maxWidth: '95vw', maxHeight: '90vh', overflow: 'auto' }}>
+            <PeriodicTable onBack={() => setShowTable(false)} />
+          </div>
         </div>
       )}
     </>

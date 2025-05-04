@@ -17,6 +17,7 @@ import TransitionMetalIonicActivity from './TransitionMetalIonicActivity';
 import TransitionMetalFormulaToNameActivity from './TransitionMetalFormulaToNameActivity';
 import AtomicRadiusActivity from './AtomicRadiusActivity';
 import IonizationEnergyActivity from './IonizationEnergyActivity';
+import PrefixPracticeActivity from './PrefixPracticeActivity';
 
 
 
@@ -93,6 +94,7 @@ function App() {
           onIonicFormulaToNameActivity={() => setScreen('ionicFormulaToNameActivity')}
           onCovalentNameToFormulaActivity={() => setScreen('covalentNameToFormulaActivity')}
           onCovalentFormulaToNameActivity={() => setScreen('covalentFormulaToNameActivity')}
+          onPrefixPracticeActivity={() => setScreen('prefixPracticeActivity')}
           onTransitionMetalIonicTutorial={() => setScreen('transitionMetalIonicTutorial')}
           onTransitionMetalIonicActivity={() => setScreen('transitionMetalIonicActivity')}
           onTransitionMetalFormulaToNameActivity={() => setScreen('transitionMetalFormulaToNameActivity')}
@@ -193,6 +195,11 @@ function App() {
             setHistoryStack(h => [...h, {screen: 'ionizationEnergyActivity'}]); 
             handleTransition('ptable'); 
           }}
+        />
+      )}
+      {screen === 'prefixPracticeActivity' && (
+        <PrefixPracticeActivity
+          onBack={() => setScreen('topics')}
         />
       )}
     </div>

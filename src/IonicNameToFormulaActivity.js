@@ -83,7 +83,22 @@ function getRandomIonicNameToFormulaProblem() {
     { name: 'Aluminum iodide', answer: 'AlI₃', explanation: '' },
     { name: 'Aluminum oxide', answer: 'Al₂O₃', explanation: '' },
     { name: 'Aluminum sulfide', answer: 'Al₂S₃', explanation: '' },
-    { name: 'Aluminum nitride', answer: 'AlN', explanation: '' }
+    { name: 'Aluminum nitride', answer: 'AlN', explanation: '' },
+    // Polyatomic ions
+    { name: 'Sodium sulfate', answer: 'Na₂SO₄', explanation: 'Sodium is Na⁺, sulfate is SO₄²⁻. Need 2 Na⁺ for each SO₄²⁻.' },
+    { name: 'Potassium nitrate', answer: 'KNO₃', explanation: 'Potassium is K⁺, nitrate is NO₃⁻.' },
+    { name: 'Calcium carbonate', answer: 'CaCO₃', explanation: 'Calcium is Ca²⁺, carbonate is CO₃²⁻.' },
+    { name: 'Ammonium chloride', answer: 'NH₄Cl', explanation: 'Ammonium is NH₄⁺, chloride is Cl⁻.' },
+    { name: 'Magnesium phosphate', answer: 'Mg₃(PO₄)₂', explanation: 'Magnesium is Mg²⁺, phosphate is PO₄³⁻. Need 3 Mg²⁺ for 2 PO₄³⁻.' },
+    { name: 'Aluminum hydroxide', answer: 'Al(OH)₃', explanation: 'Aluminum is Al³⁺, hydroxide is OH⁻. Need 3 OH⁻ for each Al³⁺.' },
+    { name: 'Calcium acetate', answer: 'Ca(C₂H₃O₂)₂', explanation: 'Calcium is Ca²⁺, acetate is C₂H₃O₂⁻. Need 2 acetates for each Ca²⁺.' },
+    { name: 'Potassium permanganate', answer: 'KMnO₄', explanation: 'Potassium is K⁺, permanganate is MnO₄⁻.' },
+    { name: 'Sodium bicarbonate', answer: 'NaHCO₃', explanation: 'Sodium is Na⁺, bicarbonate is HCO₃⁻.' },
+    { name: 'Ammonium sulfate', answer: '(NH₄)₂SO₄', explanation: 'Ammonium is NH₄⁺, sulfate is SO₄²⁻. Need 2 NH₄⁺ for each SO₄²⁻.' },
+    { name: 'Iron(III) nitrate', answer: 'Fe(NO₃)₃', explanation: 'Iron(III) is Fe³⁺, nitrate is NO₃⁻. Need 3 nitrates for each Fe³⁺.' },
+    { name: 'Copper(II) sulfate', answer: 'CuSO₄', explanation: 'Copper(II) is Cu²⁺, sulfate is SO₄²⁻.' },
+    { name: 'Barium chromate', answer: 'BaCrO₄', explanation: 'Barium is Ba²⁺, chromate is CrO₄²⁻.' },
+    { name: 'Lead(II) acetate', answer: 'Pb(C₂H₃O₂)₂', explanation: 'Lead(II) is Pb²⁺, acetate is C₂H₃O₂⁻.' },
   ];
   return problems[Math.floor(Math.random()*problems.length)];
 }
@@ -125,41 +140,16 @@ export default function IonicNameToFormulaActivity({ onBack, onPeriodicTable }) 
 
   return (
     <>
-      <div className="center-container fade-in slide-up in2f-activity-root" style={{ textAlign: 'center', maxWidth: 600, margin: '0 auto', filter: showTable ? 'blur(3px)' : 'none', transition: 'filter 0.3s ease-out' }}>
-        <h2 style={{
-          fontFamily: 'Montserrat, Inter, Arial, sans-serif',
-          fontWeight: 900,
-          fontSize: '2.2em',
-          letterSpacing: 2,
-          background: 'linear-gradient(90deg,#b6f8e0 0,#c9b6f8 100%)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          textShadow: '0 4px 32px #b6f8e088, 0 1.5px 0 #fff',
-          marginBottom: 18
-        }}>Ionic Name → Formula Activity</h2>
-        <div className="glass-card" style={{ padding: '30px 30px 18px 30px', fontSize: '1.18em', background: 'rgba(40,40,80,0.90)', color: '#e0e7ff', borderRadius: 18, boxShadow: '0 4px 32px #b6f8e055', marginBottom: 24 }}>
-          <div style={{ textAlign: 'left', marginBottom: 18 }}>
-            <span style={{
-              fontFamily: 'Montserrat, Inter, Arial, sans-serif',
-              fontWeight: 700,
-              fontSize: '1.13em',
-              letterSpacing: 1.1,
-              color: '#fff',
-              background: 'linear-gradient(90deg,#b6f8e0 0,#c9b6f8 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              textShadow: '0 2px 18px #b6f8e0aa, 0 1px 0 #fff',
-              marginRight: 8
-            }}>Name:</span>
-            <span style={{ color: '#b6f8e0', fontSize: '1.18em', fontWeight: 700 }}>{problem.name}</span>
-          </div>
-          <form onSubmit={handleSubmit} style={{ marginBottom: 10 }}>
+      <div className="center-container fade-in slide-up">
+        <div className="glass-card">
+          <h2 className="ptable-title">Ionic Name → Formula Activity</h2>
+          <div style={{ margin: '20px 0', fontWeight: 600, fontSize: '1.13em' }}>Name: <span style={{ color: 'var(--accent)', fontWeight: 700 }}>{problem.name}</span></div>
+          <form onSubmit={handleSubmit}>
             <input
               className="glow-input"
               value={input}
               onChange={e => setInput(e.target.value)}
               placeholder="Type the formula here"
-              style={{ fontSize: '1.1em', width: '90%', maxWidth: 340, marginBottom: 10 }}
               ref={inputRef}
             />
             <div style={{ marginBottom: 8 }}>
@@ -168,68 +158,32 @@ export default function IonicNameToFormulaActivity({ onBack, onPeriodicTable }) 
                   key={sub}
                   type="button"
                   className="ptable-btn"
-                  style={{ minWidth: 32, padding: '2px 7px', margin: '0 2px', fontSize: '1.2em', lineHeight: 1, background: '#2d2d6a' }}
                   onClick={() => insertSubscript(sub)}
                   tabIndex={-1}
                 >{sub}</button>
               ))}
             </div>
-            <button className="ptable-btn" type="submit" style={{ margin: '8px 0' }}>Submit</button>
+            <button className="ptable-btn" type="submit">Submit</button>
           </form>
           {feedback && (
-            <div style={{ margin: '10px 0', fontWeight: 600, color: feedback.startsWith('✅') ? '#5eead4' : '#ff5ca7' }}>
+            <div className={feedback.startsWith('✅') ? 'feedback-correct' : 'feedback-incorrect'}>
               {feedback}
-              {feedback.startsWith('❌') && (
-                <div style={{ marginTop: 10, background: 'rgba(255,92,167,0.09)', borderRadius: 10, padding: '12px 16px', color: '#ff5ca7', fontWeight: 500, fontSize: '1.03em' }}>
-                  <b>Correct Answer:</b> <span style={{ color: '#b6f8e0', fontWeight: 700 }}>{problem.answer}</span><br/>
-                  <b>Explanation:</b> {problem.explanation || 'Check the charges for each ion and balance them to get a neutral compound.'}
-                  <div style={{ marginTop: 10, color: '#fff', background: 'rgba(182,248,224,0.10)', borderRadius: 8, padding: '10px 14px', fontSize: '0.98em' }}>
-                    <b>How to get it right next time:</b>
-                    <ol style={{ textAlign: 'left', margin: '8px 0 0 22px', padding: 0 }}>
-                      <li>Find the symbol and charge for each ion (use the periodic table if needed).</li>
-                      <li>Balance the total positive and negative charges so the compound is neutral.</li>
-                      <li>Write the metal (cation) first, then the nonmetal (anion) second.</li>
-                      <li>If more than one ion is needed, use subscripts to show the correct ratio.</li>
-                      <li>Double-check your formula matches the charges and names given.</li>
-                    </ol>
-                  </div>
-                </div>
-              )}
             </div>
           )}
-          <button className="ptable-btn" style={{ marginTop: 18, marginRight: 8 }} onClick={handleNext} disabled={showTable}>Try Another</button>
+          <button className="ptable-btn" onClick={handleNext} disabled={showTable}>Try Another</button>
           {!showTable && (
-            <button className="ptable-btn" style={{ marginTop: 18, background: '#4e46a1' }} onClick={() => setShowTable(true)}>Show Periodic Table</button>
+            <button className="ptable-btn" onClick={() => setShowTable(true)}>Show Periodic Table</button>
           )}
           {!showTable && (
-            <button className="back-btn" onClick={onBack} style={{ marginTop: 18, fontWeight: 600, fontSize: '1.08em', borderRadius: 10, boxShadow: '0 2px 10px #23234a55' }}>Back</button>
+            <button className="back-btn" onClick={onBack}>Back</button>
           )}
         </div>
       </div>
-      {/* Periodic Table Modal Overlay */}
       {showTable && (
-        <div className="in2f-modal" style={{
-          position: 'fixed',
-          top: 0, left: 0, right: 0, bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.6)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 100,
-        }}>
-            <div style={{
-                background: '#1e293b',
-                padding: '15px',
-                borderRadius: '8px',
-                boxShadow: '0 10px 25px rgba(0,0,0,0.5)',
-                maxWidth: '95%',
-                maxHeight: '90vh',
-                overflow: 'auto',
-                position: 'relative'
-            }}>
-                <PeriodicTable onBack={() => setShowTable(false)} />
-                <button className="ptable-btn" style={{position:'absolute', top:18, right:18, background:'#b6f8e0', color:'#23234a', fontWeight:700, borderRadius:10}} onClick={()=>setShowTable(false)}>Close</button>
-            </div>
+        <div className="ptable-modal">
+          <div className="glass-card" style={{ maxWidth: '95vw', maxHeight: '90vh', overflow: 'auto' }}>
+            <PeriodicTable onBack={() => setShowTable(false)} />
+          </div>
         </div>
       )}
     </>

@@ -410,7 +410,7 @@ export default function AtomicRadiusActivityEnhanced({ onBack, onPeriodicTable }
     const [question, setQuestion] = useState(null);
     const [feedback, setFeedback] = useState(null);
     const [showNext, setShowNext] = useState(false);
-    const [userAnswer, setUserAnswer] = useState(null);
+    const [userAnswer, setUserAnswer] = useState('');
     const [arrangeOrder, setArrangeOrder] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [showTable, setShowTable] = useState(false); // <<<--- ADDED STATE FOR TABLE
@@ -530,7 +530,7 @@ export default function AtomicRadiusActivityEnhanced({ onBack, onPeriodicTable }
         setQuestion(nextQ);
         setFeedback(null);
         setShowNext(false);
-        setUserAnswer(null);
+        setUserAnswer('');
         setArrangeOrder([]);
         setRound(round + 1);
         setIsLoading(false);
@@ -605,224 +605,191 @@ export default function AtomicRadiusActivityEnhanced({ onBack, onPeriodicTable }
 
     // --- Main component structure ---
   return (
-    // Add a root element for the modal overlay effect if needed
-    <div style={{ position: 'relative', minHeight: '100vh' }}>
-        <div className="center-container fade-in slide-up" style={{ background: 'radial-gradient(circle at 60% 40%, #2d314d 80%, #19172e 100%)', minHeight: '100vh', display:'flex', justifyContent:'center', alignItems:'center', filter: showTable ? 'blur(3px)' : 'none', transition: 'filter 0.3s ease-out' }}>
-            <div style={{
-                background: 'rgba(30, 41, 59, 0.98)', padding: '20px 12px 16px', borderRadius: 10, boxShadow: '0 4px 16px #0005', minWidth: 280, maxWidth: 350, width: '90%', margin: '0 auto', position: 'relative', border: '1px solid #23234a', textAlign: 'center'
-            }}>
-                {isLoading && <div style={{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'white', zIndex: 10}}>Loading...</div>}
-
-                <h2 style={{ fontWeight: 700, fontSize: '1.12em', color: '#facc15', marginBottom: 7, letterSpacing: 0.2, textShadow: '0 1px 2px #23234a33' }}>
-                    Atomic Radius Practice
-                </h2>
-
-                {/* Prompt */}
-                <div style={{ color: '#cbd5e1', fontWeight: 500, fontSize: '1em', marginBottom: 10, minHeight: '40px', lineHeight: 1.4 }}>
-                    {question.prompt}
-                </div>
-
-                {/* == Question Type Specific UI (Keep as is) == */}
-
-                {/* Type: compare (using buttons) */}
-                {question.type === 'compare' && question.elements && (
-                    <div style={{ display: 'flex', justifyContent: 'center', gap: 10, margin: '12px 0 8px 0', flexWrap: 'wrap' }}>
-                        {question.elements.map((el, idx) => {
-                            const isCorrect = feedback?.correctIdx === idx;
-                            const isSelected = userAnswer === idx;
-                            const isSelectedIncorrect = feedback?.type === 'incorrect' && isSelected;
-                            return (
-                                <button
-                                    key={el.symbol}
-                                    className={`ptable-btn choice-btn ${isSelected ? 'selected' : ''}`}
-                                    style={{
-                                        minWidth: 80, padding: '8px 5px', fontSize: '0.95em', fontWeight: 700, borderRadius: 7, color: '#0f172a', letterSpacing: 0.5, outline: 'none', cursor: feedback ? 'not-allowed' : 'pointer', transition: 'all .18s',
-                                        background: isCorrect ? 'linear-gradient(100deg,#4ade80 60%,#22c55e 100%)' : (isSelectedIncorrect ? 'linear-gradient(100deg,#fca5a5 60%,#ef4444 100%)' : 'linear-gradient(100deg,#bae6fd 60%,#60a5fa 100%)'),
-                                        border: `1px solid ${isCorrect ? '#22c55e' : (isSelectedIncorrect ? '#ef4444' : '#60a5fa')}`,
-                                        boxShadow: isCorrect ? '0 0 8px #22c55e44' : (isSelectedIncorrect ? '0 0 6px #ef444433' : '0 1px 4px #23234a33'),
-                                        opacity: (feedback && !isCorrect && !isSelectedIncorrect) ? 0.6 : 1,
-                                    }}
-                                    onClick={() => !feedback && handleButtonChoice(idx, question.correctIdx)}
-                                    disabled={!!feedback || isLoading}
-                                    aria-label={`Choose ${el.name}`}
-                                >
-                                    {el.symbol}
-                                    <div style={{ fontSize: '0.7em', fontWeight: 400, marginTop: 2, opacity: 0.9 }}>{el.name}</div>
-                                    {feedback && <div style={{ fontSize: '0.7em', fontWeight: 600, marginTop: 3, color: isCorrect || isSelectedIncorrect ? '#1f2937' : '#334155' }}>({el.atomicRadius} pm)</div>}
-                                </button>
-                            )
-                        })}
-                    </div>
-                )}
-
-                {/* Type: rank (draggable or select buttons in order) */}
-                {question.type === 'rank' && question.displayElements && (
-                    <div style={{ margin: '12px 0 8px 0', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        {/* Selection Buttons */}
-                        <div style={{ display: 'flex', gap: 8, marginBottom: 8, flexWrap: 'wrap', justifyContent: 'center' }}>
-                            {question.displayElements.map((el, idx) => {
-                                const isSelected = arrangeOrder.includes(idx);
-                                return (
-                                    <button
-                                        key={el.symbol}
-                                        className="ptable-btn rank-option-btn"
-                                        style={{
-                                            minWidth: 80, padding: '8px 5px', fontSize: '0.95em', fontWeight: 700, borderRadius: 7, letterSpacing: 0.5, outline: 'none', transition: 'all .18s', marginBottom: 3,
-                                            background: isSelected ? '#6b7280' : 'linear-gradient(100deg,#fde68a 60%,#bae6fd 100%)',
-                                            color: isSelected ? '#e5e7eb' : '#0f172a',
-                                            border: `1px solid ${isSelected ? '#9ca3af' : '#60a5fa'}`,
-                                            boxShadow: '0 1px 4px #23234a22',
-                                            cursor: feedback || isSelected ? 'not-allowed' : 'pointer',
-                                            opacity: feedback || isSelected ? 0.6 : 1,
-                                        }}
-                                        onClick={() => {
-                                            if (feedback || isSelected) return;
-                                            setArrangeOrder([...arrangeOrder, idx]);
-                                        }}
-                                        disabled={!!feedback || isSelected || isLoading}
-                                        aria-label={`Select ${el.name} to add to ranking`}
-                                    >
-                                        {el.symbol}
-                                        <div style={{ fontSize: '0.7em', fontWeight: 400, marginTop: 2, opacity: 0.9 }}>{el.name}</div>
-                                    </button>
-                                );
-                            })}
-                        </div>
-                        {/* Display Current Order */}
-                        {arrangeOrder.length > 0 && (
-                            <div style={{ fontSize: '0.9em', color: '#93c5fd', marginTop: 4, marginBottom: 8, display: 'flex', alignItems: 'center', gap: '10px', justifyContent: 'center', width: '100%' }}>
-                                <span>Order: {arrangeOrder.map(idx => question.displayElements[idx]?.symbol).join(' → ')}</span>
-                                {!feedback && (
-                                    <button onClick={() => setArrangeOrder(arrangeOrder.slice(0, -1))} style={{ background: 'none', border: 'none', color: '#f472b6', cursor: 'pointer', fontSize: '1.2em', padding: '0 5px' }} title="Undo Last" disabled={isLoading}>⌫</button>
-                                )}
-                            </div>
-                        )}
-                        {/* Submit Button */}
-                        <button
-                            className="ptable-btn submit-btn"
-                            style={{
-                                background: 'linear-gradient(90deg,#f472b6 0,#60a5fa 100%)', color: '#fff', fontWeight: 700, fontSize: '0.96em', borderRadius: 6, boxShadow: '0 1px 4px #f472b611', padding: '6px 18px', margin: '5px 0 7px 0', border: 'none', letterSpacing: 1, outline: 'none', transition: 'all .18s',
-                                cursor: arrangeOrder.length === question.displayElements.length && !feedback ? 'pointer' : 'not-allowed',
-                                opacity: arrangeOrder.length === question.displayElements.length && !feedback ? 1 : 0.5,
-                            }}
-                            onClick={handleArrangeSubmit}
-                            disabled={!!feedback || arrangeOrder.length !== question.displayElements.length || isLoading}
-                        >
-                            Submit Order
-                        </button>
-                    </div>
-                )}
-
-                {/* Type: true_false (Using buttons) */}
-                {question.type === 'true_false' && (
-                    <div style={{ display: 'flex', gap: 16, justifyContent: 'center', margin: '12px 0 8px 0' }}>
-                        {['true', 'false'].map(choice => {
-                            const correctBool = question.answer;
-                            const isCorrect = feedback && (choice === 'true' ? correctBool : !correctBool);
-                            const isSelected = userAnswer === choice;
-                            const isSelectedIncorrect = feedback && isSelected && !isCorrect;
-                            return (
-                                <button
-                                    key={choice}
-                                    className="ptable-btn tf-btn"
-                                    style={{
-                                        minWidth: 80, padding: '8px 15px', fontSize: '0.95em', fontWeight: 700, borderRadius: 7, color: '#0f172a', letterSpacing: 0.5, outline: 'none', cursor: feedback ? 'not-allowed' : 'pointer', transition: 'all .18s',
-                                        background: isCorrect ? 'linear-gradient(100deg,#4ade80 60%,#22c55e 100%)' : (isSelectedIncorrect ? 'linear-gradient(100deg,#fca5a5 60%,#ef4444 100%)' : (choice === 'true' ? 'linear-gradient(100deg,#bae6fd 60%,#60a5fa 100%)' : 'linear-gradient(100deg,#fde68a 60%,#fbbf24 100%)')),
-                                        border: `1px solid ${isCorrect ? '#22c55e' : (isSelectedIncorrect ? '#ef4444' : (choice === 'true' ? '#60a5fa' : '#fbbf24'))}`,
-                                        boxShadow: isCorrect ? '0 0 8px #22c55e44' : (isSelectedIncorrect ? '0 0 6px #ef444433' : '0 1px 4px #23234a33'),
-                                        opacity: (feedback && !isCorrect && !isSelected) ? 0.6 : 1,
-                                    }}
-                                    onClick={() => !feedback && handleSimpleChoice(choice, question.answer ? 'true' : 'false')}
-                                    disabled={!!feedback || isLoading}
-                                    aria-label={`Choose ${choice}`}
-                                >
-                                    {choice.charAt(0).toUpperCase() + choice.slice(1)}
-                                </button>
-                            );
-                        })}
-                    </div>
-                )}
-
-                {/* Types: general_trend, reason_trend, reason_factor (Using radio buttons) */}
-                {(question.type === 'general_trend' || question.type === 'reason_trend' || question.type === 'reason_factor') && (
-                    renderOptions()
-                )}
-
-                {/* == Feedback Area == */}
-                <div style={{ margin: '5px 0 8px 0', fontWeight: 500, fontSize: '0.9em', minHeight: 30, lineHeight: 1.4 }}>
-                    {feedback && (
-                        <span style={{
-                            color: feedback.type === 'correct' ? '#4ade80' : '#fca5a5',
-                            textShadow: feedback.type === 'correct' ? '0 1px 3px #22c55e33' : '0 1px 3px #ef444422',
-                            whiteSpace: 'pre-line',
-                            display: 'inline-block',
-                            maxWidth: '95%',
-                        }}>
-                            <strong>{feedback.message.split('\n')[0]}</strong>
-                            {feedback.message.includes('\n') && <br />}
-                            {feedback.message.split('\n').slice(1).join('\n')}
-                        </span>
-                    )}
-                </div>
-
-                {/* == Navigation Buttons == */}
-                {showNext && (
-                    <button onClick={handleNext} className="ptable-btn next-btn" style={{
-                        background: 'linear-gradient(90deg,#f472b6 0,#60a5fa 100%)', color: '#fff', fontWeight: 700, fontSize: '0.96em', borderRadius: 6, boxShadow: '0 1px 4px #f472b611', padding: '6px 18px', margin: '0 0 7px 0', border: 'none', letterSpacing: 1, cursor: 'pointer', outline: 'none', transition: 'all .18s',
-                    }} disabled={isLoading}>
-                        NEXT
-                    </button>
-                )}
-
-                {/* Score/Round Display */}
-                <div style={{ marginTop: 2, fontSize: '0.93em', color: '#60a5fa', fontWeight: 600, letterSpacing: 1 }}>
-                    Score: <span style={{ color: '#facc15', fontWeight: 900 }}>{score}</span>   |   Round: {round}
-                </div>
-
-                {/* Bottom Buttons (Table/Back) */}
-                <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginTop: 7 }}>
-                    {/* MODIFIED: Table Button */}
-                    <button
-                        onClick={togglePeriodicTable}
-                        className="ptable-btn"
-                        style={{ fontWeight: 700, fontSize: '0.96em', borderRadius: 6, background: 'linear-gradient(90deg,#60a5fa 0,#bae6fd 100%)', color: '#23234a', boxShadow: '0 2px 4px #60a5fa22', border: 'none', padding: '5px 16px', letterSpacing: 1, cursor: 'pointer', outline: 'none', transition: 'all .18s' }}
-                        disabled={isLoading}
-                    >
-                        {showTable ? 'Hide' : 'Show'} Periodic Table
-                    </button>
-                    <button onClick={onBack} className="ptable-btn" style={{ fontWeight: 700, fontSize: '0.96em', borderRadius: 6, background: 'linear-gradient(90deg,#f472b6 0,#fde68a 100%)', color: '#23234a', boxShadow: '0 2px 4px #f472b611', border: 'none', padding: '5px 16px', letterSpacing: 1, cursor: 'pointer', outline: 'none', transition: 'all .18s' }} disabled={isLoading}>
-                        Back
-                    </button>
-                </div>
-            </div> {/* End Card */}
-        </div> {/* End Center Container */}
-
-        {/* ADDED: Conditional Rendering of Periodic Table Modal */}
-        {showTable && (
-            <div style={{
-                position: 'fixed', // Or 'absolute' if root isn't full viewport
-                top: 0, left: 0, right: 0, bottom: 0,
-                backgroundColor: 'rgba(0, 0, 0, 0.6)', // Semi-transparent overlay
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                zIndex: 100, // Ensure it's above the blurred content
-            }}>
-                <div style={{
-                    background: '#1e293b', // Dark background for the table container
-                    padding: '15px',
-                    borderRadius: '8px',
-                    boxShadow: '0 10px 25px rgba(0,0,0,0.5)',
-                    maxWidth: '95%',
-                    maxHeight: '90vh',
-                    overflow: 'auto' // Allow scrolling if table is large
-                }}>
-                    {/* Pass the component's own toggle function */}
-                    <PeriodicTable onBack={togglePeriodicTable} />
-                </div>
-            </div>
+    <div className="mca-activity-root center-container fade-in slide-up">
+      <div className="mca-question-card glass-card">
+        <h2 className="ptable-title">Atomic Radius Activity</h2>
+        <div className="en-score-round-display">
+          Score: <span className="score-value">{score}</span> | Question: {round}
+        </div>
+        <div className="mca-question-prompt">{question.prompt}</div>
+        {/* == Question Type Specific UI == */}
+        {/* Type: compare (using buttons) */}
+        {question.type === 'compare' && question.elements && (
+          <div className="mca-options-group">
+            {question.elements.map((el, idx) => {
+              const isCorrect = feedback?.correctIdx === idx;
+              const isSelected = userAnswer === idx;
+              const isSelectedIncorrect = feedback?.type === 'incorrect' && isSelected;
+              return (
+                <button
+                  key={el.symbol}
+                  className={`mca-option${isSelected ? ' selected' : ''}${feedback ? ' disabled' : ''}`}
+                  onClick={() => !feedback && handleButtonChoice(idx, question.correctIdx)}
+                  disabled={!!feedback || isLoading}
+                  aria-label={`Choose ${el.name}`}
+                >
+                  {el.symbol}
+                  <div style={{ fontSize: '0.7em', fontWeight: 400, marginTop: 2, opacity: 0.9 }}>{el.name}</div>
+                  {feedback && <div style={{ fontSize: '0.7em', fontWeight: 600, marginTop: 3 }}>{el.atomicRadius} pm</div>}
+                </button>
+              )
+            })}
+          </div>
         )}
-    </div> // End Root container for modal overlay
+        {/* Type: rank (draggable or select buttons in order) */}
+        {question.type === 'rank' && question.displayElements && (
+          <div className="mca-options-group">
+            <div style={{ display: 'flex', gap: 8, marginBottom: 8, flexWrap: 'wrap', justifyContent: 'center' }}>
+              {question.displayElements.map((el, idx) => {
+                const isSelected = arrangeOrder.includes(idx);
+                return (
+                  <button
+                    key={el.symbol}
+                    className={`mca-option${isSelected ? ' selected' : ''}${feedback ? ' disabled' : ''}`}
+                    onClick={() => {
+                      if (feedback || isSelected) return;
+                      setArrangeOrder([...arrangeOrder, idx]);
+                    }}
+                    disabled={!!feedback || isSelected || isLoading}
+                    aria-label={`Select ${el.name} to add to ranking`}
+                  >
+                    {el.symbol}
+                    <div style={{ fontSize: '0.7em', fontWeight: 400, marginTop: 2, opacity: 0.9 }}>{el.name}</div>
+                  </button>
+                );
+              })}
+            </div>
+            {arrangeOrder.length > 0 && (
+              <div style={{ fontSize: '0.9em', color: '#93c5fd', marginTop: 4, marginBottom: 8, display: 'flex', alignItems: 'center', gap: '10px', justifyContent: 'center', width: '100%' }}>
+                <span>Order: {arrangeOrder.map(idx => question.displayElements[idx]?.symbol).join(' → ')}</span>
+                {!feedback && (
+                  <button onClick={() => setArrangeOrder(arrangeOrder.slice(0, -1))} style={{ background: 'none', border: 'none', color: '#f472b6', cursor: 'pointer', fontSize: '1.2em', padding: '0 5px' }} title="Undo Last" disabled={isLoading}>⌫</button>
+                )}
+              </div>
+            )}
+            <button
+              className="mca-btn"
+              onClick={handleArrangeSubmit}
+              disabled={!!feedback || arrangeOrder.length !== question.displayElements.length || isLoading}
+              style={{ marginTop: 8 }}
+            >
+              Submit Order
+            </button>
+          </div>
+        )}
+        {/* Type: true_false (Using buttons) */}
+        {question.type === 'true_false' && (
+          <div className="mca-options-group">
+            {['true', 'false'].map(choice => {
+              const correctBool = question.answer;
+              const isCorrect = feedback && (choice === 'true' ? correctBool : !correctBool);
+              const isSelected = userAnswer === choice;
+              const isSelectedIncorrect = feedback && isSelected && !isCorrect;
+              return (
+                <button
+                  key={choice}
+                  className={`mca-option${isSelected ? ' selected' : ''}${feedback ? ' disabled' : ''}`}
+                  onClick={() => !feedback && handleSimpleChoice(choice, question.answer ? 'true' : 'false')}
+                  disabled={!!feedback || isLoading}
+                  aria-label={`Choose ${choice}`}
+                >
+                  {choice.charAt(0).toUpperCase() + choice.slice(1)}
+                </button>
+              );
+            })}
+          </div>
+        )}
+        {/* Types: general_trend, reason_trend, reason_factor (Using custom radio buttons) */}
+        {(question.type === 'general_trend' || question.type === 'reason_trend' || question.type === 'reason_factor') && (
+          <>
+            <div className="mca-options-group">
+              {question.options.map((opt, index) => {
+                const isSelected = userAnswer === opt;
+                const isCorrect = feedback?.correctVal === opt;
+                const isSelectedIncorrect = feedback?.type === 'incorrect' && userAnswer === opt;
+                return (
+                  <button
+                    key={opt}
+                    type="button"
+                    className={`mca-option${isSelected ? ' selected' : ''}${isCorrect ? ' correct' : ''}${isSelectedIncorrect ? ' incorrect' : ''}`}
+                    onClick={() => !feedback && setUserAnswer(opt)}
+                    disabled={!!feedback || isLoading}
+                    aria-label={opt}
+                    style={{ marginBottom: 0 }}
+                  >
+                    {opt}
+                  </button>
+                );
+              })}
+              {!feedback && userAnswer !== '' && (
+                <button type="button" onClick={() => handleSimpleChoice(userAnswer, question.correct)} className="mca-btn" disabled={isLoading} style={{ marginTop: 18, alignSelf: 'center' }}>
+                  Submit
+                </button>
+              )}
+              {feedback && (
+                <div className={`mca-feedback ${feedback.type}`}> 
+                  <strong>{feedback.message.split('\n')[0]}</strong>
+                  {feedback.type === 'incorrect' && feedback.correctVal && (
+                    <div className="correct-answer-info">Correct Answer: <strong>{feedback.correctVal}</strong></div>
+                  )}
+                  {question.explanation && <p className="explanation-text">{question.explanation}</p>}
+                </div>
+              )}
+            </div>
+          </>
+        )}
+        {/* == Feedback Area == */}
+        {/* Only show feedback here for question types NOT handled above */}
+        {!(question.type === 'general_trend' || question.type === 'reason_trend' || question.type === 'reason_factor') && feedback && !(
+          question.type === 'general_trend' || question.type === 'reason_trend' || question.type === 'reason_factor') && (
+          <div className={`mca-feedback ${feedback.type}`}>
+            <span style={{
+              color: feedback.type === 'correct' ? '#4ade80' : '#fca5a5',
+              textShadow: feedback.type === 'correct' ? '0 1px 3px #22c55e33' : '0 1px 3px #ef444422',
+              whiteSpace: 'pre-line',
+              display: 'inline-block',
+              maxWidth: '95%',
+            }}>
+              <strong>{feedback.message.split('\n')[0]}</strong>
+              {feedback.message.includes('\n') && <br />}
+              {feedback.message.split('\n').slice(1).join(' ')}
+            </span>
+          </div>
+        )}
+        {/* == Navigation Buttons == */}
+        <div className="mca-btn-row">
+          <button className="mca-btn mca-ptable-btn" onClick={togglePeriodicTable} disabled={isLoading}>{showTable ? 'Hide' : 'Show'} Periodic Table</button>
+          <button className="mca-btn" onClick={onBack} disabled={isLoading}>Back</button>
+          {showNext && (
+            <button className="mca-btn" onClick={handleNext} disabled={isLoading}>Next</button>
+          )}
+        </div>
+        {/* Periodic Table Modal */}
+        {showTable && (
+          <div style={{
+            position: 'fixed',
+            top: 0, left: 0, right: 0, bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.6)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 100,
+          }}>
+            <div style={{
+              background: '#1e293b',
+              padding: '15px',
+              borderRadius: '8px',
+              boxShadow: '0 10px 25px rgba(0,0,0,0.5)',
+              maxWidth: '95%',
+              maxHeight: '90vh',
+              overflow: 'auto'
+            }}>
+              <PeriodicTable onBack={togglePeriodicTable} />
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 

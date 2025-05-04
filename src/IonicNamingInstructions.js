@@ -91,16 +91,19 @@ export default function IonicNamingInstructions({ onBack, onPeriodicTable, saved
                 placeholder="Type the name here"
                 style={{fontSize:'1.1em', width:'90%', maxWidth:340, marginBottom:10}}
               />
-              <br/>
-              <button className="ptable-btn" type="submit" style={{margin:'8px 0'}}>Submit</button>
+              <div className="button-row">
+                <button className="ptable-btn" type="submit">Submit</button>
+              </div>
             </form>
-            <button className="ptable-btn" style={{margin:'6px 0', background:'#23234a'}} 
-              onClick={() => onPeriodicTable && onPeriodicTable({step, input, feedback, problem})}
-            >Show Periodic Table</button>
+            <div className="button-row">
+              <button className="ptable-btn" onClick={() => onPeriodicTable && onPeriodicTable({step, input, feedback, problem})}>Show Periodic Table</button>
+              <button className="ptable-btn" onClick={handleNext}>Try Another</button>
+              <button className="ptable-btn" style={{background:'#4e46a1'}} onClick={() => setStep(0)}>Review Tutorial</button>
+            </div>
             {feedback && <div style={{margin:'10px 0', fontWeight:600, color: feedback.startsWith('✅') ? '#5eead4' : '#ff5ca7'}}>{feedback}</div>}
-            <div style={{marginTop:10, background:'rgba(182,248,224,0.13)', borderRadius:10, padding:'12px 16px', color:'#b6f8e0'}}>{problem.explanation}</div>
-            <button className="ptable-btn" style={{marginTop:18, marginRight:8}} onClick={handleNext}>Try Another</button>
-            <button className="ptable-btn" style={{marginTop:18, background:'#4e46a1'}} onClick={() => setStep(0)}>Review Tutorial</button>
+            {feedback.startsWith('✅') && (
+              <div style={{marginTop:10, background:'rgba(182,248,224,0.13)', borderRadius:10, padding:'12px 16px', color:'#b6f8e0'}}>{problem.explanation}</div>
+            )}
           </>
         )}
         {/* Fallback for out-of-range step values */}

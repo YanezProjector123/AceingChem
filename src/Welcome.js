@@ -217,16 +217,32 @@ export default function Welcome({ onNext }) {
              {/* --- UPDATED LOG CONTENT --- */}
              <ul style={{ paddingLeft: '20px', margin: 0, listStyle: 'none' }}> {/* Remove default bullets */}
                 <li style={{ marginBottom: '12px', display: 'flex', alignItems: 'flex-start' }}>
+                   <span role="img" aria-label="star" style={{ marginRight: '10px', marginTop:'2px', color: '#facc15', fontSize: '1.1em'}}>🌟</span>
+                   <span><b>Prefix Practice Activity:</b> Added a dedicated Prefix Practice activity (AP/Honors Must-Know) as its own subcategory in Chemical Nomenclature. Now gives the correct answer and disables input after a wrong answer for better learning. UI: Prefix Practice is visually separated in the menu.</span>
+                </li>
+                <li style={{ marginBottom: '12px', display: 'flex', alignItems: 'flex-start' }}>
+                   <span role="img" aria-label="atom" style={{ marginRight: '10px', marginTop:'2px', color: '#38bdf8', fontSize: '1.1em'}}>🧪</span>
+                   <span><b>Polyatomic Ions:</b> Polyatomic ions are included in both Ionic Name→Formula and Formula→Name activities. No further action needed!</span>
+                </li>
+                <li style={{ marginBottom: '12px', display: 'flex', alignItems: 'flex-start' }}>
                    <span role="img" aria-label="sparkles" style={{ marginRight: '10px', marginTop:'2px', color: '#facc15', fontSize: '1.1em'}}>✨</span>
                    <span><b>Major Visual Update:</b> Every activity now has a unique, educational, and engaging style! Each screen is more vibrant and learning-friendly, with its own color palette and highlights.</span>
                 </li>
                 <li style={{ marginBottom: '12px', display: 'flex', alignItems: 'flex-start' }}>
-                   <span role="img" aria-label="table" style={{ marginRight: '10px', marginTop:'2px', color: '#38bdf8', fontSize: '1.1em'}}>🧪</span>
-                   <span><b>Periodic Table Modal:</b> Improved modal overlays in all activities. Only the intended buttons show, and both "Close" and "Back" are now functional where present.</span>
+                   <span role="img" aria-label="atom" style={{ marginRight: '10px', marginTop:'2px', color: '#facc15', fontSize: '1.1em'}}>🟡</span>
+                   <span><b>New Activity: Metallic Character!</b> Explore the periodic trend of metallic character with interactive questions, instant feedback, and a modern, unified UI. Learn how metallic properties change across the table!</span>
+                </li>
+                <li style={{ marginBottom: '12px', display: 'flex', alignItems: 'flex-start' }}>
+                   <span role="img" aria-label="paintbrush" style={{ marginRight: '10px', marginTop:'2px', color: '#a5b4fc', fontSize: '1.1em'}}>🎨</span>
+                   <span><b>Unified Periodic Trend Activities:</b> Atomic Radius, Ionization Energy, Electronegativity, and Metallic Character now all share a consistent, beautiful look and improved answer/feedback experience.</span>
                 </li>
                 <li style={{ marginBottom: '12px', display: 'flex', alignItems: 'flex-start' }}>
                    <span role="img" aria-label="broom" style={{ marginRight: '10px', marginTop:'2px', color: '#a5b4fc', fontSize: '1.1em'}}>🧹</span>
-                   <span><b>UI Cleanup:</b> Removed stray UI fragments (like "// End Main Fragment") from all screens for a cleaner experience.</span>
+                   <span><b>UI Cleanup & Accessibility:</b> Fixed duplicate feedback/explanation issues, improved button accessibility, and made all activities more visually consistent and user-friendly.</span>
+                </li>
+                <li style={{ marginBottom: '12px', display: 'flex', alignItems: 'flex-start' }}>
+                   <span role="img" aria-label="table" style={{ marginRight: '10px', marginTop:'2px', color: '#38bdf8', fontSize: '1.1em'}}>🧪</span>
+                   <span><b>Periodic Table Modal:</b> Improved modal overlays in all activities. Only the intended buttons show, and both "Close" and "Back" are now functional where present.</span>
                 </li>
                 <li style={{ marginBottom: '12px', display: 'flex', alignItems: 'flex-start' }}>
                    <span role="img" aria-label="rocket" style={{ marginRight: '10px', marginTop:'2px', color: '#5eead4', fontSize: '1.1em'}}>🚀</span>

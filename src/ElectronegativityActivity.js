@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 // Periodic Table import removed, Topics handles table visibility
 import periodicTableData from './periodic-table.json'; // Corrected import name
 import './ElectronegativityActivity.css'; // Create or adapt this CSS file
+import PeriodicTable from './PeriodicTable';
 
 // --- Utility functions (Keep as is) ---
 const getRandomInt = (max) => Math.floor(Math.random() * max);
@@ -333,6 +334,7 @@ const ElectronegativityActivity = ({ onBack, onShowPeriodicTable }) => {
     const [score, setScore] = useState(0);
     const [round, setRound] = useState(1); // Tracks number of questions presented
     const [isLoading, setIsLoading] = useState(true);
+    const [showTable, setShowTable] = useState(false);
 
     // Question type definitions
     const radioTypes = [
@@ -473,165 +475,186 @@ const ElectronegativityActivity = ({ onBack, onShowPeriodicTable }) => {
     // --- Render Logic ---
 
      if (isLoading && !question) {
-        return <div className="en-activity-root loading-message">Loading Electronegativity Activity...</div>;
+        return <div className="center-container fade-in slide-up">
+            <div className="glass-card">
+                <h2 className="ptable-title">Electronegativity Activity</h2>
+                <div className="en-activity-root loading-message">Loading Electronegativity Activity...</div>
+            </div>
+        </div>;
     }
 
      if (!question || question.type === 'error') {
          return (
-            <div className="en-activity-root error-message">
-                <h2>Error</h2>
-                <p>{question?.question || 'Failed to load questions.'}</p>
-                <p>{question?.explanation || 'Please check the console for details or try refreshing.'}</p>
-                <button onClick={onBack} className="en-button en-button-back">Back to Menu</button>
+            <div className="center-container fade-in slide-up">
+                <div className="glass-card">
+                    <h2 className="ptable-title">Electronegativity Activity</h2>
+                    <div className="en-activity-root error-message">
+                        <h2>Error</h2>
+                        <p>{question?.question || 'Failed to load questions.'}</p>
+                        <p>{question?.explanation || 'Please check the console for details or try refreshing.'}</p>
+                        <button onClick={onBack} className="en-button en-button-back">Back to Menu</button>
+                    </div>
+                </div>
             </div>
          );
      }
 
-     // Get element details for button choices
-     const choiceElements = (buttonChoiceTypes.includes(question.type) && Array.isArray(question.options))
+    // Get element details for button choices
+    const choiceElements = (buttonChoiceTypes.includes(question.type) && Array.isArray(question.options))
         ? question.options.map(optSymbol => periodicTableData.find(el => el.symbol === optSymbol)).filter(el => el)
         : [];
 
     // Main Render Output
     return (
-        // Use en- prefix for CSS classes for clarity
-        <div className="en-activity-root" style={{ textAlign: 'center' }}>
-            {isLoading && <div className="loading-overlay">Loading...</div>}
-            <div className={`en-question-card ${isLoading ? 'loading' : ''}`}>
-                {/* Header */}
-                <h2 className="en-card-title">Electronegativity Practice</h2>
-                <div className="en-score-round-display">
-                  Score: <span className="score-value">{score}</span> | Question: {round}
-                </div>
+        <div className="center-container fade-in slide-up">
+            <div className="glass-card">
+                <h2 className="ptable-title">Electronegativity Activity</h2>
+                <div className="en-activity-root" style={{ textAlign: 'center' }}>
+                    {isLoading && <div className="loading-overlay">Loading...</div>}
+                    <div className={`en-question-card ${isLoading ? 'loading' : ''}`}>
+                        {/* Header */}
+                        <h2 className="en-card-title">Electronegativity Practice</h2>
+                        <div className="en-score-round-display">
+                          Score: <span className="score-value">{score}</span> | Question: {round}
+                        </div>
 
-                 {/* Question Prompt */}
-                <div className="en-question-prompt" aria-live="polite">
-                   {question.question || 'Loading question...'}
-                </div>
+                         {/* Question Prompt */}
+                        <div className="en-question-prompt" aria-live="polite">
+                           {question.question || 'Loading question...'}
+                        </div>
 
-                {/* Answer Area */}
-                <form onSubmit={handleSubmit} className="en-answer-form">
+                        {/* Answer Area */}
+                        <form onSubmit={handleSubmit} className="en-answer-form">
 
-                    {/* Radio Buttons */}
-                    {radioTypes.includes(question.type) && Array.isArray(question.options) && (
-                        <fieldset className="en-answer-group">
-                            <legend className="sr-only">{question.question}</legend>
-                            {question.options.map((opt, index) => {
-                                const optionValue = typeof opt !== 'string' ? JSON.stringify(opt) : opt;
-                                const optionDisplay = String(opt ?? '');
-                                const optionId = createOptionId(optionValue, index);
-                                return (
-                                    <div
-                                        key={optionId}
-                                        className="en-answer-option"
-                                        onClick={() => {
-                                            if (!showFeedback && !isLoading) {
-                                                console.log(`Div clicked, setting answer: ${optionValue}`);
-                                                setUserAnswer(optionValue);
-                                            }
-                                        }}
-                                    >
-                                        <input
-                                            type="radio"
-                                            id={optionId}
-                                            name={`answer-${question.uid}`}
-                                            value={optionValue}
-                                            checked={userAnswer === optionValue}
-                                            onChange={() => {
-                                                if (!showFeedback && !isLoading) {
-                                                    console.log(`Radio onChange triggered for: ${optionValue}`);
-                                                }
-                                            }}
-                                            disabled={showFeedback || isLoading}
-                                            aria-labelledby={`${optionId}-label`}
-                                            style={{ pointerEvents: 'none' }}
-                                        />
-                                        <label
-                                            id={`${optionId}-label`}
-                                            htmlFor={optionId}
-                                        >
-                                            {optionDisplay}
-                                        </label>
-                                    </div>
-                                );
-                            })}
-                        </fieldset>
-                    )}
+                            {/* Radio Buttons */}
+                            {radioTypes.includes(question.type) && Array.isArray(question.options) && (
+                                <fieldset className="en-answer-group">
+                                    <legend className="sr-only">{question.question}</legend>
+                                    {question.options.map((opt, index) => {
+                                        const optionValue = typeof opt !== 'string' ? JSON.stringify(opt) : opt;
+                                        const optionDisplay = String(opt ?? '');
+                                        const optionId = createOptionId(optionValue, index);
+                                        return (
+                                            <div
+                                                key={optionId}
+                                                className="en-answer-option"
+                                                onClick={() => {
+                                                    if (!showFeedback && !isLoading) {
+                                                        console.log(`Div clicked, setting answer: ${optionValue}`);
+                                                        setUserAnswer(optionValue);
+                                                    }
+                                                }}
+                                            >
+                                                <input
+                                                    type="radio"
+                                                    id={optionId}
+                                                    name={`answer-${question.uid}`}
+                                                    value={optionValue}
+                                                    checked={userAnswer === optionValue}
+                                                    onChange={() => {
+                                                        if (!showFeedback && !isLoading) {
+                                                            console.log(`Radio onChange triggered for: ${optionValue}`);
+                                                        }
+                                                    }}
+                                                    disabled={showFeedback || isLoading}
+                                                    aria-labelledby={`${optionId}-label`}
+                                                    style={{ pointerEvents: 'none' }}
+                                                />
+                                                <label
+                                                    id={`${optionId}-label`}
+                                                    htmlFor={optionId}
+                                                >
+                                                    {optionDisplay}
+                                                </label>
+                                            </div>
+                                        );
+                                    })}
+                                </fieldset>
+                            )}
 
-                    {/* Buttons for Choices */}
-                     {buttonChoiceTypes.includes(question.type) && choiceElements.length > 0 && (
-                         <div className="en-button-choices">
-                            {choiceElements.map((el) => (
-                                 <button key={el.symbol} type="button"
-                                     className={`en-choice-button ${userAnswer === el.symbol ? 'selected' : ''} ${showFeedback ? 'disabled' : ''}`}
-                                     onClick={() => !showFeedback && setUserAnswer(el.symbol)}
-                                     disabled={showFeedback || isLoading} >
-                                    {el.symbol} <span className="element-name">({el.name || ''})</span>
-                                </button> ))}
+                            {/* Buttons for Choices */}
+                             {buttonChoiceTypes.includes(question.type) && choiceElements.length > 0 && (
+                                 <div className="en-button-choices">
+                                    {choiceElements.map((el) => (
+                                         <button key={el.symbol} type="button"
+                                             className={`en-choice-button ${userAnswer === el.symbol ? 'selected' : ''} ${showFeedback ? 'disabled' : ''}`}
+                                             onClick={() => !showFeedback && setUserAnswer(el.symbol)}
+                                             disabled={showFeedback || isLoading} >
+                                            {el.symbol} <span className="element-name">({el.name || ''})</span>
+                                       </button> ))}
+                                 </div>
+                             )}
+
+                             {/* Select Dropdown for Ranking */}
+                             {selectTypes.includes(question.type) && Array.isArray(question.options) && (
+                                <fieldset className="en-answer-group">
+                                     <legend className="sr-only">{question.question}</legend>
+                                     <select className="en-select" value={userAnswer}
+                                        onChange={(e) => !showFeedback && setUserAnswer(e.target.value)}
+                                        disabled={showFeedback || isLoading} required aria-label="Select the correct ranking">
+                                         <option value="" disabled={!!userAnswer}>Select Ranking...</option>
+                                         {question.options.map((opt, index) => (
+                                             <option key={`${createOptionId(opt,index)}`} value={opt}>{opt}</option>
+                                         ))}
+                                     </select>
+                                </fieldset>
+                             )}
+
+                            {/* Submit Button */}
+                             {userAnswer && !showFeedback && (
+                                <button type="submit" className="en-button en-button-submit" disabled={isLoading}>
+                                     Submit Answer
+                                 </button>
+                             )}
+                         </form>
+
+                        {/* Feedback Area */}
+                         {showFeedback && feedback && (
+                            <div className={`en-feedback ${feedback.type}`}>
+                                <strong>{feedback.message}</strong>
+                                {feedback.type === 'incorrect' && feedback.correctAnswer && (
+                                    <div className="correct-answer-info"> Correct Answer: <strong>{feedback.correctAnswer}</strong> </div>
+                                )}
+                                {feedback.explanation && <p className="explanation-text">{feedback.explanation}</p>}
+                            </div>
+                         )}
+
+                        {/* NEXT Button */}
+                         {showFeedback && (
+                             <button type="button" onClick={handleNext} className="en-button en-button-next" disabled={isLoading}>
+                                 Next Question
+                             </button>
+                         )}
+
+                        {/* Action Buttons */}
+                         <div className="en-action-buttons">
+                            <button
+                                type="button"
+                                className="en-button en-periodic-table-button"
+                                onClick={() => setShowTable(true)}
+                                disabled={isLoading}
+                             >
+                                 Show Periodic Table
+                             </button>
+                            <button
+                               type="button"
+                               className="en-button en-button-back"
+                               onClick={onBack}
+                               disabled={isLoading}
+                            >
+                                Back to Menu
+                           </button>
                          </div>
-                     )}
-
-                     {/* Select Dropdown for Ranking */}
-                     {selectTypes.includes(question.type) && Array.isArray(question.options) && (
-                        <fieldset className="en-answer-group">
-                             <legend className="sr-only">{question.question}</legend>
-                             <select className="en-select" value={userAnswer}
-                                onChange={(e) => !showFeedback && setUserAnswer(e.target.value)}
-                                disabled={showFeedback || isLoading} required aria-label="Select the correct ranking">
-                                 <option value="" disabled={!!userAnswer}>Select Ranking...</option>
-                                 {question.options.map((opt, index) => (
-                                     <option key={`${createOptionId(opt,index)}`} value={opt}>{opt}</option>
-                                 ))}
-                             </select>
-                        </fieldset>
-                     )}
-
-                    {/* Submit Button */}
-                     {userAnswer && !showFeedback && (
-                        <button type="submit" className="en-button en-button-submit" disabled={isLoading}>
-                             Submit Answer
-                         </button>
-                     )}
-                 </form>
-
-                {/* Feedback Area */}
-                 {showFeedback && feedback && (
-                    <div className={`en-feedback ${feedback.type}`}>
-                        <strong>{feedback.message}</strong>
-                        {feedback.type === 'incorrect' && feedback.correctAnswer && (
-                            <div className="correct-answer-info"> Correct Answer: <strong>{feedback.correctAnswer}</strong> </div>
-                        )}
-                        {feedback.explanation && <p className="explanation-text">{feedback.explanation}</p>}
+                     </div> {/* End Card */}
+                </div>
+            </div>
+            {showTable && (
+                <div className="ptable-modal">
+                    <div className="glass-card" style={{ maxWidth: '95vw', maxHeight: '90vh', overflow: 'auto' }}>
+                        <PeriodicTable onBack={() => setShowTable(false)} />
                     </div>
-                 )}
-
-                {/* NEXT Button */}
-                 {showFeedback && (
-                     <button type="button" onClick={handleNext} className="en-button en-button-next" disabled={isLoading}>
-                         Next Question
-                     </button>
-                 )}
-
-                {/* Action Buttons */}
-                 <div className="en-action-buttons">
-                    <button
-                        type="button"
-                        className="en-button en-periodic-table-button"
-                        onClick={onShowPeriodicTable}
-                        disabled={isLoading}
-                     >
-                         Show Periodic Table
-                     </button>
-                     <button
-                        type="button"
-                        className="en-button en-button-back"
-                        onClick={onBack}
-                        disabled={isLoading}
-                     >
-                         Back to Menu
-                    </button>
-                 </div>
-             </div> {/* End Card */}
+                </div>
+            )}
         </div>
     );
 };

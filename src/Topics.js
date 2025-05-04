@@ -5,6 +5,7 @@ import ElectronegativityActivity from './ElectronegativityActivity';
 import PeriodicTable from './PeriodicTable';
 import CovalentFormulaToNameActivity from './CovalentFormulaToNameActivity';
 import IonicFormulaToNameActivity from './IonicFormulaToNameActivity';
+import MetallicCharacterActivity from './MetallicCharacterActivity';
 
 export default function Topics({
   onBack,
@@ -17,6 +18,7 @@ export default function Topics({
   onIonicFormulaToNameActivity,
   onCovalentNameToFormulaActivity,
   onCovalentFormulaToNameActivity,
+  onPrefixPracticeActivity,
   onTransitionMetalIonicTutorial,
   onTransitionMetalIonicActivity,
   onTransitionMetalFormulaToNameActivity,
@@ -79,6 +81,8 @@ export default function Topics({
             onShowPeriodicTable={handleShowFullscreenTable}
             onPeriodicTable={handleShowFullscreenTable}
           />
+        ) : periodicActivity === 'metallic-character' ? (
+          <MetallicCharacterActivity onBack={handleBackFromActivity} onShowPeriodicTable={handleShowFullscreenTable} />
         ) : (
           // --- Render the main Topic List ---
           <Fragment> {/* Or <> */}
@@ -128,6 +132,13 @@ export default function Topics({
                         <li><button className="ptable-btn" onClick={() => { onCovalentFormulaToNameActivity(); setPeriodicActivity('covalent-formula-to-name'); }} style={{ /*...*/ }}>Activity: Formula to Name (Covalent)</button></li>
                       </ul>
                     </div>
+                    {/* Prefix Practice - its own subcategory */}
+                    <div style={{ background: 'linear-gradient(100deg,#e0f7fa 60%,#ffe0fa 100%)', borderRadius: 18, boxShadow: '0 2px 16px #a5b4fc44', padding: '18px 18px 12px 18px', border: '2px solid #a259ec', marginTop: 18 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', marginBottom: 10 }}><span role="img" aria-label="prefixes" style={{ fontSize: '1.6em', marginRight: 10 }}>🔤</span><b style={{ fontSize: '1.19em', letterSpacing: 0.5, color: '#23234a' }}>Prefixes (AP/Honors Must-Know)</b></div>
+                      <ul style={{ margin: '8px 0 0 0', padding: 0, listStyle: 'none' }}>
+                        <li><button className="ptable-btn" onClick={onPrefixPracticeActivity} style={{ /*...*/ }}>Prefix Practice Activity</button></li>
+                      </ul>
+                    </div>
                   </div>
                 </div>
               )}
@@ -160,21 +171,21 @@ export default function Topics({
                       {/* This div should ONLY contain the periodic trend activity buttons */}
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 8 }}>
                         {/* Atomic Radius Button */}
-                        <button className="ptable-btn periodic-btn" style={{ /*...*/ }}
+                        <button className="ptable-btn periodic-btn periodic-trend-btn" style={{ width: 240, alignSelf: 'center' }}
                           onClick={() => setPeriodicActivity('atomic-radius')}
                         ><span role="img" aria-label="radius">🟡</span> Atomic Radius</button>
                         {/* Ionization Energy Button */}
-                        <button className="ptable-btn periodic-btn" style={{ /*...*/ }}
+                        <button className="ptable-btn periodic-btn periodic-trend-btn" style={{ width: 240, alignSelf: 'center' }}
                           onClick={() => setPeriodicActivity('ionization-energy')}
                         ><span role="img" aria-label="ionization">⚡</span> Ionization Energy</button>
                         {/* Electronegativity Button */}
-                        <button className="ptable-btn periodic-btn" style={{ /*...*/ }}
+                        <button className="ptable-btn periodic-btn periodic-trend-btn" style={{ width: 240, alignSelf: 'center' }}
                           onClick={() => setPeriodicActivity('electronegativity')}
                         ><span role="img" aria-label="electronegativity">🧲</span> Electronegativity Trends</button>
-                        {/* Metallic Character Button (Still Coming Soon) */}
-                        <button className="ptable-btn periodic-btn" style={{ /*...*/ opacity: 0.6, cursor: 'not-allowed' }} disabled>
-                          <span role="img" aria-label="metallic">🔩</span> Metallic Character <span style={{ marginLeft: 'auto', fontWeight: 400, fontSize: '0.9em', color: '#ecfccb' }}>(soon)</span>
-                        </button>
+                        {/* Metallic Character Button */}
+                        <button className="ptable-btn periodic-btn periodic-trend-btn" style={{ width: 240, alignSelf: 'center' }}
+                          onClick={() => setPeriodicActivity('metallic-character')}
+                        ><span role="img" aria-label="metallic">🔩</span> Metallic Character</button>
                       </div>
                       {/* *** NO NOMENCLATURE CONTENT HERE *** */}
                     </div> {/* End Activities Card */}
