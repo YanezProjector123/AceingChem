@@ -238,3 +238,121 @@
 .ie-element-info { ... }
 .ie-question-data { ... }
 */
+
+/* === Responsive & Mobile Friendly === */
+@media (max-width: 600px) {
+  .glass-card, .ie-activity-root {
+    max-width: 98vw;
+    padding: 10px 2vw;
+    border-radius: 10px;
+    margin: 10px auto;
+  }
+  .center-container {
+    padding: 0;
+    margin: 0;
+    min-width: 100vw;
+    min-height: 100vh;
+    box-sizing: border-box;
+  }
+  .ie-question-prompt {
+    font-size: 1em;
+    padding: 0 2vw;
+  }
+  .ie-score-round-display {
+    font-size: 0.98em;
+    padding: 0 2vw;
+  }
+  .ie-input {
+    width: 98vw !important;
+    max-width: 98vw !important;
+    font-size: 1em;
+    margin: 12px 0 6px 0 !important;
+    padding: 10px 8px !important;
+  }
+  .ie-answer-form {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    padding: 0 2vw;
+  }
+  .subscript-buttons {
+    gap: 4px !important;
+    margin-bottom: 10px !important;
+  }
+  .subscript-btn {
+    width: 30px !important;
+    min-width: 30px !important;
+    font-size: 1em !important;
+    padding: 5px 0 !important;
+  }
+}
+
+/* Subscript button style for both desktop and mobile */
+.subscript-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+.subscript-btn {
+  width: 36px;
+  min-width: 36px;
+  padding: 6px 0;
+  font-size: 1.1em;
+  margin: 0;
+  background: #23234a;
+  color: #a5b4fc;
+  border: 1px solid #38bdf8;
+  border-radius: 6px;
+  box-shadow: none;
+  transition: background 0.18s, color 0.18s;
+}
+.subscript-btn:active, .subscript-btn:focus {
+  background: #38bdf8;
+  color: #23234a;
+}
+
+/* Ensure .glass-card is always centered and responsive */
+.glass-card {
+  margin: 0 auto;
+  max-width: 600px;
+  width: 100%;
+  background: rgba(30,26,54,0.95);
+  border-radius: 18px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+  padding: 24px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.center-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+  width: 100vw;
+  box-sizing: border-box;
+  background: none;
+}
+
+.ie-answer-form {
+  width: 100%;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.ie-input {
+  width: 100%;
+  max-width: 340px;
+  font-size: 1.1em;
+  margin: 18px 0 8px 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1.5px solid #38bdf8;
+  text-align: left;
+}

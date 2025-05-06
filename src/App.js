@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense, lazy } from 'react';
 import Welcome from './Welcome';
 import Topics from './Topics';
 import IonicNameToFormula from './IonicNameToFormula';
@@ -16,7 +16,8 @@ import TransitionMetalIonicTutorial from './TransitionMetalIonicTutorial';
 import TransitionMetalIonicActivity from './TransitionMetalIonicActivity';
 import TransitionMetalFormulaToNameActivity from './TransitionMetalFormulaToNameActivity';
 import AtomicRadiusActivity from './AtomicRadiusActivity';
-import IonizationEnergyActivity from './IonizationEnergyActivity';
+import ElectronConfigShortHandActivity from './ElectronConfigShortHandActivity';
+const IonizationEnergyActivity = lazy(() => import('./IonizationEnergyActivity'));
 import PrefixPracticeActivity from './PrefixPracticeActivity';
 
 
@@ -99,6 +100,7 @@ function App() {
           onTransitionMetalIonicActivity={() => setScreen('transitionMetalIonicActivity')}
           onTransitionMetalFormulaToNameActivity={() => setScreen('transitionMetalFormulaToNameActivity')}
           onIonizationEnergyActivity={() => setScreen('ionizationEnergyActivity')}
+          onElectronConfigShortHandActivity={() => setScreen('electronConfigShortHandActivity')}
         />
       )}
       {screen === 'ionicNamingInstructions' && (
@@ -189,18 +191,23 @@ function App() {
         />
       )}
       {screen === 'ionizationEnergyActivity' && (
-        <IonizationEnergyActivity
-          onBack={() => setScreen('topics')}
-          onPeriodicTable={() => { 
-            setHistoryStack(h => [...h, {screen: 'ionizationEnergyActivity'}]); 
-            handleTransition('ptable'); 
-          }}
-        />
+        <Suspense fallback={<div style={{color:'#fff',textAlign:'center',marginTop:40}}>Loading Activity...</div>}>
+          <IonizationEnergyActivity
+            onBack={() => setScreen('topics')}
+            onPeriodicTable={() => { 
+              setHistoryStack(h => [...h, {screen: 'ionizationEnergyActivity'}]); 
+              handleTransition('ptable'); 
+            }}
+          />
+        </Suspense>
       )}
       {screen === 'prefixPracticeActivity' && (
         <PrefixPracticeActivity
           onBack={() => setScreen('topics')}
         />
+      )}
+      {screen === 'electronConfigShortHandActivity' && (
+        <ElectronConfigShortHandActivity onBack={() => setScreen('topics')} />
       )}
     </div>
   );

@@ -61,8 +61,13 @@ export default function Welcome({ onNext }) {
           <div style={{ background: 'linear-gradient(135deg, #1e293b 60%, #0f172a 100%)', borderRadius: 24, boxShadow: '0 8px 32px #a259ec55', padding: '32px 24px', maxWidth: 420, width: '90vw', color: '#fff', position: 'relative', animation: 'popIn 0.5s var(--bubbly)' }} onClick={e => e.stopPropagation()}>
             <h3 style={{ color: '#a5b4fc', fontWeight: 800, fontSize: '1.3em', marginBottom: 12 }}>Update Log</h3>
             <div style={{ fontSize: '1.05em', lineHeight: 1.5 }}>
-              {/* You can render the update log here, or import from a file */}
-              <b>2024-06:</b> Major UI overhaul!<br />- Bubbly, animated, mobile-first design.<br />- Chemistry icons and floating effects.<br />- Smoother transitions and more!
+              <b>2024-06:</b> Major update!<br />
+              - Complete UI redesign: bubbly, animated, and mobile-first.<br />
+              - Added full Electron Configuration activities (longhand & shorthand practice).<br />
+              - New chemistry icons and floating effects.<br />
+              - Smoother transitions and new animations.<br />
+              - Performance improvements and bug fixes.<br />
+              - Improved mobile experience and layout fixes.<br />
             </div>
             <button className="ptable-btn" style={{ marginTop: 18 }} onClick={() => setShowUpdateLog(false)}>Close</button>
           </div>

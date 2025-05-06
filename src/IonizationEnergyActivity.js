@@ -820,4 +820,4 @@ IonizationEnergyActivity.defaultProps = {
     onPeriodicTable: () => {}
 };
 
-export default IonizationEnergyActivity;
+export default React.memo(IonizationEnergyActivity);

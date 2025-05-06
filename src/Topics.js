@@ -6,6 +6,7 @@ import PeriodicTable from './PeriodicTable';
 import CovalentFormulaToNameActivity from './CovalentFormulaToNameActivity';
 import IonicFormulaToNameActivity from './IonicFormulaToNameActivity';
 import MetallicCharacterActivity from './MetallicCharacterActivity';
+import ElectronConfigLongActivity from './ElectronConfigLongActivity';
 
 export default function Topics({
   onBack,
@@ -22,16 +23,22 @@ export default function Topics({
   onTransitionMetalIonicTutorial,
   onTransitionMetalIonicActivity,
   onTransitionMetalFormulaToNameActivity,
+  onElectronConfigShortHandActivity,
+  onElectronConfigLongActivity
 }) {
   // State for collapsible sections
   const [showNomenclatureDropdown, setShowNomenclatureDropdown] = useState(false);
   const [showPeriodicDropdown, setShowPeriodicDropdown] = useState(false);
+  const [showElectronConfigDropdown, setShowElectronConfigDropdown] = useState(false);
 
   // State for which periodic activity is open
   const [periodicActivity, setPeriodicActivity] = useState(null);
 
   // State for Full-Screen Periodic Table
   const [showingFullscreenTable, setShowingFullscreenTable] = useState(false);
+
+  // Add state for electron config activities
+  const [electronConfigActivity, setElectronConfigActivity] = useState(null);
 
   // Handlers
   const handleBackFromActivity = () => {
@@ -66,7 +73,11 @@ export default function Topics({
       
       {/* Render Activity or Topic List - Now always visible */}
       <>
-        {periodicActivity === 'atomic-radius' ? (
+        {electronConfigActivity === 'long' ? (
+          <ElectronConfigLongActivity onBack={() => setElectronConfigActivity(null)} />
+        ) : electronConfigActivity === 'shorthand' ? (
+          onElectronConfigShortHandActivity ? onElectronConfigShortHandActivity() : null
+        ) : periodicActivity === 'atomic-radius' ? (
           <AtomicRadiusActivity onBack={handleBackFromActivity} onShowPeriodicTable={handleShowFullscreenTable} />
         ) : periodicActivity === 'ionization-energy' ? (
           <IonizationEnergyActivity onBack={handleBackFromActivity} onShowPeriodicTable={handleShowFullscreenTable} />
@@ -93,11 +104,11 @@ export default function Topics({
           <Fragment> {/* Or <> */}
             <h2 className="ptable-title" style={{ letterSpacing: 1.5, fontWeight: 800, fontSize: '2.3em', textShadow: '0 2px 18px #38bdf8aa, 0 1px 0 #fff' }}>Topics</h2>
 
-            {/* --- Chemical Nomenclature Dropdown Section (Keep As Is) --- */}
+            {/* --- Chemical Nomenclature Dropdown Section (Unique Style) --- */}
             <div style={{ margin: '36px 0', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <button
                 className="ptable-btn"
-                style={{ /* ... existing nomenclature button styles ... */ }}
+                style={{ background: 'linear-gradient(100deg,#f3e8ff 60%,#b6f8e0 100%)', color: '#23234a', fontWeight: 800, borderRadius: 12, fontSize: '1.15em', padding: '12px 32px', boxShadow: '0 2px 12px #b6f8e055', border: '2px solid #6366f1', letterSpacing: 0.5, marginBottom: 8, marginTop: 8, transition: 'all .18s', cursor: 'pointer', filter: 'drop-shadow(0 2px 8px #6366f1aa)', width: '100%', maxWidth: 400 }}
                 onClick={() => setShowNomenclatureDropdown(d => !d)}
               >
                 <span role="img" aria-label="chemistry" style={{ marginRight: 10, fontSize: '1.2em', filter: 'drop-shadow(0 2px 6px #a5b4fc)' }}>🧪</span>
@@ -105,7 +116,7 @@ export default function Topics({
               </button>
               <div style={{ height: showNomenclatureDropdown ? 22 : 0, transition: 'height 0.3s' }} />
               {showNomenclatureDropdown && (
-                <div style={{ marginTop: 0, marginBottom: 8, background: 'rgba(40, 40, 80, 0.9)', backdropFilter: 'blur(4px)', borderRadius: 18, boxShadow: '0 4px 32px #38bdf855, 0 1.5px 0 #fff', padding: '30px 26px', display: 'inline-block', minWidth: 355, maxWidth: 650, width: '90%', border: '2.5px solid #6366f1', position: 'relative', zIndex: 2 }}>
+                <div style={{ marginTop: 0, marginBottom: 8, background: 'rgba(99, 102, 241, 0.10)', backdropFilter: 'blur(4px)', borderRadius: 18, boxShadow: '0 4px 32px #6366f155, 0 1.5px 0 #fff', padding: '30px 26px', display: 'inline-block', minWidth: 260, maxWidth: 650, width: '95vw', border: '2.5px solid #6366f1', position: 'relative', zIndex: 2 }}>
                   {/* Inner container */}
                   <div style={{ marginTop: 0, display: 'flex', flexDirection: 'column', gap: 32 }}>
                     {/* Main Group Ionic */}
@@ -149,11 +160,11 @@ export default function Topics({
               )}
             </div> {/* End Chemical Nomenclature Dropdown Section */}
 
-            {/* --- Periodic Trends Dropdown Section --- */}
+            {/* --- Periodic Trends Dropdown Section (Unique Style) --- */}
             <div style={{ margin: '36px 0', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <button
                 className="ptable-btn"
-                style={{ /* ... existing periodic trends button styles ... */ }}
+                style={{ background: 'linear-gradient(100deg,#fffde7 60%,#facc15 100%)', color: '#23234a', fontWeight: 800, borderRadius: 12, fontSize: '1.15em', padding: '12px 32px', boxShadow: '0 2px 12px #facc1555', border: '2px solid #facc15', letterSpacing: 0.5, marginBottom: 8, marginTop: 8, transition: 'all .18s', cursor: 'pointer', filter: 'drop-shadow(0 2px 8px #facc15aa)', width: '100%', maxWidth: 400 }}
                 onClick={() => setShowPeriodicDropdown(d => !d)}
               >
                 <span role="img" aria-label="periodic trends" style={{ marginRight: 10, fontSize: '1.2em', filter: 'drop-shadow(0 2px 6px #facc15)' }}>📈</span>
@@ -161,7 +172,7 @@ export default function Topics({
               </button>
               <div style={{ height: showPeriodicDropdown ? 22 : 0, transition: 'height 0.3s' }} />
               {showPeriodicDropdown && (
-                <div style={{ marginTop: 0, marginBottom: 8, background: 'rgba(252, 231, 187, 0.95)', backdropFilter: 'blur(3px)', borderRadius: 18, boxShadow: '0 4px 24px #facc1555, 0 1px 0 #fff', padding: '24px 20px 16px 20px', maxWidth: 600, width: '90%', display: 'inline-block', position: 'relative', zIndex: 2, border: '1.5px solid #facc15' }}>
+                <div style={{ marginTop: 0, marginBottom: 8, background: 'rgba(252, 231, 187, 0.95)', backdropFilter: 'blur(3px)', borderRadius: 18, boxShadow: '0 4px 24px #facc1555, 0 1px 0 #fff', padding: '24px 20px 16px 20px', maxWidth: 600, width: '95vw', display: 'inline-block', position: 'relative', zIndex: 2, border: '1.5px solid #facc15' }}>
                   <div style={{ display: 'flex', alignItems: 'center', marginBottom: 16 }}>
                     <span role="img" aria-label="periodic trends" style={{ fontSize: '1.6em', marginRight: 10 }}>📈</span>
                     <b style={{ fontSize: '1.19em', letterSpacing: 0.5, color: '#23234a' }}>Periodic Trends</b>
@@ -199,6 +210,49 @@ export default function Topics({
                 </div>
               )}
             </div> {/* End Periodic Trends Dropdown Section */}
+
+            {/* --- Electron Configuration Dropdown Section (with activity button) --- */}
+            <div style={{ margin: '36px 0', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <button
+                className="ptable-btn"
+                style={{ background: 'linear-gradient(100deg,#e0f7fa 60%,#b6f8e0 100%)', color: '#23234a', fontWeight: 800, borderRadius: 12, fontSize: '1.15em', padding: '12px 32px', boxShadow: '0 2px 12px #b6f8e055', border: '2px solid #38bdf8', letterSpacing: 0.5, marginBottom: 8, marginTop: 8, transition: 'all .18s', cursor: 'pointer', filter: 'drop-shadow(0 2px 8px #38bdf8aa)', width: '100%', maxWidth: 400 }}
+                onClick={() => setShowElectronConfigDropdown(d => !d)}
+              >
+                <span role="img" aria-label="electron config" style={{ marginRight: 10, fontSize: '1.2em', filter: 'drop-shadow(0 2px 6px #38bdf8)' }}>🧲</span>
+                Electron Configuration {showElectronConfigDropdown ? <span style={{ marginLeft: 8 }}>▲</span> : <span style={{ marginLeft: 8 }}>▼</span>}
+              </button>
+              <div style={{ height: showElectronConfigDropdown ? 22 : 0, transition: 'height 0.3s' }} />
+              {showElectronConfigDropdown && (
+                <div style={{ marginTop: 0, marginBottom: 8, background: 'rgba(182, 248, 224, 0.95)', backdropFilter: 'blur(3px)', borderRadius: 18, boxShadow: '0 4px 24px #38bdf855, 0 1px 0 #fff', padding: '24px 20px 16px 20px', maxWidth: 600, width: '95vw', display: 'inline-block', position: 'relative', zIndex: 2, border: '2px solid #38bdf8' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: 16 }}>
+                    <span role="img" aria-label="electron config" style={{ fontSize: '1.6em', marginRight: 10 }}>🧲</span>
+                    <b style={{ fontSize: '1.19em', letterSpacing: 0.5, color: '#23234a' }}>Electron Configuration</b>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'row', gap: 24, flexWrap: 'wrap', justifyContent: 'center' }}>
+                    <div style={{ flex: 1, minWidth: 210, maxWidth: 280, background: '#e0f7fa', borderRadius: 12, boxShadow: '0 1px 8px #38bdf833', padding: '12px 14px', border: '1.5px solid #38bdf8' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', marginBottom: 8 }}>
+                        <span role="img" aria-label="activity" style={{ fontSize: '1.3em', marginRight: 8 }}>🔬</span>
+                        <b style={{ fontSize: '1.09em', color: '#23234a' }}>Activities</b>
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 8 }}>
+                        <button className="ptable-btn periodic-btn periodic-trend-btn" style={{ width: 240, alignSelf: 'center' }} onClick={() => setElectronConfigActivity('shorthand')}>
+                          <span role="img" aria-label="shorthand">✍️</span> Short Hand Configuration
+                        </button>
+                        <button className="ptable-btn periodic-btn periodic-trend-btn" style={{ width: 240, alignSelf: 'center' }} onClick={() => setElectronConfigActivity('long')}>
+                          <span role="img" aria-label="longhand">📝</span> Long Hand Configuration
+                        </button>
+                        <button className="ptable-btn periodic-btn periodic-trend-btn" style={{ width: 240, alignSelf: 'center' }} disabled>
+                          <span role="img" aria-label="identify">🔎</span> Identify Element from Configuration (Placeholder)
+                        </button>
+                        <button className="ptable-btn periodic-btn periodic-trend-btn" style={{ width: 240, alignSelf: 'center' }} disabled>
+                          <span role="img" aria-label="exceptions">⚠️</span> Exceptions & Special Cases (Placeholder)
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* Back Button */}
             <button className="back-btn" onClick={onBack} style={{ marginTop: 28, fontWeight: 600, fontSize: '1.08em', borderRadius: 10, boxShadow: '0 2px 10px #23234a55' }}> Back </button>
