@@ -6,7 +6,6 @@ import PeriodicTable from './PeriodicTable';
 import CovalentFormulaToNameActivity from './CovalentFormulaToNameActivity';
 import IonicFormulaToNameActivity from './IonicFormulaToNameActivity';
 import MetallicCharacterActivity from './MetallicCharacterActivity';
-import ElectronConfigLongActivity from './ElectronConfigLongActivity';
 
 export default function Topics({
   onBack,
@@ -24,25 +23,21 @@ export default function Topics({
   onTransitionMetalIonicActivity,
   onTransitionMetalFormulaToNameActivity,
   onElectronConfigShortHandActivity,
-  onElectronConfigLongActivity
+  onLongHandConfigActivity,
+  onPeriodicActivity,
+  periodicActivity
 }) {
   // State for collapsible sections
   const [showNomenclatureDropdown, setShowNomenclatureDropdown] = useState(false);
   const [showPeriodicDropdown, setShowPeriodicDropdown] = useState(false);
   const [showElectronConfigDropdown, setShowElectronConfigDropdown] = useState(false);
 
-  // State for which periodic activity is open
-  const [periodicActivity, setPeriodicActivity] = useState(null);
-
   // State for Full-Screen Periodic Table
   const [showingFullscreenTable, setShowingFullscreenTable] = useState(false);
 
-  // Add state for electron config activities
-  const [electronConfigActivity, setElectronConfigActivity] = useState(null);
-
   // Handlers
   const handleBackFromActivity = () => {
-    setPeriodicActivity(null);
+    onPeriodicActivity(null);
   };
   const handleShowFullscreenTable = () => {
     setShowingFullscreenTable(true);
@@ -73,11 +68,7 @@ export default function Topics({
       
       {/* Render Activity or Topic List - Now always visible */}
       <>
-        {electronConfigActivity === 'long' ? (
-          <ElectronConfigLongActivity onBack={() => setElectronConfigActivity(null)} />
-        ) : electronConfigActivity === 'shorthand' ? (
-          onElectronConfigShortHandActivity ? onElectronConfigShortHandActivity() : null
-        ) : periodicActivity === 'atomic-radius' ? (
+        {periodicActivity === 'atomic-radius' ? (
           <AtomicRadiusActivity onBack={handleBackFromActivity} onShowPeriodicTable={handleShowFullscreenTable} />
         ) : periodicActivity === 'ionization-energy' ? (
           <IonizationEnergyActivity onBack={handleBackFromActivity} onShowPeriodicTable={handleShowFullscreenTable} />
@@ -126,7 +117,7 @@ export default function Topics({
                         <li><button className="ptable-btn" onClick={onIonicNaming}>Tutorial: Ionic Naming Instructions</button></li>
                         <li><button className="ptable-btn" onClick={onIonicFormula}>Tutorial: Ionic Formula Instructions</button></li>
                         <li><button className="ptable-btn" onClick={onIonicNameToFormulaActivity}>Activity: Name to Formula (Main Group)</button></li>
-                        <li><button className="ptable-btn" onClick={() => { onIonicFormulaToNameActivity(); setPeriodicActivity('ionic-formula-to-name'); }}>Activity: Formula to Name (Main Group)</button></li>
+                        <li><button className="ptable-btn" onClick={() => { onIonicFormulaToNameActivity(); onPeriodicActivity('ionic-formula-to-name'); }}>Activity: Formula to Name (Main Group)</button></li>
                       </ul>
                     </div>
                     {/* Transition Metal Ionic */}
@@ -145,7 +136,7 @@ export default function Topics({
                         <li><button className="ptable-btn" onClick={onCovalentNaming}>Tutorial: Covalent Naming Instructions</button></li>
                         <li><button className="ptable-btn" onClick={onCovalentFormula}>Tutorial: Covalent Formula Instructions</button></li>
                         <li><button className="ptable-btn" onClick={onCovalentNameToFormulaActivity}>Activity: Name to Formula (Covalent)</button></li>
-                        <li><button className="ptable-btn" onClick={() => { onCovalentFormulaToNameActivity(); setPeriodicActivity('covalent-formula-to-name'); }}>Activity: Formula to Name (Covalent)</button></li>
+                        <li><button className="ptable-btn" onClick={() => { onCovalentFormulaToNameActivity(); onPeriodicActivity('covalent-formula-to-name'); }}>Activity: Formula to Name (Covalent)</button></li>
                       </ul>
                     </div>
                     {/* Prefix Practice - its own subcategory */}
@@ -188,19 +179,19 @@ export default function Topics({
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 8 }}>
                         {/* Atomic Radius Button */}
                         <button className="ptable-btn periodic-btn periodic-trend-btn" style={{ width: 240, alignSelf: 'center' }}
-                          onClick={() => setPeriodicActivity('atomic-radius')}
+                          onClick={() => onPeriodicActivity('atomic-radius')}
                         ><span role="img" aria-label="radius">🟡</span> Atomic Radius</button>
                         {/* Ionization Energy Button */}
                         <button className="ptable-btn periodic-btn periodic-trend-btn" style={{ width: 240, alignSelf: 'center' }}
-                          onClick={() => setPeriodicActivity('ionization-energy')}
+                          onClick={() => onPeriodicActivity('ionization-energy')}
                         ><span role="img" aria-label="ionization">⚡</span> Ionization Energy</button>
                         {/* Electronegativity Button */}
                         <button className="ptable-btn periodic-btn periodic-trend-btn" style={{ width: 240, alignSelf: 'center' }}
-                          onClick={() => setPeriodicActivity('electronegativity')}
+                          onClick={() => onPeriodicActivity('electronegativity')}
                         ><span role="img" aria-label="electronegativity">🧲</span> Electronegativity Trends</button>
                         {/* Metallic Character Button */}
                         <button className="ptable-btn periodic-btn periodic-trend-btn" style={{ width: 240, alignSelf: 'center' }}
-                          onClick={() => setPeriodicActivity('metallic-character')}
+                          onClick={() => onPeriodicActivity('metallic-character')}
                         ><span role="img" aria-label="metallic">🔩</span> Metallic Character</button>
                       </div>
                       {/* *** NO NOMENCLATURE CONTENT HERE *** */}
@@ -235,10 +226,10 @@ export default function Topics({
                         <b style={{ fontSize: '1.09em', color: '#23234a' }}>Activities</b>
                       </div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 8 }}>
-                        <button className="ptable-btn periodic-btn periodic-trend-btn" style={{ width: 240, alignSelf: 'center' }} onClick={() => setElectronConfigActivity('shorthand')}>
+                        <button className="ptable-btn periodic-btn periodic-trend-btn" style={{ width: 240, alignSelf: 'center' }} onClick={() => onPeriodicActivity('shorthand-config')}>
                           <span role="img" aria-label="shorthand">✍️</span> Short Hand Configuration
                         </button>
-                        <button className="ptable-btn periodic-btn periodic-trend-btn" style={{ width: 240, alignSelf: 'center' }} onClick={() => setElectronConfigActivity('long')}>
+                        <button className="ptable-btn periodic-btn periodic-trend-btn" style={{ width: 240, alignSelf: 'center' }} onClick={onLongHandConfigActivity}>
                           <span role="img" aria-label="longhand">📝</span> Long Hand Configuration
                         </button>
                         <button className="ptable-btn periodic-btn periodic-trend-btn" style={{ width: 240, alignSelf: 'center' }} disabled>
