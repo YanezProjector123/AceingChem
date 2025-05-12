@@ -33,7 +33,6 @@ const elementsWithIE1 = periodicTable.filter(e =>
 
 const elementsWithIE2 = elementsWithIE1.filter(e => e.ionizationEnergies.length >= 2 && safeNumber(e.ionizationEnergies[1]));
 const elementsWithIE3Plus = elementsWithIE1.filter(e => e.ionizationEnergies.length >= 3 && safeNumber(e.ionizationEnergies[2]));
-const elementsWithConfig = elementsWithIE1.filter(e => safeString(e.electronConfiguration));
 const elementsWithRadius = elementsWithIE1.filter(e => safeNumber(e.atomicRadius));
 const elementsWithEN = elementsWithIE1.filter(e => safeNumber(e.electronegativityPauling));
 
@@ -360,66 +359,7 @@ const generateSuccessiveIECompareQuestion = () => {
 };
 
 
-// 10. Generate Configuration Link Question (Requires electronConfiguration field)
-const generateConfigLinkQuestion = () => {
-    if (elementsWithConfig.length < 2) return fallbackQuestion("Not enough elements with config data.");
-    let element, otherElement, attempts=0;
-    do {
-        element = elementsWithConfig[getRandomInt(elementsWithConfig.length)];
-        otherElement = elementsWithConfig[getRandomInt(elementsWithConfig.length)];
-        if(!element?.ionizationEnergies?.[0] || !otherElement?.ionizationEnergies?.[0]) { element=null; otherElement=null;} // Need IE1 for compare variant
-        attempts++;
-    } while ((!element || !otherElement || element.symbol === otherElement.symbol) && attempts < 20);
-    if (!element || !otherElement) return fallbackQuestion("Couldn't find pair for config link.");
-
-    const config = element.electronConfiguration;
-    const simpleConfig = config.split(' ').slice(-1)[0] || config; // Just last part or full if single term
-
-     const choice = Math.random();
-     if(choice < 0.4) { // Compare IE1
-         const ie1_el = element.ionizationEnergies[0]; const ie1_other = otherElement.ionizationEnergies[0];
-         const ratio = Math.max(ie1_el, ie1_other) / Math.min(ie1_el, ie1_other);
-         let correctChoice;
-         if (ratio > 1.3) correctChoice = ie1_el > ie1_other ? 'Higher' : 'Lower'; else correctChoice = 'Similar';
-         return {
-             type: 'config_link_compare',
-             question: `Element config ends ...${simpleConfig}. Compared to ${otherElement.symbol}, its IE1 is likely?`,
-             options: ['Higher', 'Lower', 'Similar'], correct: correctChoice,
-             explanation: `Comparing ${element.symbol} (${Math.round(ie1_el)}) vs ${otherElement.symbol} (${Math.round(ie1_other)}), it's ${correctChoice.toLowerCase()}. Config dictates stability, shielding, etc.`,
-             uid: `confComp:${element.symbol}:${otherElement.symbol}`
-         };
-     } else if (choice < 0.8) { // Reason based on config
-         let feature = "its valence electron configuration"; // Generic default
-          if (config.match(/p[36]$/)) feature = `stability of the ${config.match(/p\d$/)} subshell`;
-          else if (config.match(/s2$/)) feature = `stability of the filled ${config.match(/s\d$/)} subshell`;
-          else if (config.match(/p1$/)) feature = `the single p-electron outside stable s-shell`;
-          else if (config.match(/s1$/)) feature = `the single valence s-electron`;
-          return {
-             type: 'config_reason',
-             question: `IE1 for element ending ...${simpleConfig} is strongly influenced by:`,
-             options: shuffle([feature, "Number of core electrons", "Atomic mass", "Presence of d-orbitals"]),
-             correct: feature, explanation: `Valence config determines ease of removal. Factors like subshell (s/p/d/f), filling (half/full), and shell number (n) matter.`,
-             uid: `confReason:${element.symbol}`
-         };
-     } else { // Identify Element (use simple cases)
-         const pool = elementsWithConfig.filter(e => e.period <= 3); // Limit to P1-3 for simpler unique endings
-         if (pool.length < 3) return generateConfigLinkQuestion(); // Need options, retry if pool too small
-         const target = pool[getRandomInt(pool.length)];
-         const targetConfigEnd = target.electronConfiguration.split(' ').pop();
-         let options = new Set([target.symbol]);
-         shuffle(pool).forEach(el => { if (el.symbol !== target.symbol && options.size < 3) options.add(el.symbol); });
-         return {
-             type: 'config_identify',
-             question: `An element's config ends ...${targetConfigEnd}. Which element?`,
-             options: shuffle(Array.from(options)), correct: target.symbol,
-             explanation: `Config ending ...${targetConfigEnd} belongs to ${target.name} (${target.symbol}, P${target.period}, G${target.group}).`,
-              uid: `confID:${targetConfigEnd}`
-         };
-     }
-};
-
-
-// 11. Generate Relation to Other Trends Question (Requires atomicRadius, electronegativityPauling)
+// 10. Generate Relation to Other Trends Question (Requires atomicRadius, electronegativityPauling)
 const generateTrendRelationQuestion = () => {
     const hasRadius = elementsWithRadius.length > 5;
     const hasEN = elementsWithEN.length > 5;
@@ -453,7 +393,6 @@ const generators = [
     generateTrueFalseQuestion,       // ~9%
     generateIE2CompareQuestion,      // ~9%
     generateSuccessiveIECompareQuestion, // ~9%
-    generateConfigLinkQuestion,      // ~9% (requires config data)
     generateTrendRelationQuestion,   // ~9% (requires radius/EN data)
 ];
 // Ensure the limit accommodates the number of unique *underlying* questions possible
@@ -639,7 +578,7 @@ const IonizationEnergyActivity = ({ onBack, onPeriodicTable = () => {} }) => {
 
      // Define types requiring radio buttons (adapt based on your generators)
      // This list tells the JSX which question types use the standard radio button group
-    const radioTypes = ['exception', 'reasoning', 'categorize', 'trend', 'application', 'ie_jump', 'identify_group', 'true_false', 'compare_ie2', 'successive_reason_general', 'successive_order', 'config_link_compare', 'config_reason', 'config_identify', 'trend_relation'];
+    const radioTypes = ['exception', 'reasoning', 'categorize', 'trend', 'application', 'ie_jump', 'identify_group', 'true_false', 'compare_ie2', 'successive_reason_general', 'successive_order', 'config_reason', 'config_identify', 'trend_relation'];
      // Add 'compare' here if you prefer radio buttons for symbol comparison instead of separate buttons
     const buttonChoiceTypes = ['compare', 'compare_ie2']; // Types where buttons represent the choices (e.g., element symbols)
 
@@ -676,7 +615,7 @@ const IonizationEnergyActivity = ({ onBack, onPeriodicTable = () => {} }) => {
 
     // Main Render Output
     return (
-        <div className="center-container fade-in slide-up">
+        <div className="ie-activity-root">
             <div className="glass-card">
                 <h2 className="ptable-title">Ionization Energy Activity</h2>
                 <div className="ie-score-round-display">
@@ -820,4 +759,4 @@ IonizationEnergyActivity.defaultProps = {
     onPeriodicTable: () => {}
 };
 
-export default IonizationEnergyActivity;
+export default React.memo(IonizationEnergyActivity);

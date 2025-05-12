@@ -1,0 +1,67 @@
+{
+  "orbital_info": {
+    "s": {
+      "description": "Spherical shape, can hold up to 2 electrons"
+    },
+    "p": {
+      "description": "Dumbbell shape, can hold up to 6 electrons"
+    },
+    "d": {
+      "description": "Complex shapes, can hold up to 10 electrons"
+    },
+    "f": {
+      "description": "Very complex shapes, can hold up to 14 electrons"
+    }
+  },
+  "elements": [
+    {"symbol": "H",  "name": "Hydrogen", "noble_gas_configuration": "1s1"},
+    {"symbol": "He", "name": "Helium", "noble_gas_configuration": "1s2"},
+    {"symbol": "Li", "name": "Lithium", "noble_gas_configuration": "[He] 2s1"},
+    {"symbol": "Be", "name": "Beryllium", "noble_gas_configuration": "[He] 2s2"},
+    {"symbol": "B",  "name": "Boron", "noble_gas_configuration": "[He] 2s2 2p1"},
+    {"symbol": "C",  "name": "Carbon", "noble_gas_configuration": "[He] 2s2 2p2"},
+    {"symbol": "N",  "name": "Nitrogen", "noble_gas_configuration": "[He] 2s2 2p3"},
+    {"symbol": "O",  "name": "Oxygen", "noble_gas_configuration": "[He] 2s2 2p4"},
+    {"symbol": "F",  "name": "Fluorine", "noble_gas_configuration": "[He] 2s2 2p5"},
+    {"symbol": "Ne", "name": "Neon", "noble_gas_configuration": "[He] 2s2 2p6"},
+    {"symbol": "Na", "name": "Sodium", "noble_gas_configuration": "[Ne] 3s1"},
+    {"symbol": "Mg", "name": "Magnesium", "noble_gas_configuration": "[Ne] 3s2"},
+    {"symbol": "Al", "name": "Aluminum", "noble_gas_configuration": "[Ne] 3s2 3p1"},
+    {"symbol": "Si", "name": "Silicon", "noble_gas_configuration": "[Ne] 3s2 3p2"},
+    {"symbol": "P",  "name": "Phosphorus", "noble_gas_configuration": "[Ne] 3s2 3p3"},
+    {"symbol": "S",  "name": "Sulfur", "noble_gas_configuration": "[Ne] 3s2 3p4"},
+    {"symbol": "Cl", "name": "Chlorine", "noble_gas_configuration": "[Ne] 3s2 3p5"},
+    {"symbol": "Ar", "name": "Argon", "noble_gas_configuration": "[Ne] 3s2 3p6"},
+    {"symbol": "K",  "name": "Potassium", "noble_gas_configuration": "[Ar] 4s1"},
+    {"symbol": "Ca", "name": "Calcium", "noble_gas_configuration": "[Ar] 4s2"},
+    {"symbol": "Sc", "name": "Scandium", "noble_gas_configuration": "[Ar] 4s2 3d1"},
+    {"symbol": "Ti", "name": "Titanium", "noble_gas_configuration": "[Ar] 4s2 3d2"},
+    {"symbol": "V",  "name": "Vanadium", "noble_gas_configuration": "[Ar] 4s2 3d3"},
+    {"symbol": "Mn", "name": "Manganese", "noble_gas_configuration": "[Ar] 4s2 3d5"},
+    {"symbol": "Fe", "name": "Iron", "noble_gas_configuration": "[Ar] 4s2 3d6"},
+    {"symbol": "Co", "name": "Cobalt", "noble_gas_configuration": "[Ar] 4s2 3d7"},
+    {"symbol": "Ni", "name": "Nickel", "noble_gas_configuration": "[Ar] 4s2 3d8"},
+    {"symbol": "Zn", "name": "Zinc", "noble_gas_configuration": "[Ar] 4s2 3d10"},
+    {"symbol": "Ga", "name": "Gallium", "noble_gas_configuration": "[Ar] 4s2 3d10 4p1"},
+    {"symbol": "Ge", "name": "Germanium", "noble_gas_configuration": "[Ar] 4s2 3d10 4p2"},
+    {"symbol": "As", "name": "Arsenic", "noble_gas_configuration": "[Ar] 4s2 3d10 4p3"},
+    {"symbol": "Se", "name": "Selenium", "noble_gas_configuration": "[Ar] 4s2 3d10 4p4"},
+    {"symbol": "Br", "name": "Bromine", "noble_gas_configuration": "[Ar] 4s2 3d10 4p5"},
+    {"symbol": "Kr", "name": "Krypton", "noble_gas_configuration": "[Ar] 4s2 3d10 4p6"},
+    {"symbol": "Rb", "name": "Rubidium", "noble_gas_configuration": "[Kr] 5s1"},
+    {"symbol": "Sr", "name": "Strontium", "noble_gas_configuration": "[Kr] 5s2"},
+    {"symbol": "Y",  "name": "Yttrium", "noble_gas_configuration": "[Kr] 5s2 4d1"},
+    {"symbol": "Zr", "name": "Zirconium", "noble_gas_configuration": "[Kr] 5s2 4d2"},
+    {"symbol": "Hf", "name": "Hafnium", "noble_gas_configuration": "[Xe] 6s2 4f14 5d2"},
+    {"symbol": "Ta", "name": "Tantalum", "noble_gas_configuration": "[Xe] 6s2 4f14 5d3"},
+    {"symbol": "Re", "name": "Rhenium", "noble_gas_configuration": "[Xe] 6s2 4f14 5d5"},
+    {"symbol": "Os", "name": "Osmium", "noble_gas_configuration": "[Xe] 6s2 4f14 5d6"},
+    {"symbol": "Ir", "name": "Iridium", "noble_gas_configuration": "[Xe] 6s2 4f14 5d7"},
+    {"symbol": "Tl", "name": "Thallium", "noble_gas_configuration": "[Xe] 6s2 4f14 5d10 6p1"},
+    {"symbol": "Pb", "name": "Lead", "noble_gas_configuration": "[Xe] 6s2 4f14 5d10 6p2"},
+    {"symbol": "Bi", "name": "Bismuth", "noble_gas_configuration": "[Xe] 6s2 4f14 5d10 6p3"},
+    {"symbol": "Po", "name": "Polonium", "noble_gas_configuration": "[Xe] 6s2 4f14 5d10 6p4"},
+    {"symbol": "At", "name": "Astatine", "noble_gas_configuration": "[Xe] 6s2 4f14 5d10 6p5"},
+    {"symbol": "Rn", "name": "Radon", "noble_gas_configuration": "[Xe] 6s2 4f14 5d10 6p6"}
+  ]
+} 

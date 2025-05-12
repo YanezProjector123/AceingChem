@@ -1,0 +1,533 @@
+/* ShortHandConfigActivity.css */
+
+.shc-activity-bg {
+  min-height: 100vh;
+  width: 100vw;
+  background: linear-gradient(120deg, #23234a 0%, #3b3b6d 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  overflow: auto;
+}
+
+.shc-card {
+  max-width: 440px;
+  width: 95vw;
+  margin: 32px auto;
+  padding: 32px 20px 28px 20px;
+  border-radius: 22px;
+  box-shadow: 0 8px 40px #23234a99, 0 1.5px 0 #fff1;
+  background: linear-gradient(120deg, #23234a 60%, #38405a 100%);
+  border: 1.5px solid #38bdf8;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  animation: shcFadeSlideIn 0.7s cubic-bezier(0.4,0.2,0.2,1);
+}
+
+.shc-title {
+  text-align: center;
+  font-size: 2em;
+  margin-bottom: 18px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  color: #e0f7fa;
+  text-shadow: 0 2px 18px #38bdf8aa, 0 1px 0 #23234a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.shc-title-icon {
+  font-size: 1.2em;
+  margin-right: 6px;
+}
+
+.shc-form {
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+}
+
+.shc-prompt {
+  font-weight: 700;
+  font-size: 1.13em;
+  margin-bottom: 18px;
+  color: #e0f7fa;
+  text-align: center;
+  letter-spacing: 0.2px;
+}
+
+.shc-input {
+  width: 100%;
+  font-size: 1.13em;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1.5px solid #38bdf8;
+  margin-bottom: 12px;
+  background: #23234a;
+  color: #e0f7fa;
+  box-shadow: 0 1px 6px #38bdf822;
+  outline: none;
+  transition: border 0.2s, background 0.2s;
+}
+.shc-input:focus {
+  border: 2px solid #38bdf8;
+  background: #2d2d5a;
+}
+
+.shc-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 0;
+}
+
+.shc-option-btn {
+  width: 100%;
+  font-size: 1.09em;
+  border: 1.5px solid #38bdf8;
+  background: #23234a;
+  color: #e0f7fa;
+  border-radius: 12px;
+  padding: 12px 0;
+  font-weight: 700;
+  box-shadow: 0 1px 6px #38bdf822;
+  transition: all 0.18s, box-shadow 0.22s, transform 0.18s, background 0.22s, color 0.22s;
+  outline: none;
+  cursor: pointer;
+  opacity: 0;
+  animation: fadeInPop 0.5s cubic-bezier(0.4,0.2,0.2,1) forwards;
+  animation-delay: 0.15s;
+}
+.shc-option-btn:nth-child(2) { animation-delay: 0.25s; }
+.shc-option-btn:nth-child(3) { animation-delay: 0.35s; }
+.shc-option-btn:nth-child(4) { animation-delay: 0.45s; }
+.shc-option-btn.selected,
+.shc-option-btn:focus {
+  transform: scale(1.045);
+  box-shadow: 0 4px 18px #38bdf855;
+  background: linear-gradient(90deg,#b6f8e0 60%,#38bdf8 100%);
+  color: #23234a;
+  border: 2px solid #38bdf8;
+  opacity: 1 !important;
+  transition: background 0.18s, color 0.18s, border 0.18s, transform 0.18s;
+}
+.shc-option-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+.shc-option-btn.selected:disabled {
+  /* Keep selected style even when disabled */
+  background: linear-gradient(90deg,#b6f8e0 60%,#38bdf8 100%);
+  color: #23234a;
+  border: 2px solid #38bdf8;
+  opacity: 1 !important;
+}
+.shc-option-btn:hover:not(:disabled) {
+  background: linear-gradient(90deg,#38bdf8 60%,#23234a 100%);
+  color: #23234a;
+  transform: scale(1.03);
+}
+
+.shc-submit-btn, .shc-next-btn {
+  width: 100%;
+  margin-top: 22px;
+  font-size: 1.13em;
+  padding: 14px 0;
+  border-radius: 12px;
+  background: linear-gradient(90deg,#38bdf8 60%,#23234a 100%);
+  color: #e0f7fa;
+  font-weight: 800;
+  border: none;
+  box-shadow: 0 2px 8px #38bdf855;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: background 0.18s;
+  animation: fadeInPop 0.5s cubic-bezier(0.4,0.2,0.2,1);
+  animation-delay: 0.2s;
+}
+.shc-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.shc-submit-btn:active, .shc-next-btn:active {
+  transform: scale(0.97);
+  box-shadow: 0 1px 2px #23234a55;
+  transition: transform 0.13s, box-shadow 0.13s;
+}
+
+.shc-feedback {
+  text-align: center;
+  margin-bottom: 18px;
+  font-weight: 700;
+  font-size: 1.13em;
+  letter-spacing: 0.2px;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px #23234a22;
+  padding: 12px 0 8px 0;
+  animation: fadeInPop 0.5s cubic-bezier(0.4,0.2,0.2,1);
+  border: 1.5px solid #38bdf8;
+  background: #23234a;
+  color: #e0f7fa;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.shc-feedback.correct {
+  border: 1.5px solid #059669;
+  background: linear-gradient(90deg,#059669 60%,#23234a 100%);
+  color: #e0f7fa;
+}
+.shc-feedback.incorrect {
+  border: 1.5px solid #dc2626;
+  background: linear-gradient(90deg,#dc2626 60%,#23234a 100%);
+  color: #fff;
+}
+.shc-feedback-main {
+  font-size: 1.13em;
+  font-weight: 800;
+}
+.shc-feedback-tip {
+  font-size: 0.98em;
+  font-weight: 500;
+  color: #e0f7fa;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  max-width: 95%;
+}
+.shc-feedback-correct {
+  margin-top: 4px;
+  font-size: 1em;
+  color: #e0f7fa;
+  font-weight: 700;
+}
+
+.shc-action-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  gap: 8px;
+}
+
+.shc-action-btn {
+  flex: 1;
+  background: linear-gradient(90deg,#38bdf8 60%,#23234a 100%);
+  color: #e0f7fa;
+  border: 1.5px solid #38bdf8;
+  border-radius: 10px;
+  font-weight: 700;
+  padding: 12px 0;
+  font-size: 1.08em;
+  box-shadow: 0 1px 6px #23234a22;
+  cursor: pointer;
+  transition: background 0.18s;
+  margin-right: 0;
+  margin-left: 0;
+}
+.shc-back-btn {
+  background: linear-gradient(90deg,#23234a 60%,#38bdf8 100%);
+  border: 1.5px solid #38bdf8;
+  box-shadow: 0 1px 6px #38bdf822;
+}
+
+@media (max-width: 600px) {
+  .shc-card {
+    padding: 18px 4vw 18px 4vw;
+    max-width: 99vw;
+  }
+  .shc-title {
+    font-size: 1.25em;
+  }
+  .shc-prompt {
+    font-size: 1em;
+  }
+}
+
+@keyframes shcFadeSlideIn {
+  0% { opacity: 0; transform: translateY(32px) scale(0.98); }
+  60% { opacity: 1; transform: translateY(-6px) scale(1.03); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes fadeInPop {
+  0% { opacity: 0; transform: scale(0.9); }
+  80% { opacity: 1; transform: scale(1.04); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes shcSelectedPulse {
+  0% { box-shadow: 0 0 0 0 #38bdf855; }
+  60% { box-shadow: 0 0 0 8px #b6f8e033; }
+  100% { box-shadow: 0 4px 18px #38bdf855; }
+}
+
+.shc-question-animate {
+  animation: shcFadeSlideIn 0.7s cubic-bezier(0.4,0.2,0.2,1);
+}
+
+.shc-feedback-visual-card {
+  background: #23234a;
+  border-radius: 18px;
+  box-shadow: 0 2px 16px #b6b8f855;
+  padding: 24px 18px 18px 18px;
+  margin: 18px 0 0 0;
+  color: #e0e7ef;
+  font-size: 1.08em;
+  animation: fadeIn 0.7s;
+}
+.shc-feedback-block {
+  margin-bottom: 16px;
+  padding: 10px 0 0 0;
+  border-left: 4px solid #b6f8e0;
+  padding-left: 14px;
+  background: none;
+}
+.shc-feedback-label {
+  font-weight: 700;
+  color: #b6f8e0;
+  margin-right: 8px;
+  font-size: 1.04em;
+}
+.shc-feedback-user-answer code {
+  background: #1a1a2a;
+  color: #b6f8e0;
+  border-radius: 6px;
+  padding: 2px 7px;
+  font-size: 1.08em;
+}
+.shc-feedback-missing {
+  border-left-color: #fca5a5;
+  background: rgba(252, 165, 165, 0.07);
+}
+.shc-feedback-missing .shc-feedback-label {
+  color: #fca5a5;
+}
+.shc-feedback-extra {
+  border-left-color: #fbbf24;
+  background: rgba(251, 191, 36, 0.07);
+}
+.shc-feedback-extra .shc-feedback-label {
+  color: #fbbf24;
+}
+.shc-feedback-howto {
+  border-left-color: #a5b4fc;
+  background: rgba(165, 180, 252, 0.07);
+}
+.shc-feedback-howto .shc-feedback-label {
+  color: #a5b4fc;
+}
+.shc-feedback-correct-answer {
+  border-left-color: #4ade80;
+  background: rgba(74, 222, 128, 0.07);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.shc-feedback-correct-answer .shc-feedback-label {
+  color: #4ade80;
+}
+.shc-feedback-correct-value {
+  font-size: 1.18em;
+  font-weight: 700;
+  color: #b6f8e0;
+  background: #1a1a2a;
+  border-radius: 6px;
+  padding: 2px 10px;
+  margin-left: 6px;
+}
+.shc-feedback-tip {
+  border-left-color: #b6f8e0;
+  background: rgba(182, 248, 224, 0.07);
+}
+.shc-feedback-tip .shc-feedback-label {
+  color: #b6f8e0;
+}
+.shc-feedback-correct-card {
+  background: linear-gradient(90deg,#b6f8e0 0,#c9b6f8 100%);
+  border-radius: 18px;
+  box-shadow: 0 2px 16px #b6b8f855;
+  padding: 24px 18px 18px 18px;
+  margin: 18px 0 0 0;
+  color: #23234a;
+  font-size: 1.13em;
+  animation: fadeIn 0.7s;
+}
+.shc-feedback-correct-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 1.13em;
+}
+.shc-feedback-icon {
+  font-size: 1.5em;
+  margin-right: 8px;
+}
+.shc-feedback-explanation {
+  color: #b6f8e0;
+  font-size: 0.98em;
+  margin-left: 6px;
+  font-style: italic;
+}
+.shc-feedback-block ul, .shc-feedback-block ol {
+  margin: 6px 0 0 18px;
+  padding-left: 0;
+}
+.shc-feedback-block li {
+  margin-bottom: 2px;
+  font-size: 1em;
+}
+
+.shc-feedback-user-answer-pill {
+  display: inline-block;
+  background: linear-gradient(90deg,#b6f8e0 60%,#38bdf8 100%);
+  color: #23234a;
+  font-weight: 700;
+  font-size: 1.18em;
+  border-radius: 18px;
+  padding: 6px 18px;
+  margin-left: 8px;
+  margin-top: 4px;
+  margin-bottom: 2px;
+  box-shadow: 0 2px 8px #38bdf855;
+  letter-spacing: 0.5px;
+}
+.shc-feedback-user-answer-empty {
+  color: #b6b8f8;
+  font-style: italic;
+  font-size: 1.08em;
+  margin-left: 8px;
+}
+
+/* Add new styles and update existing ones for input area and bracket buttons */
+.shc-input-section {
+  display: flex;
+  flex-direction: column; /* Stack input row and preview vertically */
+  align-items: center;
+  margin-bottom: 15px; /* Consistent margin */
+  width: 100%;
+}
+
+.shc-input-row {
+  display: flex;
+  align-items: center; /* Vertically align input and buttons */
+  gap: 10px; /* Space between input and buttons */
+  width: 100%;
+  justify-content: center; /* Center the row contents */
+  margin-bottom: 10px; /* ADJUSTED: Space before the new bracket button row */
+}
+
+.shc-input { /* Ensure this class matches the input field in the JS */
+  flex-grow: 1; /* Input field takes available space */
+  max-width: 300px; /* Max width for the input field */
+  /* Inherits most styles from the original .shc-input, adding/overriding as needed */
+  width: auto; /* Override width: 100% from original .shc-input if present */
+  font-size: 1.13em;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1.5px solid #38bdf8;
+  background: #23234a;
+  color: #e0f7fa;
+  box-shadow: 0 1px 6px #38bdf822;
+  outline: none;
+  transition: border 0.2s, background 0.2s;
+}
+
+.shc-input:focus {
+  border: 2px solid #38bdf8;
+  background: #2d2d5a;
+}
+
+.shc-bracket-button {
+  padding: 12px 16px; /* Adjusted padding */
+  font-size: 1.13em; /* Match input field font size */
+  font-weight: 700; /* Bold text */
+  border: 1.5px solid #38bdf8;
+  background: #2e2e6b; /* Slightly different background for buttons */
+  color: #e0f7fa;
+  border-radius: 10px; /* Rounded corners, same as input */
+  cursor: pointer;
+  transition: background 0.18s, transform 0.15s, box-shadow 0.18s;
+  flex-shrink: 0; /* Prevent buttons from shrinking */
+  line-height: 1; /* Ensure text is vertically centered */
+  box-shadow: 0 1px 4px #38bdf833;
+}
+
+.shc-bracket-button:hover {
+  background: #38bdf8; /* Brighter background on hover */
+  color: #23234a; /* Darker text on hover for contrast */
+  transform: translateY(-2px); /* Slight lift on hover */
+  box-shadow: 0 3px 8px #38bdf866;
+}
+
+.shc-bracket-button:active {
+  background: #2aaddf; /* Slightly darker for active state */
+  transform: translateY(0px); /* Reset lift on active */
+  box-shadow: 0 1px 2px #38bdf844;
+}
+
+/* NEW: Styles for the row containing the bracket buttons */
+.shc-bracket-buttons-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px; /* Space between the two bracket buttons */
+  width: 100%;
+  margin-bottom: 12px; /* Space before the superscript preview */
+}
+
+.shc-superscript-preview {
+  min-height: 24px;
+  color: #b6f8e0;
+  font-size: 1.13em;
+  margin-top: 8px;
+  text-align: center;
+  letter-spacing: 1px;
+  width: 100%;
+}
+
+/* Responsive adjustments if necessary, though flex-wrap in shc-input-row helps a lot */
+@media (max-width: 480px) {
+  .shc-input-row {
+    /* For very small screens, could force buttons and input onto separate lines if needed */
+    /* e.g., flex-direction: column; */
+    /* However, current flex-wrap and min-widths should handle most cases well. */
+  }
+
+  .shc-prompt {
+    font-size: 1.1em; /* Slightly smaller prompt text on small screens */
+  }
+
+  .shc-feedback-card, .shc-feedback-correct-card, .shc-feedback-incorrect-card {
+    padding: 10px;
+    font-size: 0.9em;
+  }
+}
+
+/* Ensure existing mobile friendliness for other parts of the activity */
+.shc-activity-container {
+  padding: 15px; /* Add some padding for smaller screens */
+  max-width: 100%;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+.shc-title {
+  font-size: 1.8em; /* Adjust title font size for mobile */
+}
+
+.shc-question-area button,
+.shc-navigation button {
+  padding: 10px 15px; /* Ensure buttons are tappable */
+  font-size: 0.95em;
+}
+
+.shc-options button {
+  width: 100%; /* Make option buttons full width for easier tapping */
+  margin-bottom: 8px;
+} 

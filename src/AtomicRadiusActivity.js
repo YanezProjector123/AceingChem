@@ -611,7 +611,7 @@ export default function AtomicRadiusActivityEnhanced({ onBack, onPeriodicTable }
         <div className="en-score-round-display">
           Score: <span className="score-value">{score}</span> | Question: {round}
         </div>
-        <div className="mca-question-prompt">{question.prompt}</div>
+        <div className="mca-prompt">{question.prompt}</div>
         {/* == Question Type Specific UI == */}
         {/* Type: compare (using buttons) */}
         {question.type === 'compare' && question.elements && (

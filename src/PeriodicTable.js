@@ -15,6 +15,7 @@ const CATEGORY_COLORS = {
   'actinide': 'actinide',
 };
 
+// React.memo is used to prevent unnecessary re-renders of the PeriodicTable, which can be a heavy component.
 const PeriodicTable = ({ onBack }) => {
   const [selected, setSelected] = useState(null);
   const [elements, setElements] = useState([]);
@@ -118,4 +119,4 @@ const PeriodicTable = ({ onBack }) => {
   );
 };
 
-export default PeriodicTable;
+export default React.memo(PeriodicTable);

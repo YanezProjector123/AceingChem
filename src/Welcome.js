@@ -31,14 +31,13 @@ export default function Welcome({ onNext }) {
   return (
     <div className="center-container fade-in slide-up" style={{ position: 'relative', overflow: 'hidden', width: '100vw', minHeight: '100vh' }}>
       <div className="global-bg-glow" />
-      {/* Floating chemistry icons */}
-      <div>
-        <span className="floating-chem-icon" style={{ left: '8vw', top: '12vh', fontSize: '3.5em', animationDelay: '0s' }}>🧪</span>
-        <span className="floating-chem-icon" style={{ left: '80vw', top: '18vh', fontSize: '2.7em', animationDelay: '2s' }}>⚗️</span>
-        <span className="floating-chem-icon" style={{ left: '20vw', top: '70vh', fontSize: '3.2em', animationDelay: '1.5s' }}>🧫</span>
-        <span className="floating-chem-icon" style={{ left: '65vw', top: '80vh', fontSize: '2.9em', animationDelay: '3s' }}>🧬</span>
-      </div>
-      <div className="glass-card pop-in" style={{ position: 'relative', zIndex: 2, background: 'rgba(36, 28, 54, 0.93)' }}>
+      {/* Floating chemistry icons - now direct children */}
+      <span className="floating-chem-icon" style={{ left: '8vw', top: '12vh', fontSize: '3.5em', animationDelay: '0s' }}>🧪</span>
+      <span className="floating-chem-icon" style={{ left: '80vw', top: '18vh', fontSize: '2.7em', animationDelay: '2s' }}>⚗️</span>
+      <span className="floating-chem-icon" style={{ left: '20vw', top: '70vh', fontSize: '3.2em', animationDelay: '1.5s' }}>🧫</span>
+      <span className="floating-chem-icon" style={{ left: '65vw', top: '80vh', fontSize: '2.9em', animationDelay: '3s' }}>🧬</span>
+      
+      <div className="glass-card pop-in" style={{ position: 'relative', zIndex: 2, background: 'rgba(36, 28, 54, 0.93)', margin: 'auto' }}>
           {/* Border glow animation */}
         <div style={{ position: 'absolute', top: -8, left: -8, right: -8, bottom: -8, borderRadius: 44, zIndex: 4, pointerEvents: 'none', background: 'conic-gradient(from 0deg, #38bdf8, #a5b4fc, #ff5ca7, #38bdf8)', filter: 'blur(14px) brightness(1.5)', opacity: 0.35, animation: 'borderGlowSpin 7s linear infinite' }} />
         <div className="welcome-flask-anim" style={{ fontSize: '4.2em', marginBottom: 10 }}>🧪</div>
@@ -61,8 +60,18 @@ export default function Welcome({ onNext }) {
           <div style={{ background: 'linear-gradient(135deg, #1e293b 60%, #0f172a 100%)', borderRadius: 24, boxShadow: '0 8px 32px #a259ec55', padding: '32px 24px', maxWidth: 420, width: '90vw', color: '#fff', position: 'relative', animation: 'popIn 0.5s var(--bubbly)' }} onClick={e => e.stopPropagation()}>
             <h3 style={{ color: '#a5b4fc', fontWeight: 800, fontSize: '1.3em', marginBottom: 12 }}>Update Log</h3>
             <div style={{ fontSize: '1.05em', lineHeight: 1.5 }}>
-              {/* You can render the update log here, or import from a file */}
-              <b>2024-06:</b> Major UI overhaul!<br />- Bubbly, animated, mobile-first design.<br />- Chemistry icons and floating effects.<br />- Smoother transitions and more!
+              <b>Recent Updates (Post-June Major Update):</b><br />
+              - Mole-to-Mole Activity: Significantly expanded question pool with diverse chemical equations and conversion types for a more challenging and less repetitive experience.<br />
+              - Mole-to-Mole Feedback: Enhanced feedback system – messages now persist until 'Next Question', detailed explanations are clearer, and the UI is more polished.<br />
+              - Mole-to-Mole Feedback: Themed feedback box to align with the website's dark UI aesthetic.<br />
+              <br />
+              <b>2024-06:</b> Major update!<br />
+              - Complete UI redesign: bubbly, animated, and mobile-first.<br />
+              - Added full Electron Configuration activities (longhand & shorthand practice).<br />
+              - New chemistry icons and floating effects.<br />
+              - Smoother transitions and new animations.<br />
+              - Performance improvements and bug fixes.<br />
+              - Improved mobile experience and layout fixes.<br />
             </div>
             <button className="ptable-btn" style={{ marginTop: 18 }} onClick={() => setShowUpdateLog(false)}>Close</button>
           </div>

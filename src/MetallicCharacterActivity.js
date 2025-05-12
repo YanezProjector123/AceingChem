@@ -405,11 +405,11 @@ const MetallicCharacterActivity = ({ onBack, onShowPeriodicTable }) => {
     return (
       <div className="mca-activity-root center-container fade-in slide-up">
         <div className="mca-question-card glass-card">
-          <h2 className="ptable-title">Review Missed Questions</h2>
+          <h2 className="ptable-title">Metallic Character Activity</h2>
           <div className="en-score-round-display">
             Missed: {reviewIndex + 1} / {missedQuestions.length}
           </div>
-          <div className="mca-question-prompt">{q.question}</div>
+          <div className="mca-prompt">{q.question}</div>
           <form onSubmit={e => {
             e.preventDefault();
             if (!userAnswer || showFeedback) return;
@@ -461,7 +461,7 @@ const MetallicCharacterActivity = ({ onBack, onShowPeriodicTable }) => {
                 </div>
               )
             )}
-            <button className="mca-btn" type="submit" disabled={showFeedback || !userAnswer} style={{ marginTop: 18 }}>Submit</button>
+            <button className="mca-submit-btn" type="submit" disabled={showFeedback || !userAnswer} style={{ marginTop: 18 }}>Submit</button>
           </form>
           {showFeedback && feedback && (
             <div className={`mca-feedback ${feedback.type}`}>{feedback.message}</div>
@@ -480,8 +480,8 @@ const MetallicCharacterActivity = ({ onBack, onShowPeriodicTable }) => {
   }
   if (!question || question.type === 'error') {
     return (
-      <div className="center-container fade-in slide-up">
-        <div className="glass-card">
+      <div className="mca-activity-root center-container fade-in slide-up">
+        <div className="mca-question-card glass-card">
           <h2 className="ptable-title">Metallic Character Activity</h2>
           <div className="en-activity-root error-message">
             <h2>Error</h2>
@@ -505,7 +505,7 @@ const MetallicCharacterActivity = ({ onBack, onShowPeriodicTable }) => {
         <div className="en-score-round-display">
           Score: <span className="score-value">{score}</span> | Question: {round}
         </div>
-        <div className="mca-question-prompt">{question.question}</div>
+        <div className="mca-prompt">{question.question}</div>
         <form onSubmit={handleSubmit} className="mca-answer-form">
           {/* Render pill-style options for all except rank/select */}
           {selectTypes.includes(question.type) && Array.isArray(question.options) ? (
@@ -536,7 +536,7 @@ const MetallicCharacterActivity = ({ onBack, onShowPeriodicTable }) => {
               ))}
             </div>
           )}
-          <button className="mca-btn" type="submit" disabled={showFeedback || isLoading || !userAnswer} style={{ marginTop: 18 }}>Submit</button>
+          <button className="mca-submit-btn" type="submit" disabled={showFeedback || isLoading || !userAnswer} style={{ marginTop: 18 }}>Submit</button>
         </form>
         {showFeedback && feedback && (
           <div className={`mca-feedback ${feedback.type}`}>{feedback.message}<br /><span>{feedback.explanation}</span></div>

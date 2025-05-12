@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense, lazy } from 'react';
 import Welcome from './Welcome';
 import Topics from './Topics';
 import IonicNameToFormula from './IonicNameToFormula';
@@ -16,8 +16,15 @@ import TransitionMetalIonicTutorial from './TransitionMetalIonicTutorial';
 import TransitionMetalIonicActivity from './TransitionMetalIonicActivity';
 import TransitionMetalFormulaToNameActivity from './TransitionMetalFormulaToNameActivity';
 import AtomicRadiusActivity from './AtomicRadiusActivity';
-import IonizationEnergyActivity from './IonizationEnergyActivity';
 import PrefixPracticeActivity from './PrefixPracticeActivity';
+import ShortHandConfigActivity from './ShortHandConfigActivity';
+import ElectronegativityActivity from './ElectronegativityActivity';
+import MetallicCharacterActivity from './MetallicCharacterActivity';
+import LongHandConfigActivity from './LongHandConfigActivity';
+import IdentifyElementActivity from './IdentifyElementActivity';
+import ElectronConfigExceptionsActivity from './ElectronConfigExceptionsActivity';
+import MoleToMoleActivity from './MoleToMoleActivity';
+const IonizationEnergyActivity = lazy(() => import('./IonizationEnergyActivity'));
 
 
 
@@ -25,7 +32,6 @@ import PrefixPracticeActivity from './PrefixPracticeActivity';
 function App() {
   const [screen, setScreen] = useState('welcome');
   const [fade, setFade] = useState(true);
-  const [periodicActivity, setPeriodicActivity] = useState(null);
   // historyStack now stores objects: {screen, state}
   const [historyStack, setHistoryStack] = useState([]);
   // For Atomic Radius menu/activities
@@ -35,6 +41,12 @@ function App() {
   const [covalentNamingState, setCovalentNamingState] = useState({});
   const [ionicFormulaState, setIonicFormulaState] = useState({});
   const [covalentFormulaState, setCovalentFormulaState] = useState({});
+  // Add state for ShortHandConfigActivity
+  const [shConfigState, setShConfigState] = useState(null);
+  const [longConfigState, setLongConfigState] = useState(null);
+  const [identifyElementState, setIdentifyElementState] = useState(null);
+  const [electronConfigExceptionsState, setElectronConfigExceptionsState] = useState(null);
+  const [moleToMoleState, setMoleToMoleState] = useState(null);
 
   // Helper for smooth fade transitions
   const handleTransition = (nextScreen) => {
@@ -53,9 +65,26 @@ function App() {
 
   // Periodic Activity Handler
   const handlePeriodicActivity = (activity) => {
-    console.log(`Setting Periodic Activity: ${activity}`);
-    setPeriodicActivity(activity);
-    handleTransition('topics');
+    if (activity === 'atomic-radius') setScreen('atomicRadiusActivity');
+    else if (activity === 'ionization-energy') setScreen('ionizationEnergyActivity');
+    else if (activity === 'electronegativity') setScreen('electronegativityActivity');
+    else if (activity === 'metallic-character') setScreen('metallicCharacterActivity');
+    else if (activity === 'noble-gas-config') setScreen('shorthandConfigActivity');
+    else if (activity === 'covalent-formula-to-name') setScreen('covalentFormulaToNameActivity');
+    else if (activity === 'ionic-formula-to-name') setScreen('ionicFormulaToNameActivity');
+    else if (activity === 'ionic-name-to-formula') setScreen('ionicNameToFormulaActivity');
+    else if (activity === 'covalent-name-to-formula') setScreen('covalentNameToFormulaActivity');
+    else if (activity === 'covalent-formula-to-name') setScreen('covalentFormulaToNameActivity');
+    else if (activity === 'prefix-practice') setScreen('prefixPracticeActivity');
+    else if (activity === 'transition-metal-ionic-tutorial') setScreen('transitionMetalIonicTutorial');
+    else if (activity === 'transition-metal-ionic') setScreen('transitionMetalIonicActivity');
+    else if (activity === 'transition-metal-formula-to-name') setScreen('transitionMetalFormulaToNameActivity');
+    else if (activity === 'ionization-energy') setScreen('ionizationEnergyActivity');
+    else if (activity === 'long-hand-config') setScreen('longHandConfigActivity');
+    else if (activity === 'identify-element') setScreen('identifyElementActivity');
+    else if (activity === 'electron-config-exceptions') setScreen('electronConfigExceptionsActivity');
+    else if (activity === 'mole-to-mole') setScreen('moleToMoleActivity');
+    else setScreen('topics');
   };
 
   // Restore the previous screen and state
@@ -71,6 +100,16 @@ function App() {
         setIonicFormulaState(last.state || {});
       } else if (last.screen === 'covalentFormulaInstructions') {
         setCovalentFormulaState(last.state || {});
+      } else if (last.screen === 'shorthandConfigActivity') {
+        setShConfigState(last.state || null);
+      } else if (last.screen === 'longHandConfigActivity') {
+        setLongConfigState(last.state || null);
+      } else if (last.screen === 'identifyElementActivity') {
+        setIdentifyElementState(last.state || null);
+      } else if (last.screen === 'electronConfigExceptionsActivity') {
+        setElectronConfigExceptionsState(last.state || null);
+      } else if (last.screen === 'moleToMoleActivity') {
+        setMoleToMoleState(last.state || null);
       }
       handleTransition(last.screen);
     } else {
@@ -99,6 +138,8 @@ function App() {
           onTransitionMetalIonicActivity={() => setScreen('transitionMetalIonicActivity')}
           onTransitionMetalFormulaToNameActivity={() => setScreen('transitionMetalFormulaToNameActivity')}
           onIonizationEnergyActivity={() => setScreen('ionizationEnergyActivity')}
+          onLongHandConfigActivity={() => setScreen('longHandConfigActivity')}
+          onPeriodicActivity={handlePeriodicActivity}
         />
       )}
       {screen === 'ionicNamingInstructions' && (
@@ -189,17 +230,101 @@ function App() {
         />
       )}
       {screen === 'ionizationEnergyActivity' && (
-        <IonizationEnergyActivity
-          onBack={() => setScreen('topics')}
-          onPeriodicTable={() => { 
-            setHistoryStack(h => [...h, {screen: 'ionizationEnergyActivity'}]); 
-            handleTransition('ptable'); 
-          }}
-        />
+        <Suspense fallback={<div style={{color:'#fff',textAlign:'center',marginTop:40}}>Loading Activity...</div>}>
+          <IonizationEnergyActivity
+            onBack={() => setScreen('topics')}
+            onPeriodicTable={() => { 
+              setHistoryStack(h => [...h, {screen: 'ionizationEnergyActivity'}]); 
+              handleTransition('ptable'); 
+            }}
+          />
+        </Suspense>
       )}
       {screen === 'prefixPracticeActivity' && (
         <PrefixPracticeActivity
           onBack={() => setScreen('topics')}
+        />
+      )}
+      {screen === 'shorthandConfigActivity' && (
+        <ShortHandConfigActivity
+          onBack={() => setScreen('topics')}
+          onPeriodicTable={() => {
+            setShConfigState({
+              remaining: shConfigState?.remaining,
+              used: shConfigState?.used,
+              usedTypes: shConfigState?.usedTypes,
+              question: shConfigState?.question,
+              userAnswer: shConfigState?.userAnswer,
+              feedback: shConfigState?.feedback,
+              showFeedback: shConfigState?.showFeedback
+            });
+            setHistoryStack(h => [...h, {screen: 'shorthandConfigActivity', state: shConfigState}]);
+            handleTransition('ptable');
+          }}
+          savedState={shConfigState}
+          setSavedState={setShConfigState}
+        />
+      )}
+      {screen === 'electronegativityActivity' && (
+        <ElectronegativityActivity
+          onBack={() => setScreen('topics')}
+          onShowPeriodicTable={() => { setHistoryStack(h => [...h, {screen: 'electronegativityActivity'}]); handleTransition('ptable'); }}
+        />
+      )}
+      {screen === 'metallicCharacterActivity' && (
+        <MetallicCharacterActivity
+          onBack={() => setScreen('topics')}
+          onShowPeriodicTable={() => { setHistoryStack(h => [...h, {screen: 'metallicCharacterActivity'}]); handleTransition('ptable'); }}
+        />
+      )}
+      {screen === 'longHandConfigActivity' && (
+        <LongHandConfigActivity
+          onBack={() => setScreen('topics')}
+          onPeriodicTable={() => {
+            setLongConfigState({
+              remaining: longConfigState?.remaining,
+              used: longConfigState?.used,
+              usedTypes: longConfigState?.usedTypes,
+              question: longConfigState?.question,
+              userAnswer: longConfigState?.userAnswer,
+              feedback: longConfigState?.feedback,
+              showFeedback: longConfigState?.showFeedback
+            });
+            setHistoryStack(h => [...h, {screen: 'longHandConfigActivity', state: longConfigState}]);
+            handleTransition('ptable');
+          }}
+          savedState={longConfigState}
+          setSavedState={setLongConfigState}
+        />
+      )}
+      {screen === 'identifyElementActivity' && (
+        <IdentifyElementActivity
+          onBack={() => setScreen('topics')}
+          onPeriodicTable={() => { 
+            setHistoryStack(h => [...h, {screen: 'identifyElementActivity', state: identifyElementState}]); 
+            handleTransition('ptable');
+          }}
+          savedState={identifyElementState}
+          setSavedState={setIdentifyElementState}
+        />
+      )}
+      {screen === 'electronConfigExceptionsActivity' && (
+        <ElectronConfigExceptionsActivity
+          onBack={() => setScreen('topics')}
+          onPeriodicTable={() => { 
+            setHistoryStack(h => [...h, {screen: 'electronConfigExceptionsActivity', state: electronConfigExceptionsState}]); 
+            handleTransition('ptable');
+          }}
+          savedState={electronConfigExceptionsState}
+          setSavedState={setElectronConfigExceptionsState}
+        />
+      )}
+      {screen === 'moleToMoleActivity' && (
+        <MoleToMoleActivity
+          onBack={handlePTableBack}
+          onPeriodicTable={() => goToPeriodicTable('moleToMoleActivity', moleToMoleState)}
+          savedState={moleToMoleState}
+          setSavedState={(s) => setMoleToMoleState(s)}
         />
       )}
     </div>

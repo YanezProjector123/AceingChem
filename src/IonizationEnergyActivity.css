@@ -1,67 +1,144 @@
 /* === Base Styles (Keep and Refine) === */
 .ie-activity-root {
+  min-height: 100vh;
+  width: 100vw;
+  background: linear-gradient(120deg, #23234a 0%, #3b3b6d 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  overflow: auto;
+}
+
+.glass-card {
   max-width: 600px;
-  margin: 40px auto; /* More vertical margin */
-  padding: 20px;
-  background: #1e1a36; /* Slightly different dark purple */
-  border-radius: 18px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); /* Add subtle shadow */
-  color: #e0e0ff; /* Default text color */
+  width: 98vw;
+  margin: 32px auto;
+  padding: 32px 20px 28px 20px;
+  border-radius: 22px;
+  box-shadow: 0 8px 40px #23234a99, 0 1.5px 0 #fff1;
+  background: linear-gradient(120deg, #23234a 60%, #38405a 100%);
+  border: 1.5px solid #38bdf8;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 }
 
-.ie-question-card {
-  background: rgba(40, 40, 80, 0.8); /* Slightly more transparent */
-  border-radius: 14px;
-  padding: 24px;
-  margin: 20px 0;
-  border: 1px solid #4c1d95; /* Add subtle border */
+.ptable-title {
+  text-align: center;
+  font-size: 2em;
+  margin-bottom: 18px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  color: #e0f7fa;
+  text-shadow: 0 2px 18px #38bdf8aa, 0 1px 0 #23234a;
 }
-
-/* Score/Round styling (Added) */
-.ie-score-round {
- margin: 5px 0 15px 0;
- font-size: 0.95em;
- color: #a5b4fc;
- font-weight: 600;
- letter-spacing: 0.5px;
- text-align: center;
-}
-.ie-score-round span {
-    color: #fde047;
-    font-weight: 700;
-}
-
 
 .ie-question-prompt {
-  margin: 0 0 24px 0; /* Increased bottom margin */
-  font-size: 1.15em; /* Slightly larger */
-  color: #fff;
-  line-height: 1.5; /* Improve readability */
-  font-weight: 500; /* Normal weight */
+  font-weight: 700;
+  font-size: 1.13em;
+  margin-bottom: 18px;
+  color: #e0f7fa;
   text-align: center;
+  letter-spacing: 0.2px;
 }
 
-.ie-select {
+.ie-input, .ie-select {
   width: 100%;
-  padding: 12px 15px; /* More padding */
-  margin-bottom: 20px;
-  border-radius: 8px;
-  background: #2a234a; /* Darker background */
-  color: #fff;
-  border: 1px solid #7c3aed; /* Purple border */
-  font-size: 1.05em;
-  cursor: pointer;
-  appearance: none; /* Remove default arrow */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='%23a5b4fc' class='w-6 h-6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5' /%3E%3C/svg%3E%0A"); /* Custom arrow */
-  background-repeat: no-repeat;
-  background-position: right 15px center;
-  background-size: 1.2em;
+  font-size: 1.13em;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1.5px solid #38bdf8;
+  margin-bottom: 12px;
+  background: #23234a;
+  color: #e0f7fa;
+  box-shadow: 0 1px 6px #38bdf822;
+  outline: none;
+  transition: border 0.2s, background 0.2s;
 }
-.ie-select:focus {
-    outline: 2px solid #a5b4fc;
-    outline-offset: 2px;
+.ie-input:focus, .ie-select:focus {
+  border: 2px solid #38bdf8;
+  background: #2d2d5a;
 }
 
+.ie-answer-group label {
+  color: #e0f7fa;
+}
+
+.ie-choice-button, .ie-button, .ie-button-submit, .ie-button-next, .ie-periodic-table-button, .ie-button-back {
+  width: 100%;
+  margin-top: 12px;
+  font-size: 1.13em;
+  padding: 14px 0;
+  border-radius: 12px;
+  background: linear-gradient(90deg,#38bdf8 60%,#23234a 100%);
+  color: #e0f7fa;
+  font-weight: 800;
+  border: none;
+  box-shadow: 0 2px 8px #38bdf855;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.ie-choice-button.selected, .ie-choice-button:focus {
+  border: 2.5px solid #38bdf8;
+  background: linear-gradient(90deg,#38bdf8 60%,#23234a 100%);
+  color: #23234a;
+  box-shadow: 0 2px 12px #38bdf855;
+}
+.ie-choice-button:disabled, .ie-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ie-feedback {
+  text-align: center;
+  margin-bottom: 18px;
+  font-weight: 700;
+  font-size: 1.13em;
+  letter-spacing: 0.2px;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px #23234a22;
+  padding: 12px 0 8px 0;
+  animation: fadeInPop .5s;
+  border: 1.5px solid #38bdf8;
+  background: #23234a;
+  color: #e0f7fa;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.ie-feedback.correct {
+  border: 1.5px solid #059669;
+  background: linear-gradient(90deg,#059669 60%,#23234a 100%);
+  color: #e0f7fa;
+}
+.ie-feedback.incorrect {
+  border: 1.5px solid #dc2626;
+  background: linear-gradient(90deg,#dc2626 60%,#23234a 100%);
+  color: #fff;
+}
+
+@media (max-width: 600px) {
+  .glass-card {
+    padding: 18px 4vw 18px 4vw;
+    max-width: 99vw;
+  }
+  .ptable-title {
+    font-size: 1.25em;
+  }
+  .ie-question-prompt {
+    font-size: 1em;
+  }
+}
+
+@keyframes fadeInPop {
+  0% { opacity: 0; transform: scale(0.9); }
+  80% { opacity: 1; transform: scale(1.04); }
+  100% { opacity: 1; transform: scale(1); }
+}
 
 /* === Answer Group Styling (Major Fixes) === */
 .ie-answer-group {
@@ -238,3 +315,121 @@
 .ie-element-info { ... }
 .ie-question-data { ... }
 */
+
+/* === Responsive & Mobile Friendly === */
+@media (max-width: 600px) {
+  .glass-card, .ie-activity-root {
+    max-width: 98vw;
+    padding: 10px 2vw;
+    border-radius: 10px;
+    margin: 10px auto;
+  }
+  .center-container {
+    padding: 0;
+    margin: 0;
+    min-width: 100vw;
+    min-height: 100vh;
+    box-sizing: border-box;
+  }
+  .ie-question-prompt {
+    font-size: 1em;
+    padding: 0 2vw;
+  }
+  .ie-score-round-display {
+    font-size: 0.98em;
+    padding: 0 2vw;
+  }
+  .ie-input {
+    width: 98vw !important;
+    max-width: 98vw !important;
+    font-size: 1em;
+    margin: 12px 0 6px 0 !important;
+    padding: 10px 8px !important;
+  }
+  .ie-answer-form {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    padding: 0 2vw;
+  }
+  .subscript-buttons {
+    gap: 4px !important;
+    margin-bottom: 10px !important;
+  }
+  .subscript-btn {
+    width: 30px !important;
+    min-width: 30px !important;
+    font-size: 1em !important;
+    padding: 5px 0 !important;
+  }
+}
+
+/* Subscript button style for both desktop and mobile */
+.subscript-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+.subscript-btn {
+  width: 36px;
+  min-width: 36px;
+  padding: 6px 0;
+  font-size: 1.1em;
+  margin: 0;
+  background: #23234a;
+  color: #a5b4fc;
+  border: 1px solid #38bdf8;
+  border-radius: 6px;
+  box-shadow: none;
+  transition: background 0.18s, color 0.18s;
+}
+.subscript-btn:active, .subscript-btn:focus {
+  background: #38bdf8;
+  color: #23234a;
+}
+
+/* Ensure .glass-card is always centered and responsive */
+.glass-card {
+  margin: 0 auto;
+  max-width: 600px;
+  width: 100%;
+  background: rgba(30,26,54,0.95);
+  border-radius: 18px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+  padding: 24px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.center-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+  width: 100vw;
+  box-sizing: border-box;
+  background: none;
+}
+
+.ie-answer-form {
+  width: 100%;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.ie-input {
+  width: 100%;
+  max-width: 340px;
+  font-size: 1.1em;
+  margin: 18px 0 8px 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1.5px solid #38bdf8;
+  text-align: left;
+}
