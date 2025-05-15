@@ -163,49 +163,32 @@ export default function IonicFormulaInstructions({ onBack, onPeriodicTable, save
                 boxSizing: 'border-box',
               }}>
                 <div style={{
-                  overflowX: 'auto',
-                  WebkitOverflowScrolling: 'touch',
+                  flexWrap: 'wrap',
                   background: '#fff',
                   borderRadius: 10,
                   border: '1.5px solid #b6f8e0',
-                  padding: '6px 0 6px 6px',
+                  padding: '6px',
                   display: 'flex',
                   flexDirection: 'row',
+                  justifyContent: 'center',
                   gap: 8,
                   minHeight: 54,
                   alignItems: 'center',
                   boxShadow: '0 2px 8px #b6f8e022',
                   width: '100%',
-                  whiteSpace: 'nowrap',
                   boxSizing: 'border-box',
-                  scrollbarColor: '#b6f8e0 #fff',
-                  scrollbarWidth: 'thin',
                 }}>
                   {['₀','₁','₂','₃','₄','₅','₆','₇','₈','₉'].map((sub, idx) => (
                     <button
                       key={sub}
                       type="button"
                       className="ptable-btn"
-                      style={{ minWidth: 44, minHeight: 38, fontSize: '1.5em', color: '#23234a', background: '#e0f7fa', border: '1.5px solid #b6f8e0', borderRadius: 8, margin: 0, padding: 0, flex: '0 0 auto', fontWeight: 700 }}
+                      style={{ minWidth: 44, minHeight: 38, fontSize: '1.5em', color: '#23234a', background: '#e0f7fa', border: '1.5px solid #b6f8e0', borderRadius: 8, margin: 0, padding: 0, fontWeight: 700 }}
                       onClick={() => insertSubscript(sub)}
                       tabIndex={-1}
                     >{sub}</button>
                   ))}
-                  {/* Right arrow icon as scroll cue */}
-                  <span style={{ display: 'inline-block', minWidth: 24, height: 38, verticalAlign: 'middle', marginLeft: 6, color: '#b6f8e0', fontSize: '1.5em', userSelect: 'none', pointerEvents: 'none' }}>→</span>
                 </div>
-                {/* Fade gradient overlay for scroll cue */}
-                <div style={{
-                  pointerEvents: 'none',
-                  position: 'absolute',
-                  top: 0,
-                  right: 0,
-                  width: 36,
-                  height: '100%',
-                  background: 'linear-gradient(to right, rgba(255,255,255,0) 0%, #fff 80%)',
-                  borderRadius: '0 10px 10px 0',
-                  zIndex: 2,
-                }} />
               </div>
               <div className="button-row">
                 <button className="ptable-btn" type="submit">Submit</button>

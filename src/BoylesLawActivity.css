@@ -1,0 +1,13 @@
+/* Boyles Law Activity Modern Styles */
+@import './GasLawActivityBase.css';
+
+.boyle-root { composes: gaslaw-root; }
+.boyle-title { composes: gaslaw-title; }
+.boyle-card { composes: gaslaw-card; }
+.boyle-form { composes: gaslaw-form; }
+.boyle-input { composes: gaslaw-input; }
+.boyle-btn { composes: gaslaw-btn; }
+.boyle-feedback { composes: gaslaw-feedback; }
+.boyle-action-row { composes: gaslaw-action-row; }
+.boyle-back-btn { composes: gaslaw-back-btn; }
+.boyle-ptable-btn { composes: gaslaw-ptable-btn; }

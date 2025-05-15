@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import './ShortHandConfigActivity.css'; // Reusing styles for now, can create a dedicated one later
+import './StoichiometryActivity.css'; // UPDATED IMPORT
 
 // Helper to shuffle array for random question selection
 const shuffleArray = (array) => {
@@ -213,6 +213,136 @@ const MOLE_CONVERSION_PROBLEMS = [
         { from: 'Na3PO4', to: 'NaCl', text: (moles) => `If ${moles} moles of Na₃PO₄ react, how many moles of NaCl are formed?` },
     ]
   },
+  // ----- NEW EQUATIONS START HERE -----
+  {
+    equation: "2 Al(OH)₃ + 3 H₂SO₄ → Al₂(SO₄)₃ + 6 H₂O", // Acid-Base Neutralization
+    stoichiometry: { AlOH3: 2, H2SO4: 3, Al2SO4_3: 1, H2O: 6 }, // Key Al(OH)3 as AlOH3, Al2(SO4)3 as Al2SO4_3
+    questionTypes: [
+      { from: 'AlOH3', to: 'H2O', text: (moles) => `If ${moles} moles of Al(OH)₃ react, how many moles of H₂O are formed?` },
+      { from: 'H2SO4', to: 'Al2SO4_3', text: (moles) => `Reaction of ${moles} moles of H₂SO₄ will produce how many moles of Al₂(SO₄)₃?` },
+      { from: 'Al2SO4_3', to: 'AlOH3', text: (moles) => `To produce ${moles} moles of Al₂(SO₄)₃, how many moles of Al(OH)₃ are needed?` },
+      { from: 'H2O', to: 'H2SO4', text: (moles) => `Formation of ${moles} moles of H₂O requires how many moles of H₂SO₄?` },
+    ]
+  },
+  {
+    equation: "C₂H₄ + 3 O₂ → 2 CO₂ + 2 H₂O", // Ethene Combustion
+    stoichiometry: { C2H4: 1, O2: 3, CO2: 2, H2O: 2 },
+    questionTypes: [
+      { from: 'C2H4', to: 'CO2', text: (moles) => `Combustion of ${moles} moles of ethene (C₂H₄) produces how many moles of CO₂?` },
+      { from: 'O2', to: 'H2O', text: (moles) => `If ${moles} moles of O₂ are used to burn ethene, how many moles of H₂O are formed?` },
+      { from: 'CO2', to: 'C2H4', text: (moles) => `To produce ${moles} moles of CO₂ from ethene combustion, how much C₂H₄ was burned?` },
+    ]
+  },
+  {
+    equation: "2 NaBr + Cl₂ → 2 NaCl + Br₂", // Single Displacement (Halogen)
+    stoichiometry: { NaBr: 2, Cl2: 1, NaCl: 2, Br2: 1 },
+    questionTypes: [
+      { from: 'NaBr', to: 'NaCl', text: (moles) => `If ${moles} moles of NaBr react with chlorine, how many moles of NaCl are formed?` },
+      { from: 'Cl2', to: 'Br2', text: (moles) => `Reaction of ${moles} moles of Cl₂ will produce how many moles of Br₂?` },
+      { from: 'Br2', to: 'NaBr', text: (moles) => `To produce ${moles} moles of Br₂, how many moles of NaBr are required?` },
+    ]
+  },
+  {
+    equation: "H₂ + Cl₂ → 2 HCl", // Hydrogen and Chlorine Synthesis
+    stoichiometry: { H2: 1, Cl2: 1, HCl: 2 },
+    questionTypes: [
+      { from: 'H2', to: 'HCl', text: (moles) => `How many moles of HCl are produced from ${moles} moles of H₂ reacting with Cl₂?` },
+      { from: 'Cl2', to: 'HCl', text: (moles) => `If ${moles} moles of Cl₂ react with H₂, how many moles of HCl are formed?` },
+      { from: 'HCl', to: 'H2', text: (moles) => `To produce ${moles} moles of HCl, how many moles of H₂ are needed?` },
+    ]
+  },
+  {
+    equation: "2 HgO → 2 Hg + O₂", // Mercury(II) Oxide Decomposition
+    stoichiometry: { HgO: 2, Hg: 2, O2: 1 },
+    questionTypes: [
+      { from: 'HgO', to: 'Hg', text: (moles) => `Decomposition of ${moles} moles of HgO produces how many moles of Hg?` },
+      { from: 'HgO', to: 'O2', text: (moles) => `How many moles of O₂ are formed from the decomposition of ${moles} moles of HgO?` },
+      { from: 'O2', to: 'HgO', text: (moles) => `To produce ${moles} moles of O₂, how many moles of HgO must decompose?` },
+    ]
+  },
+  {
+    equation: "BaCl₂ + Na₂SO₄ → BaSO₄ + 2 NaCl", // Precipitation Reaction
+    stoichiometry: { BaCl2: 1, Na2SO4: 1, BaSO4: 1, NaCl: 2 },
+    questionTypes: [
+      { from: 'BaCl2', to: 'BaSO4', text: (moles) => `If ${moles} moles of BaCl₂ react, how many moles of BaSO₄ precipitate?` },
+      { from: 'Na2SO4', to: 'NaCl', text: (moles) => `Reaction of ${moles} moles of Na₂SO₄ produces how many moles of NaCl?` },
+      { from: 'BaSO4', to: 'Na2SO4', text: (moles) => `Formation of ${moles} moles of BaSO₄ implies how many moles of Na₂SO₄ reacted?` },
+    ]
+  },
+  {
+    equation: "NH₄NO₃ → N₂O + 2 H₂O", // Ammonium Nitrate Decomposition
+    stoichiometry: { NH4NO3: 1, N2O: 1, H2O: 2 },
+    questionTypes: [
+      { from: 'NH4NO3', to: 'N2O', text: (moles) => `Decomposition of ${moles} moles of NH₄NO₃ produces how many moles of N₂O?` },
+      { from: 'NH4NO3', to: 'H2O', text: (moles) => `How many moles of H₂O are formed from ${moles} moles of NH₄NO₃ decomposing?` },
+    ]
+  },
+  {
+    equation: "C₆H₆ + Cl₂ → C₆H₅Cl + HCl", // Benzene Chlorination (Simplified)
+    stoichiometry: { C6H6: 1, Cl2: 1, C6H5Cl: 1, HCl: 1 },
+    questionTypes: [
+      { from: 'C6H6', to: 'C6H5Cl', text: (moles) => `Chlorination of ${moles} moles of benzene (C₆H₆) produces how many moles of C₆H₅Cl?` },
+      { from: 'Cl2', to: 'HCl', text: (moles) => `If ${moles} moles of Cl₂ are used to chlorinate benzene, how many moles of HCl are formed?` },
+    ]
+  },
+  {
+    equation: "2 KBr + I₂ → 2 KI + Br₂", // Halogen displacement (less reactive I2)
+    stoichiometry: { KBr: 2, I2: 1, KI: 2, Br2: 1 }, // Note: This reaction typically does not proceed spontaneously as written.
+    questionTypes: [
+        { from: 'KBr', to: 'KI', text: (moles) => `If ${moles} moles of KBr react, how many moles of KI could be formed (theoretically)?` },
+        { from: 'I2', to: 'Br2', text: (moles) => `Reaction of ${moles} moles of I₂ would produce how many moles of Br₂ (theoretically)?` },
+    ]
+  },
+  {
+    equation: "SiO₂ + 2 C → Si + 2 CO", // Silicon production from sand
+    stoichiometry: { SiO2: 1, C: 2, Si: 1, CO: 2 },
+    questionTypes: [
+      { from: 'SiO2', to: 'Si', text: (moles) => `Reduction of ${moles} moles of SiO₂ with carbon yields how many moles of Si?` },
+      { from: 'C', to: 'CO', text: (moles) => `If ${moles} moles of C are used to reduce SiO₂, how many moles of CO are produced?` },
+    ]
+  },
+  {
+    equation: "Pb(NO₃)₂ + 2 KI → PbI₂ + 2 KNO₃", // Lead(II) Iodide Precipitation
+    stoichiometry: { PbNO3_2: 1, KI: 2, PbI2: 1, KNO3: 2 }, // Key Pb(NO3)2 as PbNO3_2
+    questionTypes: [
+      { from: 'PbNO3_2', to: 'PbI2', text: (moles) => `If ${moles} moles of Pb(NO₃)₂ react, how many moles of PbI₂ precipitate?` },
+      { from: 'KI', to: 'KNO3', text: (moles) => `Reaction of ${moles} moles of KI produces how many moles of KNO₃?` },
+      { from: 'PbI2', to: 'KI', text: (moles) => `To precipitate ${moles} moles of PbI₂, how many moles of KI are needed?` },
+    ]
+  },
+  {
+    equation: "2 HCl + Mg(OH)₂ → MgCl₂ + 2 H₂O", // Acid-Base Neutralization
+    stoichiometry: { HCl: 2, MgOH2: 1, MgCl2: 1, H2O: 2 }, // Key Mg(OH)2 as MgOH2
+    questionTypes: [
+      { from: 'HCl', to: 'H2O', text: (moles) => `Neutralization of Mg(OH)₂ with ${moles} moles of HCl produces how many moles of H₂O?` },
+      { from: 'MgOH2', to: 'MgCl2', text: (moles) => `If ${moles} moles of Mg(OH)₂ react, how many moles of MgCl₂ are formed?` },
+    ]
+  },
+  {
+    equation: "C₅H₁₂ + 8 O₂ → 5 CO₂ + 6 H₂O", // Pentane Combustion
+    stoichiometry: { C5H12: 1, O2: 8, CO2: 5, H2O: 6 },
+    questionTypes: [
+      { from: 'C5H12', to: 'CO2', text: (moles) => `Combustion of ${moles} moles of pentane (C₅H₁₂) produces how many moles of CO₂?` },
+      { from: 'O2', to: 'H2O', text: (moles) => `If ${moles} moles of O₂ are consumed to burn pentane, how many moles of H₂O are formed?` },
+    ]
+  },
+  {
+    equation: "H₂SO₄ + 2 NaOH → Na₂SO₄ + 2 H₂O", // Sulfuric Acid and Sodium Hydroxide
+    stoichiometry: { H2SO4: 1, NaOH: 2, Na2SO4: 1, H2O: 2 },
+    questionTypes: [
+      { from: 'H2SO4', to: 'Na2SO4', text: (moles) => `If ${moles} moles of H₂SO₄ react, how many moles of Na₂SO₄ are produced?` },
+      { from: 'NaOH', to: 'H2O', text: (moles) => `Reaction of ${moles} moles of NaOH produces how many moles of H₂O?` },
+    ]
+  },
+  {
+    equation: "Fe + S → FeS", // Iron and Sulfur Synthesis
+    stoichiometry: { Fe: 1, S: 1, FeS: 1 },
+    questionTypes: [
+      { from: 'Fe', to: 'FeS', text: (moles) => `Reaction of ${moles} moles of Fe with sulfur produces how many moles of FeS?` },
+      { from: 'S', to: 'FeS', text: (moles) => `If ${moles} moles of S react with iron, how many moles of FeS are formed?` },
+    ]
+  }
+  // ----- NEW EQUATIONS END HERE -----
   // Add more equations and question types here
 ];
 
@@ -335,22 +465,46 @@ const MoleToMoleActivity = ({ onBack, savedState, setSavedState, onPeriodicTable
     }
   };
 
-  if (!currentQuestion && !(showFeedback && feedback?.type === 'info' && feedback.message.startsWith('Set complete!'))) {
-    return <div className="center-container"><p>Loading mole conversion question...</p></div>; // Basic loading state
+  if (showFeedback && feedback?.type === 'info' && feedback.message.startsWith('Set complete!')) {
+    return (
+      <div className="activity-container">
+        <div className="activity-card" style={{ textAlign: 'center' }}>
+          <h2 className="activity-title">Set Complete!</h2>
+          <div className={`feedback-container feedback-${feedback.type}`}>
+            <h3>Info:</h3>
+            <p>{feedback.message}</p>
+          </div>
+          <div className="button-row">
+            <button className="activity-btn" onClick={handleNextQuestion}>Start New Set</button>
+            <button className="back-btn" onClick={onBack}>Back to Topics</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!currentQuestion) {
+    return (
+      <div className="activity-container">
+        <div className="activity-card" style={{ textAlign: 'center' }}>
+          <p className="question-text">Loading mole conversion question...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="center-container fade-in slide-up">
-      <div className="glass-card" style={{ minWidth: '320px', maxWidth: '650px' }}>
-        <h2 className="ptable-title" style={{ fontSize: '1.8em' }}>Mole-to-Mole Conversions</h2>
+    <div className="activity-container">
+      <div className="activity-card">
+        <h2 className="activity-title">Mole-to-Mole Conversions</h2>
         
-        <div style={{ margin: '20px 0', padding: '15px', background: 'rgba(0,0,0,0.1)', borderRadius: '8px', textAlign: 'center' }}>
-          <p style={{ fontSize: '1.3em', fontWeight: 'bold', color: 'var(--accent3)', letterSpacing: '0.5px' }}>
+        <div className="question-area">
+          <p className="question-equation">
             {currentQuestion.equation.split(' ').map((part, index) => 
-              isNaN(parseInt(part)) ? <span key={index}>{part} </span> : <strong style={{color: 'var(--accent2)'}} key={index}>{part} </strong>
+              isNaN(parseInt(part)) ? <span key={index}>{part} </span> : <strong key={index}>{part} </strong>
             )}
           </p>
-          <p style={{ fontSize: '1.1em', color: 'var(--text)', marginTop: '10px' }}>{currentQuestion.text}</p>
+          <p className="question-text">{currentQuestion.text}</p>
         </div>
 
         <input 
@@ -358,59 +512,34 @@ const MoleToMoleActivity = ({ onBack, savedState, setSavedState, onPeriodicTable
           value={userAnswer}
           onChange={(e) => setUserAnswer(e.target.value)}
           placeholder="Your answer (moles)"
-          className="glow-input" 
-          style={{ width: '80%', padding: '12px', margin: '10px 0 20px 0', fontSize: '1.1em' }}
-          disabled={showFeedback} // Disable input when feedback is shown
+          className="activity-input"
+          style={{ margin: '10px 0 20px 0' }}
+          disabled={showFeedback}
         />
 
         {showFeedback && feedback && (
           <div 
-            className="feedback-container" 
-            style={{
-              padding: '20px',
-              margin: '20px 0',
-              borderRadius: '8px',
-              borderLeft: `6px solid ${feedback.type === 'correct' ? 'var(--correct-green-vibrant, #66BB6A)' : feedback.type === 'incorrect' ? 'var(--incorrect-red-vibrant, #EF5350)' : 'var(--info-blue-vibrant, #42A5F5)'}`,
-              backgroundColor: `var(--feedback-bg-dark, rgba(30, 30, 45, 0.85))`,
-              boxShadow: `var(--feedback-shadow-dark, '0 4px 12px rgba(0,0,0,0.3)')`,
-              // Text color for children will be light by default if not overridden
-            }}
+            className={`feedback-container feedback-${feedback.type}`}
           >
-            <h3 
-              style={{
-                marginTop: 0,
-                marginBottom: '12px',
-                color: feedback.type === 'correct' ? 'var(--correct-green-vibrant, #66BB6A)' : feedback.type === 'incorrect' ? 'var(--incorrect-red-vibrant, #EF5350)' : 'var(--info-blue-vibrant, #42A5F5)', // Using vibrant colors for title
-                fontSize: '1.35em',
-                fontWeight: '600',
-              }}
-            >
+            <h3>
               {feedback.type === 'correct' ? 'Correct!' : feedback.type === 'incorrect' ? 'Incorrect.' : 'Info:'}
             </h3>
-            <p style={{
-              whiteSpace: 'pre-wrap',
-              textAlign: 'left',
-              lineHeight: '1.65',
-              marginTop: '0',
-              marginBottom: '0',
-              color: `var(--text-feedback-on-dark, #E0E0E0)`,
-              fontSize: '1em',
-            }}>
+            <p>
               {feedback.message}
             </p>
           </div>
         )}
 
-        <div className="button-row" style={{ marginTop: '20px' }}>
+        <div className="button-row">
           {showFeedback ? (
-            <button className="ptable-btn" onClick={handleNextQuestion}>Next Question</button>
+            <button className="activity-btn" onClick={handleNextQuestion}>Next Question</button>
           ) : (
-            <button className="ptable-btn" onClick={handleUserSubmit} disabled={!userAnswer || showFeedback}>Submit</button>
+            <button className="activity-btn" onClick={handleUserSubmit} disabled={!userAnswer || showFeedback}>Submit</button>
           )}
-          <button className="ptable-btn" style={{ marginLeft: '15px' }} onClick={onPeriodicTable}>Periodic Table</button>
-          <button className="back-btn" style={{ marginLeft: '15px' }} onClick={onBack}>Back to Topics</button>
+          <button className="activity-btn" onClick={onPeriodicTable}>Periodic Table</button>
+          <button className="back-btn" onClick={onBack}>Back to Topics</button>
         </div>
-        <p style={{color: 'var(--accent3)', marginTop: '20px', fontSize: '1.1em'}}>Score: {score} / {questionsAttempted}</p>
+        <p className="score-display">Score: {score} / {questionsAttempted}</p>
       </div>
     </div>
   );

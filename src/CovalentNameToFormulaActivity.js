@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import PeriodicTable from './PeriodicTable';
 
 // Covalent compounds: only nonmetals, use prefixes (mono-, di-, tri-, etc.)
@@ -85,6 +85,20 @@ export default function CovalentNameToFormulaActivity({ onBack, onCovalentFormul
   const [userAnswer, setUserAnswer] = useState('');
   const [feedback, setFeedback] = useState('');
   const [showTable, setShowTable] = useState(false);
+  const inputRef = useRef(null);
+
+  function insertSubscript(sub) {
+    const el = inputRef.current;
+    if (!el) return;
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+    const newValue = userAnswer.slice(0, start) + sub + userAnswer.slice(end);
+    setUserAnswer(newValue);
+    setTimeout(() => {
+      el.focus();
+      el.setSelectionRange(start + 1, start + 1);
+    }, 0);
+  }
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -116,7 +130,22 @@ export default function CovalentNameToFormulaActivity({ onBack, onCovalentFormul
             value={userAnswer}
             onChange={e => setUserAnswer(e.target.value)}
             style={{ width: '100%', maxWidth: 420 }}
+            ref={inputRef}
           />
+          <div className="subscript-btn-row">
+            {['₀','₁','₂','₃','₄','₅','₆','₇','₈','₉'].map((sub) => (
+              <button
+                key={sub}
+                type="button"
+                className="subscript-btn"
+                onClick={() => insertSubscript(sub)}
+                tabIndex={-1}
+              >
+                {sub}
+              </button>
+            ))}
+          </div>
+          <button className="ptable-btn" type="submit" style={{ width: '100%', marginBottom: 6 }}>Submit</button>
         </form>
         {feedback && (
           <div className={feedback.startsWith('✅') ? 'feedback-correct' : 'feedback-incorrect'} style={{ whiteSpace: 'pre-line', fontSize: '1.08em', borderRadius: 16, margin: '16px 0', padding: '18px 16px', textAlign: 'left', maxWidth: 420, width: '100%', boxSizing: 'border-box', background: feedback.startsWith('✅') ? undefined : 'linear-gradient(90deg,#ff5ca7 0,#a259ec 100%)', color: feedback.startsWith('✅') ? undefined : '#fff', boxShadow: feedback.startsWith('✅') ? undefined : '0 2px 16px #a259ec55' }}>

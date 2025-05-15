@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkaceingchem=self.webpackChunkaceingchem||[]).push([[228],{228:(e,c,n)=>{n.r(c),n.d(c,{default:()=>s});n(5043);var a=n(579);const s=()=>(0,a.jsx)("div",{children:"Ionic Name to Formula Component"})}}]);
+//# sourceMappingURL=228.7d1d7cc2.chunk.js.map

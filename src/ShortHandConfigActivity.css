@@ -530,4 +530,14 @@
 .shc-options button {
   width: 100%; /* Make option buttons full width for easier tapping */
   margin-bottom: 8px;
+}
+
+/* Targeting the <p> tag directly inside the incorrect feedback container */
+.feedback-container.feedback-incorrect > p {
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: 1em;
+  color: var(--glow-accent-red-error); /* Use the red error color */
+  text-shadow: 0 0 4px rgba(244, 63, 94, 0.5); /* Optional subtle glow */
+  /* whiteSpace, textAlign, lineHeight are handled by inline styles in the JSX */
 } 

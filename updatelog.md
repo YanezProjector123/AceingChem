@@ -1,25 +1,19 @@
 # Update Log for Chemistry Learning Application
 
-## 2025-04-30 Updates
-
-### Ionization Energy Activity Improvements
-- Enhanced `handleNext` function in `IonizationEnergyActivity.js`
-  - Implemented robust multi-stage question progression
-  - Added mechanism to prevent immediate question repetition
-  - Improved random question selection logic
-  - Added safety mechanism to prevent infinite loops during question generation
+## 2025-05-14 Updates
 
 ### Features
-- Refined multi-stage question generation
-- Improved question variety and educational context
-- Enhanced state management for complex question types
+- Added a 'Credits' button and panel to the Welcome screen, displaying project owner and contributors.
 
-### Technical Enhancements
-- Added more sophisticated random generator selection
-- Implemented detailed logging for debugging question generation
-- Ensured clean transitions between different question types
+## Recent Updates (Post-June Major Update)
+- Mole-to-Mole Activity: Significantly expanded question pool with diverse chemical equations and conversion types for a more challenging and less repetitive experience.
+- Mole-to-Mole Feedback: Enhanced feedback system – messages now persist until 'Next Question', detailed explanations are clearer, and the UI is more polished.
+- Mole-to-Mole Feedback: Themed feedback box to align with the website's dark UI aesthetic.
 
-### Next Steps
-- Conduct thorough testing of multi-stage question generation
-- Review and validate question variety and educational value
-- Implement additional logging and error handling if needed
+## 2024-06: Major update!
+- Complete UI redesign: bubbly, animated, and mobile-first.
+- Added full Electron Configuration activities (longhand & shorthand practice).
+- New chemistry icons and floating effects.
+- Smoother transitions and new animations.
+- Performance improvements and bug fixes.
+- Improved mobile experience and layout fixes.

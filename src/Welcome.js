@@ -28,6 +28,7 @@ if (typeof document !== 'undefined' && !document.getElementById('floaty-keyframe
 
 export default function Welcome({ onNext }) {
   const [showUpdateLog, setShowUpdateLog] = useState(false);
+  const [showCreditsLog, setShowCreditsLog] = useState(false);
   return (
     <div className="center-container fade-in slide-up" style={{ position: 'relative', overflow: 'hidden', width: '100vw', minHeight: '100vh' }}>
       <div className="global-bg-glow" />
@@ -54,6 +55,10 @@ export default function Welcome({ onNext }) {
             <span role="img" aria-label="log" style={{ marginRight: 9, filter: 'drop-shadow(0 2px 6px #38bdf8)' }}>📝</span>
             Update Log
           </button>
+        <button className="glow-btn" style={{ marginTop: 12, background: 'linear-gradient(90deg, #86efac 0%, #3b82f6 100%)', color: '#fff', fontWeight: 700, fontSize: '1.06em', letterSpacing: 1.1, border: 'none', borderRadius: 18, boxShadow: '0 2px 18px #3b82f6cc, 0 1px 0 #fff', padding: '13px 32px', cursor: 'pointer', transition: 'background 0.2s', outline: 'none', filter: 'drop-shadow(0 2px 12px #86efac99)', zIndex: 10 }} onClick={() => setShowCreditsLog(true)}>
+            <span role="img" aria-label="credits" style={{ marginRight: 9, filter: 'drop-shadow(0 2px 6px #3b82f6)' }}>🌟</span>
+            Credits
+          </button>
       </div>
       {showUpdateLog && (
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(24, 30, 48, 0.75)', backdropFilter: 'blur(8px) saturate(1.2)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'fadeIn 0.3s', overflowY: 'auto' }} onClick={() => setShowUpdateLog(false)}>
@@ -74,6 +79,23 @@ export default function Welcome({ onNext }) {
               - Improved mobile experience and layout fixes.<br />
             </div>
             <button className="ptable-btn" style={{ marginTop: 18 }} onClick={() => setShowUpdateLog(false)}>Close</button>
+          </div>
+        </div>
+      )}
+      {showCreditsLog && (
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(24, 30, 48, 0.75)', backdropFilter: 'blur(8px) saturate(1.2)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'fadeIn 0.3s', overflowY: 'auto' }} onClick={() => setShowCreditsLog(false)}>
+          <div style={{ background: 'linear-gradient(135deg, #1e293b 60%, #0f172a 100%)', borderRadius: 24, boxShadow: '0 8px 32px #a259ec55', padding: '32px 24px', maxWidth: 420, width: '90vw', color: '#fff', position: 'relative', animation: 'popIn 0.5s var(--bubbly)' }} onClick={e => e.stopPropagation()}>
+            <h3 style={{ color: '#a5b4fc', fontWeight: 800, fontSize: '1.3em', marginBottom: 12 }}>Credits</h3>
+            <div style={{ fontSize: '1.05em', lineHeight: 1.6, textAlign: 'left' }}>
+              <p style={{ marginBottom: '10px' }}><strong>Owner/Founder:</strong> Adonis Yanez</p>
+              <p style={{ marginTop: '15px', marginBottom: '5px', color: '#86efac', fontWeight: 'bold' }}>Huge Help:</p>
+              <ul style={{ listStyleType: 'disc', paddingLeft: '20px', margin: 0 }}>
+                <li>Jose Pavon</li>
+                <li>Melba Munguia</li>
+                <li>Katherine Quijada</li>
+              </ul>
+            </div>
+            <button className="ptable-btn" style={{ marginTop: 22 }} onClick={() => setShowCreditsLog(false)}>Close</button>
           </div>
         </div>
       )}

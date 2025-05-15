@@ -1,0 +1,379 @@
+/* StoichiometryActivity.css */
+
+/* General Activity Container - applies to the background of the activity page */
+.activity-container {
+  min-height: 100vh;
+  width: 100%; /* Changed from vw to % for better container behavior */
+  background: linear-gradient(135deg, #2E1A47 0%, #3A245B 100%); /* Midnight Purple Gradient */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px; /* Padding for smaller screens */
+  box-sizing: border-box;
+  overflow-y: auto; /* Allow vertical scrolling if content overflows */
+}
+
+/* Main Card for the activity content */
+.activity-card {
+  background: #4B2F74; /* Medium Purple Card Background */
+  color: #F0EBF4; /* Light Purple-Tinted Off-White Text */
+  border-radius: 16px; /* Softer rounded corners */
+  padding: 24px;
+  width: 100%;
+  max-width: 650px; /* Max width for larger screens, consistent with JS */
+  margin: 20px auto;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25), 0 5px 10px rgba(0, 0, 0, 0.2);
+  border: 1px solid #5C3D8B; /* Darker Purple Border */
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Spacing between elements in the card */
+  animation: fadeInSlideUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* Activity Title */
+.activity-title {
+  font-size: 1.8em; /* Responsive font size */
+  font-weight: 700;
+  color: #C8BFD9; /* Muted Light Purple/Grey for Title */
+  text-align: center;
+  margin-bottom: 10px; /* Space below title */
+  border-bottom: 1px solid #5C3D8B; /* Darker Purple Border */
+  padding-bottom: 15px;
+}
+
+/* Question Area: Equation and Text */
+.question-area {
+  background: rgba(255, 255, 255, 0.05); /* Very subtle light overlay on card */
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  border: 1px solid #5C3D8B; /* Darker Purple Border */
+}
+
+.question-equation {
+  font-size: 1.4em; /* Prominent equation */
+  font-weight: bold;
+  color: #9B7CBF; /* Lighter Accent Purple */
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+.question-equation strong {
+  color: #FFDC00; /* Keep Yellow for coefficients */
+}
+
+.question-text {
+  font-size: 1.1em;
+  color: #E0D8EB; /* Slightly less bright than primary text */
+  line-height: 1.6;
+}
+
+/* Input field */
+.activity-input {
+  width: 100%;
+  padding: 14px 18px;
+  font-size: 1.1em;
+  border-radius: 10px;
+  border: 2px solid #5C3D8B; /* Darker Purple Border */
+  background-color: #3A245B; /* Dark Purple Input Background */
+  color: #F0EBF4; /* Light Text for input */
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.activity-input:focus {
+  border-color: #9B7CBF; /* Lighter Accent Purple on Focus */
+  box-shadow: 0 0 0 3px rgba(155, 124, 191, 0.3); /* Adjusted shadow color */
+  outline: none;
+}
+
+.activity-input::placeholder {
+  color: #A094B7; /* Muted purple-grey placeholder */
+  opacity: 0.8;
+}
+
+/* Feedback Container Styling */
+.feedback-container {
+  padding: 18px;
+  margin-top: 10px; /* Space above feedback */
+  border-radius: 10px;
+  text-align: left;
+  border-width: 1px;
+  border-style: solid;
+  animation: fadeInFeedback 0.5s ease forwards;
+}
+
+.feedback-container h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.feedback-container p {
+  white-space: pre-wrap; /* Keep line breaks from JS */
+  line-height: 1.65;
+  margin-bottom: 0;
+  font-size: 1em;
+}
+
+.feedback-correct {
+  background-color: rgba(102, 187, 106, 0.15); /* Muted Green Background */
+  border-color: #66BB6A; /* Clear Green Border */
+  color: #D4EED5; /* Lighter Green Text */
+}
+
+.feedback-correct h3 {
+  color: #81C784; /* Green Heading */
+}
+
+.feedback-incorrect {
+  background-color: rgba(239, 83, 80, 0.15); /* Muted Red Background */
+  border-color: #EF5350; /* Clear Red Border */
+  color: #F8D7DA; /* Lighter Red Text */
+}
+
+.feedback-incorrect h3 {
+  color: #E57373; /* Red Heading */
+}
+
+.feedback-info {
+  background-color: rgba(125, 91, 166, 0.2); /* Muted Theme Accent Purple Background */
+  border-color: #9B7CBF; /* Theme Accent Purple Border */
+  color: #E0D8EB; /* Theme-consistent light text */
+}
+
+.feedback-info h3 {
+  color: #B298CC; /* Lighter purple heading for info */
+}
+
+/* Button Styling */
+.button-row {
+  display: flex;
+  flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+  gap: 12px;
+  justify-content: center; /* Center buttons in the row */
+  margin-top: 20px;
+}
+
+.activity-btn, .back-btn {
+  padding: 12px 20px;
+  font-size: 1em;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  min-width: 120px; /* Minimum width for tap targets */
+  text-align: center;
+  flex-grow: 1; /* Allow buttons to grow */
+  max-width: 200px; /* Max width for individual buttons in a row */
+}
+
+.activity-btn {
+  background-color: #7D5BA6; /* Accent Purple */
+  color: #FFFFFF; /* White text for strong contrast */
+}
+
+.activity-btn:hover {
+  background-color: #9B7CBF; /* Lighter Accent Purple on Hover */
+  box-shadow: 0 4px 15px rgba(125, 91, 166, 0.4);
+  transform: translateY(-2px);
+}
+
+.activity-btn:active {
+  background-color: #6A4A8F; /* Darker Active Purple */
+  transform: translateY(0);
+}
+
+.activity-btn:disabled {
+  background-color: #4B2F74; /* Muted Purple for Disabled (matches card bg) */
+  color: #A094B7; /* Muted purple-grey text */
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.back-btn {
+  background-color: transparent; /* Transparent background */
+  color: #F0EBF4; /* Light Text */
+  border: 1px solid #7D5BA6; /* Accent Purple Border */
+}
+
+.back-btn:hover {
+  background-color: #5C3D8B; /* Darker Purple on Hover */
+  border-color: #9B7CBF; /* Lighter Accent Purple Border on Hover */
+  transform: translateY(-2px);
+}
+
+.back-btn:active {
+  background-color: #4B2F74; /* Medium Purple on Active (matches card bg) */
+  transform: translateY(0);
+}
+
+/* Score Display */
+.score-display {
+  text-align: center;
+  font-size: 1.1em;
+  color: #C8BFD9; /* Muted Light Purple/Grey for Score */
+  margin-top: 15px;
+  font-weight: 500;
+}
+
+/* Keyframe Animations */
+@keyframes fadeInSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInFeedback {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .activity-card {
+    padding: 20px;
+    gap: 18px;
+    margin: 15px; /* Reduce margin for smaller screens */
+  }
+
+  .activity-title {
+    font-size: 1.6em; /* Slightly smaller title */
+    padding-bottom: 12px;
+  }
+
+  .question-equation {
+    font-size: 1.2em;
+  }
+
+  .question-text {
+    font-size: 1em;
+  }
+
+  .activity-input {
+    padding: 12px 15px;
+    font-size: 1em;
+  }
+  
+  .activity-input::placeholder {
+    font-size: 0.95em;
+  }
+
+  .activity-btn, .back-btn {
+    padding: 12px 15px; /* Adjust padding */
+    font-size: 0.95em;
+    min-width: 100px; /* Adjust min-width */
+  }
+
+  .feedback-container h3 {
+    font-size: 1.1em;
+  }
+  .feedback-container p {
+    font-size: 0.95em;
+  }
+
+  .form-group label {
+    font-size: 0.95em; /* Make form labels responsive */
+    margin-bottom: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .activity-container {
+    padding: 10px;
+  }
+  .activity-card {
+    padding: 15px;
+    gap: 15px;
+    margin: 10px;
+  }
+
+  .activity-title {
+    font-size: 1.4em;
+    margin-bottom: 8px;
+    padding-bottom: 10px;
+  }
+
+  .question-area {
+    padding: 15px;
+  }
+
+  .question-equation {
+    font-size: 1.1em; /* Further reduce for very small screens */
+    margin-bottom: 10px;
+  }
+
+  .question-text {
+    font-size: 0.9em;
+    line-height: 1.5;
+  }
+
+  .activity-input {
+    padding: 10px 12px;
+    font-size: 0.9em;
+  }
+
+  .activity-input::placeholder {
+    font-size: 0.9em;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column; /* Stack label and input vertically */
+    gap: 5px; /* Space between label and input */
+  }
+
+  .form-group label {
+    font-size: 0.9em; 
+    margin-bottom: 0; /* Remove bottom margin as gap handles it */
+  }
+
+  .feedback-container h3 {
+    font-size: 1em;
+  }
+  .feedback-container p {
+    font-size: 0.9em;
+  }
+
+  .button-row {
+    flex-direction: column; /* Stack buttons vertically */
+    gap: 10px;
+  }
+
+  .activity-btn, .back-btn {
+    width: 100%; /* Make buttons full width */
+    max-width: none; /* Override max-width from larger screens */
+    padding: 12px;
+    font-size: 0.95em;
+  }
+
+  .score-display {
+    font-size: 1em;
+    margin-top: 10px;
+  }
+
+  .explanation-section h4 {
+    font-size: 1.1em;
+  }
+  .explanation-step {
+    font-size: 0.9em;
+    line-height: 1.5;
+  }
+  .progress-indicator {
+    font-size: 0.85em;
+  }
+} 
