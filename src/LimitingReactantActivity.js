@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
-import './StoichiometryActivity.css';
+import './ActivityModern.css';
 
 // Helper to shuffle array
 const shuffleArray = (array) => {
@@ -554,7 +554,7 @@ export default function LimitingReactantActivity({ onBack, onShowPeriodicTable, 
   return (
     <div className="activity-container limiting-reactant-activity">
       <div className="activity-card">
-        <h2 className="activity-title">Limiting Reactant & Theoretical Yield</h2>
+        <h2 className="activity-title">Limiting Reactant</h2>
         <div className="question-area">
           <p className="question-equation">Reaction: <strong dangerouslySetInnerHTML={{__html: formatChemical(currentProblem.equation)}} /></p>
           <p className="question-text">

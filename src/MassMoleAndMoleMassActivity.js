@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
+import './ActivityModern.css';
+
 // Reusing styles from ShortHandConfigActivity, consider dedicated CSS later
-import './StoichiometryActivity.css';
+
 
 // Helper to shuffle array for random question selection
 const shuffleArray = (array) => {

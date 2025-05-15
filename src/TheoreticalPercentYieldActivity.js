@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
-import './StoichiometryActivity.css';
+import './ActivityModern.css';
 
 // Helper to shuffle array
 const shuffleArray = (array) => {
@@ -355,379 +355,237 @@ function randomChoice(arr) {
 }
 
 function TheoreticalPercentYieldActivity({ onBack, onShowPeriodicTable, savedState, setSavedState }) {
-  const [loading, setLoading] = useState(true);
-  const [currentProblem, setCurrentProblem] = useState(null);
-  const [givenReactant1, setGivenReactant1] = useState({ name: '', mass: 0 });
-  const [givenReactant2, setGivenReactant2] = useState({ name: '', mass: 0 });
-  const [targetProduct, setTargetProduct] = useState('');
-  
-  const [userInputLR, setUserInputLR] = useState(''); // For limiting reactant selection
-  const [userInputTY, setUserInputTY] = useState(''); // User input for Theoretical Yield (grams)
-  const [userInputPY, setUserInputPY] = useState(''); // User input for Percent Yield (%)
+  // State
+  const [question, setQuestion] = useState(() => savedState?.question || null);
+  const [userLimitingMass, setUserLimitingMass] = useState(savedState?.userLimitingMass || '');
+  const [userActualYield, setUserActualYield] = useState(savedState?.userActualYield || '');
+  const [userTheoYield, setUserTheoYield] = useState(savedState?.userTheoYield || '');
+  const [userPercentYield, setUserPercentYield] = useState(savedState?.userPercentYield || '');
+  const [feedback, setFeedback] = useState(savedState?.feedback || null);
+  const [showAnswer, setShowAnswer] = useState(savedState?.showAnswer || false);
 
-  const [correctLR, setCorrectLR] = useState('');
-  const [correctTY, setCorrectTY] = useState(0); // Correct Theoretical Yield (grams)
-  const [correctPY, setCorrectPY] = useState(0); // Correct Percent Yield (%)
-  const [actualYield, setActualYield] = useState(0); // Actual yield provided in the question (grams)
-
-  const [roundingInstruction, setRoundingInstruction] = useState('');
-  const [roundingPrecision, setRoundingPrecision] = useState(2); // Default to 2 decimal places for yield
-
-  const [feedbackTY, setFeedbackTY] = useState(''); // Feedback for Theoretical Yield
-  const [feedbackPY, setFeedbackPY] = useState(''); // Feedback for Percent Yield
-  const [overallFeedback, setOverallFeedback] = useState('');
-  
-  const [score, setScore] = useState(0);
-  const [questionsAttempted, setQuestionsAttempted] = useState(0);
-  const [showExplanation, setShowExplanation] = useState(false);
-  const [explanationSteps, setExplanationSteps] = useState([]);
-
-  // Multi-step state
-  const [step, setStep] = useState(1); // 1 = theoretical yield, 2 = percent yield, 3 = third step (if any)
-  // Track per-step correctness and feedback
-  const [step1Status, setStep1Status] = useState(null); // 'correct' | 'incorrect'
-  const [step2Status, setStep2Status] = useState(null); // 'correct' | 'incorrect'
-  const [step3Status, setStep3Status] = useState(null); // 'correct' | 'incorrect'
-  const [step1Feedback, setStep1Feedback] = useState('');
-  const [step2Feedback, setStep2Feedback] = useState('');
-  const [step3Feedback, setStep3Feedback] = useState('');
-
-  const theoreticalYieldInputRef = useRef(null); // Renamed for clarity
-  const percentYieldInputRef = useRef(null); // Ref for Percent Yield input
-  const nextQuestionButtonRef = useRef(null);
-
-  const [questionType, setQuestionType] = useState('yield');
-  const [targetUnit, setTargetUnit] = useState('g');
-  // Track last used reaction and reactant order
-  const lastPairRef = useRef(null);
-
+  // Generate a new question
   const generateQuestion = useCallback(() => {
-    if (REACTIONS.length === 0) return;
-    let problem, reactants, r1Name, r2Name, pairKey;
-    let attempts = 0;
-    do {
-      problem = randomChoice(REACTIONS);
-      reactants = [...problem.reactants];
-      if (reactants.length > 1) {
-        if (Math.random() < 0.5) reactants.reverse();
-        r1Name = reactants[0];
-        r2Name = reactants[1];
-        pairKey = problem.equation + '|' + r1Name + '|' + r2Name;
-      } else {
-        r1Name = reactants[0];
-        r2Name = null;
-        pairKey = problem.equation + '|' + r1Name;
-      }
-      attempts++;
-    } while (lastPairRef.current === pairKey && attempts < 10 && REACTIONS.length > 1);
-    lastPairRef.current = pairKey;
+    // Select a random reaction
+    const reaction = randomChoice(REACTIONS);
+    // Pick a limiting reactant randomly
+    const limiting = randomChoice(reaction.reactants);
+    // Pick a product randomly
+    const product = randomChoice(reaction.products);
+    // Generate a random mass for limiting reactant (5-50g)
+    const limitingMass = round(Math.random() * 45 + 5, 2);
+    // Generate a random percent yield (60-98%)
+    const percentYield = round(Math.random() * 38 + 60, 1);
+    // Calculate theoretical yield (in grams)
+    // 1. Convert limiting mass to moles
+    const molesLimiting = limitingMass / reaction.molar_masses[limiting];
+    // 2. Moles of product (stoichiometry)
+    const ratio = reaction.stoichiometry[product] / reaction.stoichiometry[limiting];
+    const molesProduct = molesLimiting * ratio;
+    // 3. Theoretical yield in grams
+    const theoYield = round(molesProduct * reaction.molar_masses[product], 2);
+    // 4. Actual yield
+    const actualYield = round(theoYield * percentYield / 100, 2);
+    return {
+      reaction,
+      limiting,
+      product,
+      limitingMass,
+      theoYield,
+      actualYield,
+      percentYield
+    };
+  }, []);
 
-    setCurrentProblem(problem);
-    setStep(1); // Reset to step 1 for new question
-    setStep1Status(null);
-    setStep2Status(null);
-    setStep3Status(null);
-    setStep1Feedback('');
-    setStep2Feedback('');
-    setStep3Feedback('');
-
-    const r1Mass = parseFloat((Math.random() * 195 + 5).toFixed(Math.random() < 0.5 ? 1 : 2));
-    setGivenReactant1({ name: r1Name, mass: r1Mass });
-
-    if (r2Name) {
-      const r2Mass = parseFloat((Math.random() * 195 + 5).toFixed(Math.random() < 0.5 ? 1 : 2));
-      setGivenReactant2({ name: r2Name, mass: r2Mass });
-    } else {
-      setGivenReactant2({ name: '', mass: 0 });
+  // On mount, generate if not present
+  useEffect(() => {
+    if (!question) {
+      const q = generateQuestion();
+      setQuestion(q);
+      setSavedState && setSavedState({ question: q });
     }
+    // eslint-disable-next-line
+  }, []);
 
-    const product = randomChoice(problem.products);
-    setTargetProduct(product);
+  // Save state on change
+  useEffect(() => {
+    setSavedState && setSavedState({
+      question,
+      userLimitingMass,
+      userActualYield,
+      userTheoYield,
+      userPercentYield,
+      feedback,
+      showAnswer
+    });
+    // eslint-disable-next-line
+  }, [question, userLimitingMass, userActualYield, userTheoYield, userPercentYield, feedback, showAnswer]);
 
-    // For Theoretical & Percent Yield, question type is primarily yield-focused.
-    setQuestionType('yield_percent'); // Custom type for this activity
-    setTargetUnit('g'); // Theoretical yield primarily in grams
+  if (!question) {
+    return <div className="activity-modern"><div>Loading...</div></div>;
+  }
 
-    const roundingOptions = [
-      { precision: 1, text: "to the nearest tenth (0.1 g)." },
-      { precision: 2, text: "to two decimal places (0.01 g)." },
-      { precision: 0, text: "to the nearest whole number (1 g)." },
+  // Check answers
+  const checkAnswers = () => {
+    const theoYieldUser = parseFloat(userTheoYield);
+    const percentYieldUser = parseFloat(userPercentYield);
+    const theoYield = question.theoYield;
+    const percentYield = question.percentYield;
+    const theoCorrect = Math.abs(theoYieldUser - theoYield) < 0.05;
+    const percentCorrect = Math.abs(percentYieldUser - percentYield) < 0.3;
+    setFeedback({
+      theoCorrect,
+      percentCorrect,
+      theoYield,
+      percentYield
+    });
+    setShowAnswer(true);
+  };
+
+  // Next question
+  const handleNext = () => {
+    const q = generateQuestion();
+    setQuestion(q);
+    setUserLimitingMass('');
+    setUserActualYield('');
+    setUserTheoYield('');
+    setUserPercentYield('');
+    setFeedback(null);
+    setShowAnswer(false);
+    setSavedState && setSavedState({ question: q });
+  };
+
+  // Interactive step-by-step hint state
+  const [hintStep, setHintStep] = useState(0);
+  const [showFullSolution, setShowFullSolution] = useState(false);
+
+  // Reset hints when new question or feedback changes
+  useEffect(() => {
+    setHintStep(0);
+    setShowFullSolution(false);
+  }, [question, feedback]);
+
+  // Helper: Render hints stepwise
+  function renderTheoYieldHints() {
+    const molesLimiting = round(question.limitingMass / question.reaction.molar_masses[question.limiting], 4);
+    const ratio = question.reaction.stoichiometry[question.product] / question.reaction.stoichiometry[question.limiting];
+    const molesProduct = round(molesLimiting * ratio, 4);
+    const theoYield = feedback.theoYield;
+    const steps = [
+      <li key="1">Find moles of the limiting reactant: <br/><b>moles = mass divided by molar mass</b> = {question.limitingMass} g divided by {question.reaction.molar_masses[question.limiting]} g/mol = <b>{molesLimiting} mol</b></li>,
+      <li key="2">Use stoichiometry to find moles of product:<br/><b>moles of product = moles of limiting reactant times (coefficient of product divided by coefficient of limiting reactant)</b> = {molesLimiting} times ({question.reaction.stoichiometry[question.product]} divided by {question.reaction.stoichiometry[question.limiting]}) = <b>{molesProduct} mol</b></li>,
+      <li key="3">Convert moles of product to grams:<br/><b>grams = moles times molar mass</b> = {molesProduct} mol times {question.reaction.molar_masses[question.product]} g/mol = <b>{theoYield} g</b></li>,
     ];
-    const selectedRounding = randomChoice(roundingOptions);
-    setRoundingInstruction(`Calculate the theoretical yield ${selectedRounding.text} Then calculate percent yield to the nearest tenth (0.1%).`);
-    setRoundingPrecision(selectedRounding.precision); // For theoretical yield
-
-    // Calculations
-    const molesR1 = r1Mass / problem.molar_masses[r1Name];
-    let molesR2 = 0;
-    if (r2Name) {
-      molesR2 = givenReactant2.mass / problem.molar_masses[r2Name];
-    }
-
-    const stoichR1 = problem.stoichiometry[r1Name];
-    const stoichProd = problem.stoichiometry[product];
-
-    let molesProdFromR1 = (molesR1 / stoichR1) * stoichProd;
-    let molesProdFromR2 = Infinity;
-    let actualLR = r1Name;
-
-    if (r2Name) {
-      const stoichR2 = problem.stoichiometry[r2Name];
-      molesProdFromR2 = (molesR2 / stoichR2) * stoichProd;
-      if (molesProdFromR1 < molesProdFromR2) {
-        actualLR = r1Name;
-      } else if (molesProdFromR2 < molesProdFromR1) {
-        actualLR = r2Name;
-      } else {
-        actualLR = r1Name < r2Name ? r1Name : r2Name;
-      }
-    }
-    setCorrectLR(actualLR);
-
-    let theoreticalMolesProduct;
-    if (r2Name) {
-      theoreticalMolesProduct = Math.min(molesProdFromR1, molesProdFromR2);
-    } else {
-      theoreticalMolesProduct = molesProdFromR1;
-    }
-
-    const calculatedCorrectTY = theoreticalMolesProduct * problem.molar_masses[product];
-    const roundedCorrectTY = round(calculatedCorrectTY, selectedRounding.precision);
-    setCorrectTY(roundedCorrectTY);
-
-    // Generate actual yield (70-95% of theoretical, rounded to similar/one less precision or specific number of sig figs)
-    // For simplicity, let's round actual yield to 2 decimal places if TY is precise, else 1.
-    const actualYieldPrecision = selectedRounding.precision === 0 ? 0 : Math.max(1, selectedRounding.precision -1); // Ensure at least 0 or 1 dp
-    // const percentFactor = (Math.random() * 0.25 + 0.70); // 70% to 95%
-    // Ensure actual yield is realistically less and not almost identical or higher after rounding.
-    // Generate a percentage between 70.0% and 95.0% with one decimal place
-    const randomPercent = Math.floor(Math.random() * (950 - 700 + 1) + 700) / 10; // e.g. 85.3
-    
-    let generatedActualYield = (roundedCorrectTY * randomPercent) / 100;
-    
-    // Ensure actual yield is strictly less than theoretical yield, especially after rounding.
-    // And not zero if theoretical yield is very small.
-    if (generatedActualYield >= roundedCorrectTY && roundedCorrectTY > 0) {
-        generatedActualYield = roundedCorrectTY * 0.9; // Fallback to 90% if it ends up too high
-        if (generatedActualYield >= roundedCorrectTY) { // if still high (e.g. TY is very small)
-           generatedActualYield = roundedCorrectTY * 0.7; // Fallback to 70%
-        }
-    }
-    if (roundedCorrectTY > 0 && generatedActualYield === 0) {
-        generatedActualYield = Math.min(roundedCorrectTY / 2, 0.1); // Ensure it's not zero if TY isn't
-    }
-
-
-    // Round actual yield to a sensible number of decimal places, e.g., same as TY or one more.
-    // Let's use the same precision as theoretical yield for consistency in display
-    const roundedActualYield = round(generatedActualYield, selectedRounding.precision);
-    setActualYield(roundedActualYield);
-    
-    let calculatedCorrectPY = 0;
-    if (roundedCorrectTY > 0) { // Avoid division by zero
-        calculatedCorrectPY = (roundedActualYield / roundedCorrectTY) * 100;
-    } else if (roundedActualYield > 0 && roundedCorrectTY === 0) { // Edge case: TY is 0 but AY is >0 (should not happen with current logic)
-        calculatedCorrectPY = Infinity; // Or handle as an error/undefined
-    }
-    // Percent yield usually to 1 decimal place
-    const roundedCorrectPY = round(calculatedCorrectPY, 1);
-    setCorrectPY(roundedCorrectPY);
-
-    // Reset user inputs and feedback
-    setUserInputLR('');
-    setUserInputTY('');
-    setUserInputPY('');
-    setFeedbackLR('');
-    setFeedbackTY('');
-    setFeedbackPY('');
-    setOverallFeedback('');
-    setShowExplanation(false);
-    setExplanationSteps([]);
-
-    if (setSavedState) {
-      setSavedState({
-        score,
-        questionsAttempted,
-      });
-    }
-  }, [setSavedState, score, questionsAttempted, givenReactant2.mass]); // Dependencies might need review if more state from outside is used
-
-
-  // useEffect(() => {
-  //   if (savedState && savedState.score !== undefined) {
-  //     // eslint-disable-next-line
-  //   }
-  // }, []); // Removed generateQuestion from here, it will be called by direct effect or next question button.
-  //          // Keeping it for initial load.
-
-  // Step 1: Check Theoretical Yield
-  const checkTY = () => {
-    if (!currentProblem) return;
-    setShowExplanation(false);
-    setFeedbackTY('');
-    setFeedbackPY('');
-    setOverallFeedback('');
-    const userTY = parseFloat(userInputTY);
-    if (Math.abs(userTY - correctTY) < 0.05) {
-      setStep1Status('correct');
-      setStep1Feedback('✅ Correct! Good job on theoretical yield.');
-    } else {
-      setStep1Status('incorrect');
-      setStep1Feedback(`❌ Incorrect. The correct theoretical yield is <b>${correctTY} g</b>.<br/>Double-check your mole ratios and molar masses.<br/>Hint: moles product = moles reactant × (product coeff/reactant coeff).`);
-    }
-    setStep(2);
-    setLoading(false);
-    setTimeout(() => {
-      if (percentYieldInputRef.current) percentYieldInputRef.current.focus();
-    }, 100);
-  };
-
-  // Step 2: Check Percent Yield
-  const checkPY = () => {
-    if (!currentProblem) return;
-    setShowExplanation(false);
-    setFeedbackPY('');
-    setOverallFeedback('');
-    const userPY = parseFloat(userInputPY);
-    if (Math.abs(userPY - correctPY) < 0.2) {
-      setStep2Status('correct');
-      setStep2Feedback('✅ Correct! Good job on percent yield.');
-    } else {
-      setStep2Status('incorrect');
-      setStep2Feedback(`❌ Incorrect. The correct percent yield is <b>${correctPY}%</b>.<br/>Use the formula: <b>(actual yield / theoretical yield) × 100%</b>. Make sure to round at the last step!`);
-    }
-    setStep(3);
-    setLoading(false);
-    setShowExplanation(true);
-  };
-
-  const handleUserSubmit = (e) => {
-    e.preventDefault();
-    if (loading || overallFeedback) return;
-    if (step === 1) {
-      checkTY();
-    } else if (step === 2) {
-      checkPY();
-    }
-  };
-
-  const handleNextQuestion = () => {
-    setLoading(true);
-    setShowExplanation(false);
-    setOverallFeedback(''); // Clear feedback for the new question
-    setUserInputTY('');     // Clear TY input
-    setUserInputPY('');     // Clear PY input
-    setFeedbackTY('');
-    setFeedbackPY('');
-    setStep(1);
-    setTimeout(() => {
-      generateQuestion();
-      setLoading(false);
-      if (theoreticalYieldInputRef.current) {
-        theoreticalYieldInputRef.current.focus(); 
-      }
-    }, 600);
-  };
-
-  if (loading || !currentProblem) {
     return (
-      <div className="activity-root" style={{display:'flex',alignItems:'center',justifyContent:'center',minHeight:'300px'}}>
-        <div style={{color:'#7dd3fc',fontSize:'1.25rem',textAlign:'center',width:'100%'}}>Loading Activity...</div>
-      </div>
+      <ol style={{textAlign:'left', margin:'0.4em 0 0 1.2em', padding:0}}>
+        {steps.slice(0, showFullSolution ? 3 : hintStep)}
+      </ol>
     );
   }
 
-  return (
-    <div className="activity-container theoretical-percent-yield-activity">
-      <div className="activity-card">
-        <h2 className="activity-title">Theoretical & Percent Yield Activity</h2>
-        <div className="question-area">
-          <p className="question-equation">Reaction: <strong dangerouslySetInnerHTML={{__html: formatChemical(currentProblem.equation)}} /></p>
-          <p className="question-text">
-            Given: <strong>{givenReactant1.mass}g</strong> of <strong dangerouslySetInnerHTML={{__html: formatChemical(givenReactant1.name)}} />
-            {givenReactant2.name && <> and <strong>{givenReactant2.mass}g</strong> of <strong dangerouslySetInnerHTML={{__html: formatChemical(givenReactant2.name)}} /></>}
-            .
-          </p>
-          {actualYield > 0 && (
-            <p className="question-text actual-yield-info">
-              If the reaction produced <strong>{actualYield}g</strong> of <strong dangerouslySetInnerHTML={{__html: formatChemical(targetProduct)}} />, calculate the theoretical and percent yield.
-            </p>
-          )}
-          <p className="rounding-instruction"><i>{roundingInstruction}</i></p>
-        </div>
-        <form onSubmit={handleUserSubmit} className="answer-form" id="answer-form">
-          <div className="form-group">
-            <label htmlFor="theoreticalYield">Calculate the Theoretical Yield (g) of CO₂:</label>
-            <input
-              type="number"
-              id="theoreticalYield"
-              ref={theoreticalYieldInputRef}
-              value={userInputTY}
-              onChange={(e) => setUserInputTY(e.target.value)}
-              className="activity-input"
-              placeholder={`e.g., 123.4${roundingPrecision === 2 ? '5' : ''}`}
-              step="any"
-              required
-              disabled={loading || step > 1}
-            />
-            {feedbackTY && <div className={`specific-feedback ${step === 1 && feedbackTY.includes('Correct') ? 'correct-feedback' : 'error-feedback'}`} dangerouslySetInnerHTML={{ __html: feedbackTY }} />}
-          </div>
+  function renderPercentYieldHints() {
+    const theoYield = feedback.theoYield;
+    const percentYield = feedback.percentYield;
+    const steps = [
+      <li key="1">Percent yield = (actual yield / theoretical yield) × 100</li>,
+      <li key="2">Plug in the values: ({question.actualYield} g / {theoYield} g) × 100 = <b>{percentYield} %</b></li>,
+    ];
+    return (
+      <ol style={{textAlign:'left', margin:'0.4em 0 0 1.2em', padding:0}}>
+        {steps.slice(0, showFullSolution ? 2 : Math.max(0, hintStep-3))}
+      </ol>
+    );
+  }
 
-          <div className="form-group">
-            <label htmlFor="percentYield">{givenReactant2.name ? '3.' : '2.'} Calculate the Percent Yield (%):</label>
-            <input
-              type="number"
-              id="percentYield"
-              ref={percentYieldInputRef}
-              value={userInputPY}
-              onChange={(e) => setUserInputPY(e.target.value)}
-              className="activity-input"
-              placeholder="e.g., 85.3"
-              step="any"
-              required
-              disabled={loading || step !== 2}
-            />
-            {feedbackPY && <div className={`specific-feedback ${step === 2 && feedbackPY.includes('Correct') ? 'correct-feedback' : 'error-feedback'}`} dangerouslySetInnerHTML={{ __html: feedbackPY }} />}
+  // UI
+  return (
+    <div className="activity-container">
+      <div className="activity-card">
+        <div className="activity-title">Theoretical & Percent Yield</div>
+        <div className="question-area">
+          <div className="question-equation">
+            <b>Reaction:</b> <span dangerouslySetInnerHTML={{__html: formatChemical(question.reaction.equation)}} />
+          </div>
+          <div className="question-text">
+            <b>Limiting Reactant:</b> <span dangerouslySetInnerHTML={{__html: formatChemical(question.limiting)}} />
+            <br/>
+            <b>Product:</b> <span dangerouslySetInnerHTML={{__html: formatChemical(question.product)}} />
+          </div>
+          <div className="question-text">
+            <b>Given:</b> {question.limitingMass} g of <span dangerouslySetInnerHTML={{__html: formatChemical(question.limiting)}} /> reacts completely.<br/>
+            <b>Actual yield:</b> {question.actualYield} g of <span dangerouslySetInnerHTML={{__html: formatChemical(question.product)}} /> was collected.
+          </div>
+          <div className="button-row">
+            <button className="activity-btn" onClick={() => onShowPeriodicTable && onShowPeriodicTable()}>Periodic Table</button>
+            <button className="back-btn" onClick={onBack}>Back</button>
+          </div>
+        </div>
+        <form className="form-group" onSubmit={e => { e.preventDefault(); checkAnswers(); }}>
+          <div className="question-text" style={{marginTop: '0.5em', marginBottom: '0.2em'}}>1. What is the theoretical yield (in grams) of <span dangerouslySetInnerHTML={{__html: formatChemical(question.product)}} />?</div>
+          <input
+            className="activity-input"
+            type="number"
+            value={userTheoYield}
+            onChange={e => setUserTheoYield(e.target.value)}
+            placeholder="Theoretical yield (g)"
+            step="0.01"
+            disabled={showAnswer}
+          />
+          {feedback && (
+            <div className={`feedback-container ${feedback.theoCorrect ? 'feedback-correct' : 'feedback-incorrect'}`}>
+              {feedback.theoCorrect ? 'Correct!' : (
+                <span>
+                  <b>Let's learn how to solve it:</b>
+                  {renderTheoYieldHints()}
+                  {!showFullSolution && hintStep < 3 && (
+                    <button className="activity-btn" type="button" style={{marginTop:'0.6em'}} onClick={() => setHintStep(hintStep+1)}>Show Solution</button>
+                  )}
+                  {!showFullSolution && hintStep >= 3 && (
+                    <button className="activity-btn" type="button" style={{marginTop:'0.6em'}} onClick={() => setShowFullSolution(true)}>Show Full Solution</button>
+                  )}
+                  {showFullSolution && <div style={{marginTop:'0.6em'}}><b>Theoretical yield = {feedback.theoYield} g</b></div>}
+                </span>
+              )}
+            </div>
+          )}
+          <div className="question-text" style={{marginTop: '0.5em', marginBottom: '0.2em'}}>2. What is the percent yield?</div>
+          <input
+            className="activity-input"
+            type="number"
+            value={userPercentYield}
+            onChange={e => setUserPercentYield(e.target.value)}
+            placeholder="Percent yield (%)"
+            step="0.01"
+            disabled={showAnswer}
+          />
+          {feedback && (
+            <div className={`feedback-container ${feedback.percentCorrect ? 'feedback-correct' : 'feedback-incorrect'}`}>
+              {feedback.percentCorrect ? 'Correct!' : (
+                <span>
+                  <b>Here's how to find percent yield:</b>
+                  {!showFullSolution && (
+                    <button className="activity-btn" type="button" style={{marginTop:'0.6em'}} onClick={() => setShowFullSolution(true)}>Show Solution</button>
+                  )}
+                  {showFullSolution && (
+                    <ol style={{textAlign:'left', margin:'0.4em 0 0 1.2em', padding:0}}>
+                      <li>Percent yield = (actual yield divided by theoretical yield) times 100</li>
+                      <li>Plug in the values: ({question.actualYield} g divided by {feedback.theoYield} g) times 100 = <b>{feedback.percentYield} %</b></li>
+                    </ol>
+                  )}
+                  {showFullSolution && <div style={{marginTop:'0.6em'}}><b>Percent yield = {feedback.percentYield} %</b></div>}
+                </span>
+              )}
+            </div>
+          )}
+          <div className="button-row">
+            {!showAnswer && (
+              <button className="activity-btn" type="submit" disabled={!userTheoYield || !userPercentYield}>Check Answers</button>
+            )}
+            {showAnswer && (
+              <button className="activity-btn" type="button" onClick={handleNext}>Try Another</button>
+            )}
           </div>
         </form>
-
-        {overallFeedback && (
-          <div className={`feedback-section feedback-${overallFeedback.includes('Excellent') || overallFeedback.includes('Good effort') ? 'correct' : 'incorrect'}`}>
-            <div style={{fontWeight:700, marginBottom:6}} dangerouslySetInnerHTML={{ __html: overallFeedback }} />
-            {feedbackLR && (
-              <div className="specific-feedback error-feedback" dangerouslySetInnerHTML={{ __html: feedbackLR }} />
-            )}
-            {feedbackTY && (
-              <div className="specific-feedback error-feedback" dangerouslySetInnerHTML={{ __html: feedbackTY }} />
-            )}
-            {feedbackPY && (
-              <div className="specific-feedback error-feedback" dangerouslySetInnerHTML={{ __html: feedbackPY }} />
-            )}
-          </div>
-        )}
-
-        <div className="button-row">
-          {step === 1 && <button type="submit" form="answer-form" className="activity-submit-button activity-btn">Check Answer</button>}
-          {step === 2 && <button type="submit" form="answer-form" className="activity-submit-button activity-btn">Check Answer</button>}
-          {step === 3 && <button ref={nextQuestionButtonRef} onClick={handleNextQuestion} className="activity-next-button activity-btn">Next Question</button>}
-          <button onClick={onShowPeriodicTable} className="activity-ptable-button activity-btn">Periodic Table</button>
-          <button onClick={onBack} className="activity-back-button activity-btn">Back to Topics</button>
-        </div>
-
-        {showExplanation && explanationSteps.length > 0 && (
-          <div className="explanation-section">
-            <h4>Explanation:</h4>
-            <ul>
-              {explanationSteps.map((step, index) => (
-                <li key={index} dangerouslySetInnerHTML={{ __html: step }}></li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        <div className="score-board">
-          <span>Score: {score} / {questionsAttempted * (givenReactant2.name ? 3 : 2) }</span> {/* Max score based on num parts */}
-        </div>
       </div>
     </div>
   );
@@ -741,4 +599,4 @@ TheoreticalPercentYieldActivity.propTypes = {
   setSavedState: PropTypes.func,
 };
 
-export default TheoreticalPercentYieldActivity; 
+export default TheoreticalPercentYieldActivity;

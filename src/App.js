@@ -33,14 +33,6 @@ const MassMoleAndMoleMassActivity = lazy(() => import('./MassMoleAndMoleMassActi
 const MassToMassActivity = lazy(() => import('./MassToMassActivity'));
 const LimitingReactantActivity = lazy(() => import('./LimitingReactantActivity'));
 const TheoreticalPercentYieldActivity = lazy(() => import('./TheoreticalPercentYieldActivity'));
-const IdealGasLawActivity = lazy(() => import('./IdealGasLawActivity'));
-const BoylesLawActivity = lazy(() => import('./BoylesLawActivity'));
-const CharlesLawActivity = lazy(() => import('./CharlesLawActivity'));
-const CombinedGasLawActivity = lazy(() => import('./CombinedGasLawActivity'));
-const GasStoichiometryActivity = lazy(() => import('./GasStoichiometryActivity'));
-const DaltonsLawActivity = lazy(() => import('./DaltonsLawActivity'));
-const GrahamsLawActivity = lazy(() => import('./GrahamsLawActivity'));
-const CollectingGasOverWaterActivity = lazy(() => import('./CollectingGasOverWaterActivity'));
 
 const LoadingFallback = <div style={{color:'#fff',textAlign:'center',marginTop:40, fontSize: '1.2em'}}>Loading Activity...</div>;
 
@@ -104,7 +96,7 @@ function App() {
     else if (activity === 'mass-mole-and-mole-mass') setScreen('massMoleAndMoleMassActivity');
     else if (activity === 'mass-to-mass') setScreen('massToMassActivity');
     else if (activity === 'limiting-reactant') setScreen('limitingReactantActivity');
-    else if (activity === 'theoretical-percent-yield') setScreen('theoreticalPercentYieldActivity');
+    else if (activity === 'theoretical-percent-yield') setScreen('theoretical-percent-yield');
     else setScreen('topics');
   };
 
@@ -242,24 +234,8 @@ function App() {
         return <MassToMassActivity onBack={handlePTableBack} onShowPeriodicTable={() => goToPeriodicTable('massToMassActivity', massToMassState)} savedState={massToMassState} setSavedState={setMassToMassState} />;
       case 'limitingReactantActivity':
         return <LimitingReactantActivity onBack={handlePTableBack} onShowPeriodicTable={() => goToPeriodicTable('limitingReactantActivity', limitingReactantState)} savedState={limitingReactantState} setSavedState={setLimitingReactantState} />;
-      case 'ideal-gas-law':
-        return <IdealGasLawActivity onBack={() => setScreen('topics')} onShowPeriodicTable={() => { setHistoryStack(h => [...h, {screen: 'ideal-gas-law'}]); handleTransition('ptable'); }} />;
-      case 'boyles-law':
-        return <BoylesLawActivity onBack={() => setScreen('topics')} />;
-      case 'charles-law':
-        return <CharlesLawActivity onBack={() => setScreen('topics')} />;
-      case 'combined-gas-law':
-        return <CombinedGasLawActivity onBack={() => setScreen('topics')} />;
-      case 'gas-stoichiometry':
-        return <GasStoichiometryActivity onBack={() => setScreen('topics')} />;
-      case 'daltons-law':
-        return <DaltonsLawActivity onBack={() => setScreen('topics')} />;
-      case 'grahams-law':
-        return <GrahamsLawActivity onBack={() => setScreen('topics')} />;
-      case 'collecting-gas-over-water':
-        return <CollectingGasOverWaterActivity onBack={() => setScreen('topics')} />;
-      case 'theoreticalPercentYieldActivity':
-        return <TheoreticalPercentYieldActivity onBack={handlePTableBack} onShowPeriodicTable={() => goToPeriodicTable('theoreticalPercentYieldActivity', theoreticalPercentYieldState)} savedState={theoreticalPercentYieldState} setSavedState={setTheoreticalPercentYieldState} />;
+      case 'theoretical-percent-yield':
+        return <TheoreticalPercentYieldActivity onBack={handlePTableBack} onShowPeriodicTable={() => goToPeriodicTable('theoretical-percent-yield', theoreticalPercentYieldState)} savedState={theoreticalPercentYieldState} setSavedState={setTheoreticalPercentYieldState} />;
       default:
         return <Welcome onNext={() => handleTransition('topics')} />;
     }

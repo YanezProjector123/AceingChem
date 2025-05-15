@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import './StoichiometryActivity.css'; // UPDATED IMPORT
+import './ActivityModern.css';
 
 // Helper to shuffle array for random question selection
 const shuffleArray = (array) => {
@@ -507,15 +507,17 @@ const MoleToMoleActivity = ({ onBack, savedState, setSavedState, onPeriodicTable
           <p className="question-text">{currentQuestion.text}</p>
         </div>
 
-        <input 
-          type="number"
-          value={userAnswer}
-          onChange={(e) => setUserAnswer(e.target.value)}
-          placeholder="Your answer (moles)"
-          className="activity-input"
-          style={{ margin: '10px 0 20px 0' }}
-          disabled={showFeedback}
-        />
+        <div className="form-group">
+          <input 
+            type="number"
+            value={userAnswer}
+            onChange={(e) => setUserAnswer(e.target.value)}
+            placeholder="Your answer (moles)"
+            className="activity-input"
+            style={{ margin: '10px 0 20px 0' }}
+            disabled={showFeedback}
+          />
+        </div>
 
         {showFeedback && feedback && (
           <div 
