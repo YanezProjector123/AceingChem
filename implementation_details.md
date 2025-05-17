@@ -184,3 +184,15 @@ The `handlePeriodicActivity` function was updated to use `'theoretical-percent-y
 
 ---
 *Update Date: 2025-05-15*
+
+### CollectingGasOverWaterActivity.js Implementation Details
+- **Purpose:** Practice for collecting gas over water (Dalton's Law with vapor pressure correction), modeled after other gas law activities for UI/UX consistency.
+- **Problem Generation:** Randomly selects a variable to solve for (P1, V1, T1, P2, V2, T2), generating plausible values for the others.
+- **Feedback Logic:** Calculator-style, stepwise feedback for incorrect answers, including formula, substitution, and calculation steps.
+- **UI/UX:** Modern, consistent UI matching other gas law activities.
+- **Integration into Topics.js:** Added button for "Collecting Gas Over Water" in the Gas Law Activities section.
+- **Integration into App.js:** Added lazy import and renderScreen case for 'collecting-gas-over-water', rendering the new activity with required props for navigation and periodic table access.
+- **Rationale:** Maintains modular, scalable architecture for easy addition of new activities. Naming convention for activity keys is consistent (kebab-case), reducing confusion and improving maintainability.
+
+---
+*Update Date: 2025-05-15*

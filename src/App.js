@@ -33,6 +33,7 @@ const MassMoleAndMoleMassActivity = lazy(() => import('./MassMoleAndMoleMassActi
 const MassToMassActivity = lazy(() => import('./MassToMassActivity'));
 const LimitingReactantActivity = lazy(() => import('./LimitingReactantActivity'));
 const TheoreticalPercentYieldActivity = lazy(() => import('./TheoreticalPercentYieldActivity'));
+const EmpiricalMolecularFormulaActivity = lazy(() => import('./EmpiricalMolecularFormulaActivity'));
 const IdealGasActivity = lazy(() => import('./IdealGasActivity'));
 const BoylesLawActivity = lazy(() => import('./BoylesLawActivity'));
 const CharlesLawActivity = lazy(() => import('./CharlesLawActivity'));
@@ -105,6 +106,7 @@ function App() {
     else if (activity === 'mass-to-mass') setScreen('massToMassActivity');
     else if (activity === 'limiting-reactant') setScreen('limitingReactantActivity');
     else if (activity === 'theoretical-percent-yield') setScreen('theoretical-percent-yield');
+    else if (activity === 'empirical-molecular-formula') setScreen('empirical-molecular-formula');
     else setScreen('topics');
   };
 
@@ -335,6 +337,8 @@ function App() {
         return <LimitingReactantActivity onBack={handlePTableBack} onShowPeriodicTable={() => goToPeriodicTable('limitingReactantActivity', limitingReactantState)} savedState={limitingReactantState} setSavedState={setLimitingReactantState} />;
       case 'theoretical-percent-yield':
         return <TheoreticalPercentYieldActivity onBack={handlePTableBack} onShowPeriodicTable={() => goToPeriodicTable('theoretical-percent-yield', theoreticalPercentYieldState)} savedState={theoreticalPercentYieldState} setSavedState={setTheoreticalPercentYieldState} />;
+      case 'empirical-molecular-formula':
+        return <EmpiricalMolecularFormulaActivity onBack={() => setScreen('topics')} />;
       default:
         return <Welcome onNext={() => handleTransition('topics')} />;
     }

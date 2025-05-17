@@ -454,6 +454,7 @@ export default function Topics({
                     <li><button className="ptable-btn periodic-btn periodic-trend-btn" style={{ width: '100%', fontFamily: "'Nunito', sans-serif", fontWeight: 700 }} onClick={() => onPeriodicActivity('mole-to-mole')}><span role="img" aria-label="mole-mole" style={{ marginRight: '8px' }}>🔄</span>Mole-to-Mole Conversions</button></li>
                     <li><button className="ptable-btn periodic-btn periodic-trend-btn" style={{ width: '100%', fontFamily: "'Nunito', sans-serif", fontWeight: 700 }} onClick={() => onPeriodicActivity('limiting-reactant')}><span role="img" aria-label="limiting-reactant" style={{ marginRight: '8px' }}>🧪</span>Limiting Reactant</button></li>
                     <li><button className="ptable-btn periodic-btn periodic-trend-btn" style={{ width: '100%', fontFamily: "'Nunito', sans-serif", fontWeight: 700 }} onClick={() => onPeriodicActivity('theoretical-percent-yield')}><span role="img" aria-label="yield" style={{ marginRight: '8px' }}>🎯</span>Theoretical & Percent Yield</button></li>
+<li><button className="ptable-btn periodic-btn periodic-trend-btn" style={{ width: '100%', fontFamily: "'Nunito', sans-serif", fontWeight: 700 }} onClick={() => onPeriodicActivity('empirical-molecular-formula')}><span role="img" aria-label="empirical-molecular" style={{ marginRight: '8px' }}>🧬</span>Empirical & Molecular Formula</button></li>
                   </ul>
                 </div>
               </div>
