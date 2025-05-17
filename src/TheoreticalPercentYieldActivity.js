@@ -354,8 +354,20 @@ function randomChoice(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
+// Helper function to get difficulty text - consistent with other activities
+const getDifficultyText = (level) => {
+  switch(level) {
+    case 0: return 'Basic';
+    case 1: return 'Intermediate';
+    case 2: return 'Advanced';
+    case 3: return 'Challenging';
+    default: return 'Intermediate';
+  }
+};
+
 function TheoreticalPercentYieldActivity({ onBack, onShowPeriodicTable, savedState, setSavedState }) {
   // State
+  const [selectedDifficulty, setSelectedDifficulty] = useState(savedState?.selectedDifficulty || null);
   const [question, setQuestion] = useState(() => savedState?.question || null);
   const [userLimitingMass, setUserLimitingMass] = useState(savedState?.userLimitingMass || '');
   const [userActualYield, setUserActualYield] = useState(savedState?.userActualYield || '');
@@ -364,18 +376,58 @@ function TheoreticalPercentYieldActivity({ onBack, onShowPeriodicTable, savedSta
   const [feedback, setFeedback] = useState(savedState?.feedback || null);
   const [showAnswer, setShowAnswer] = useState(savedState?.showAnswer || false);
 
-  // Generate a new question
-  const generateQuestion = useCallback(() => {
-    // Select a random reaction
-    const reaction = randomChoice(REACTIONS);
-    // Pick a limiting reactant randomly
-    const limiting = randomChoice(reaction.reactants);
-    // Pick a product randomly
-    const product = randomChoice(reaction.products);
-    // Generate a random mass for limiting reactant (5-50g)
-    const limitingMass = round(Math.random() * 45 + 5, 2);
-    // Generate a random percent yield (60-98%)
-    const percentYield = round(Math.random() * 38 + 60, 1);
+  // Generate a new question based on difficulty level
+  const generateQuestion = useCallback((difficultyOverride = null) => {
+    // Set difficulty level (0-3: Basic, Intermediate, Advanced, Challenging)
+    const difficulty = difficultyOverride !== null ? difficultyOverride : Math.floor(Math.random() * 4);
+    
+    // Select an appropriate reaction based on difficulty
+    let reaction;
+    if (difficulty === 0) { // Basic - simpler reactions (fewer reactants/products, simpler formulas)
+      // Filter for simpler reactions (e.g., fewer atoms, main elements)
+      const simpleReactions = REACTIONS.filter(r => 
+        r.equation.length < 15 || // Short equation
+        (r.reactants.length <= 2 && r.products.length <= 2) // Fewer components
+      );
+      reaction = randomChoice(simpleReactions.length > 0 ? simpleReactions : REACTIONS);
+    } else if (difficulty === 3) { // Challenging - more complex reactions
+      // Filter for more complex reactions
+      const complexReactions = REACTIONS.filter(r => 
+        r.equation.length > 20 || // Longer equation
+        r.reactants.length > 1 || // Multiple reactants
+        r.products.length > 1 // Multiple products
+      );
+      reaction = randomChoice(complexReactions.length > 0 ? complexReactions : REACTIONS);
+    } else { // Intermediate and Advanced - use any reaction
+      reaction = randomChoice(REACTIONS);
+    }
+    
+    // Pick a limiting reactant randomly (for reactions with multiple reactants)
+    const limiting = reaction.reactants.length > 1 ? 
+                   randomChoice(reaction.reactants) : 
+                   reaction.reactants[0];
+                   
+    // Pick a product randomly (for reactions with multiple products)
+    const product = reaction.products.length > 1 ? 
+                  randomChoice(reaction.products) : 
+                  reaction.products[0];
+    
+    // Generate mass and yield values based on difficulty
+    let limitingMass, percentYield;
+    
+    if (difficulty === 0) { // Basic - simpler values, higher yields
+      limitingMass = round(Math.random() * 20 + 10, 1); // 10-30g, rounded to 1 decimal
+      percentYield = round(Math.random() * 20 + 75, 0); // 75-95%, whole numbers
+    } else if (difficulty === 1) { // Intermediate
+      limitingMass = round(Math.random() * 30 + 10, 1); // 10-40g
+      percentYield = round(Math.random() * 30 + 65, 1); // 65-95%
+    } else if (difficulty === 2) { // Advanced
+      limitingMass = round(Math.random() * 40 + 5, 2); // 5-45g, more precision
+      percentYield = round(Math.random() * 35 + 60, 1); // 60-95%
+    } else { // Challenging
+      limitingMass = round(Math.random() * 45 + 5, 2); // 5-50g, precise
+      percentYield = round(Math.random() * 38 + 60, 2); // 60-98%, precise
+    }
     // Calculate theoretical yield (in grams)
     // 1. Convert limiting mass to moles
     const molesLimiting = limitingMass / reaction.molar_masses[limiting];
@@ -393,16 +445,17 @@ function TheoreticalPercentYieldActivity({ onBack, onShowPeriodicTable, savedSta
       limitingMass,
       theoYield,
       actualYield,
-      percentYield
+      percentYield,
+      difficulty // Include difficulty level in the return object
     };
   }, []);
 
   // On mount, generate if not present
   useEffect(() => {
     if (!question) {
-      const q = generateQuestion();
+      const q = generateQuestion(selectedDifficulty);
       setQuestion(q);
-      setSavedState && setSavedState({ question: q });
+      setSavedState && setSavedState({ question: q, selectedDifficulty });
     }
     // eslint-disable-next-line
   }, []);
@@ -416,10 +469,25 @@ function TheoreticalPercentYieldActivity({ onBack, onShowPeriodicTable, savedSta
       userTheoYield,
       userPercentYield,
       feedback,
-      showAnswer
+      showAnswer,
+      selectedDifficulty
     });
     // eslint-disable-next-line
-  }, [question, userLimitingMass, userActualYield, userTheoYield, userPercentYield, feedback, showAnswer]);
+  }, [question, userLimitingMass, userActualYield, userTheoYield, userPercentYield, feedback, showAnswer, selectedDifficulty]);
+  
+  // Handle difficulty change
+  const handleDifficultyChange = (level) => {
+    setSelectedDifficulty(level);
+    const q = generateQuestion(level);
+    setQuestion(q);
+    setUserLimitingMass('');
+    setUserActualYield('');
+    setUserTheoYield('');
+    setUserPercentYield('');
+    setFeedback(null);
+    setShowAnswer(false);
+    setSavedState && setSavedState({ question: q, selectedDifficulty: level });
+  };
 
   if (!question) {
     return <div className="activity-modern"><div>Loading...</div></div>;
@@ -444,7 +512,7 @@ function TheoreticalPercentYieldActivity({ onBack, onShowPeriodicTable, savedSta
 
   // Next question
   const handleNext = () => {
-    const q = generateQuestion();
+    const q = generateQuestion(selectedDifficulty);
     setQuestion(q);
     setUserLimitingMass('');
     setUserActualYield('');
@@ -452,7 +520,7 @@ function TheoreticalPercentYieldActivity({ onBack, onShowPeriodicTable, savedSta
     setUserPercentYield('');
     setFeedback(null);
     setShowAnswer(false);
-    setSavedState && setSavedState({ question: q });
+    setSavedState && setSavedState({ question: q, selectedDifficulty });
   };
 
   // Interactive step-by-step hint state
@@ -501,7 +569,36 @@ function TheoreticalPercentYieldActivity({ onBack, onShowPeriodicTable, savedSta
   return (
     <div className="activity-container">
       <div className="activity-card">
-        <div className="activity-title">Theoretical & Percent Yield</div>
+        <h2 className="activity-title">Theoretical & Percent Yield Practice</h2>
+        
+        {/* Difficulty selector - consistent with other activities */}
+        <div className="difficulty-selector" style={{ marginBottom: 15, display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <label style={{ fontWeight: 600, fontSize: '0.95em', color: '#23234a' }}>Select Difficulty Level:</label>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            {[0, 1, 2, 3].map(level => (
+              <button 
+                key={level}
+                onClick={() => handleDifficultyChange(level)}
+                className={selectedDifficulty === level ? 'selected-difficulty' : ''}
+                style={{
+                  padding: '6px 12px',
+                  borderRadius: 8,
+                  background: selectedDifficulty === level ? '#4f46e5' : '#e5e7eb',
+                  color: selectedDifficulty === level ? 'white' : '#4b5563',
+                  fontWeight: 600,
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: '0.9em',
+                  flex: 1,
+                  minWidth: '80px',
+                  transition: 'all 0.2s ease-in-out'
+                }}
+              >
+                {getDifficultyText(level)}
+              </button>
+            ))}
+          </div>
+        </div>
         <div className="question-area">
           <div className="question-equation">
             <b>Reaction:</b> <span dangerouslySetInnerHTML={{__html: formatChemical(question.reaction.equation)}} />
@@ -533,7 +630,16 @@ function TheoreticalPercentYieldActivity({ onBack, onShowPeriodicTable, savedSta
           />
           {feedback && (
             <div className={`feedback-container ${feedback.theoCorrect ? 'feedback-correct' : 'feedback-incorrect'}`}>
-              {feedback.theoCorrect ? 'Correct!' : (
+              {feedback.theoCorrect ? (
+                <span>
+                  {[
+                    'Correct! You understand the basics of theoretical yield calculations.',
+                    'Great job! You\'ve handled this intermediate theoretical yield problem well.',
+                    'Excellent work! You\'ve mastered this advanced theoretical yield calculation.',
+                    'Outstanding! You\'ve solved a challenging theoretical yield problem with precision.'
+                  ][question.difficulty || 0]}
+                </span>
+              ) : (
                 <span>
                   <b>Let's learn how to solve it:</b>
                   {renderTheoYieldHints()}
@@ -560,7 +666,16 @@ function TheoreticalPercentYieldActivity({ onBack, onShowPeriodicTable, savedSta
           />
           {feedback && (
             <div className={`feedback-container ${feedback.percentCorrect ? 'feedback-correct' : 'feedback-incorrect'}`}>
-              {feedback.percentCorrect ? 'Correct!' : (
+              {feedback.percentCorrect ? (
+                <span>
+                  {[
+                    'Correct! You understand how to calculate percent yield.',
+                    'Well done! You\'ve correctly calculated this percent yield.',
+                    'Excellent work on this advanced percent yield calculation!',
+                    'Outstanding precision on this challenging percent yield problem!'
+                  ][question.difficulty || 0]}
+                </span>
+              ) : (
                 <span>
                   <b>Here's how to find percent yield:</b>
                   {!showFullSolution && (

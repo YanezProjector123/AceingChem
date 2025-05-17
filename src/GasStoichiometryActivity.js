@@ -54,30 +54,82 @@ function pickRandom(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function generateGasStoichProblem() {
+function generateGasStoichProblem(difficultyOverride = null) {
+  // Set difficulty level (0-3: Basic, Intermediate, Advanced, Challenging)
+  const difficulty = difficultyOverride !== null ? difficultyOverride : Math.floor(Math.random() * 4);
+  
   // Pick a random reaction
   const reaction = pickRandom(REACTIONS);
-  // Pick a random question type
-  const types = ['mass-to-volume', 'volume-to-mass', 'volume-to-volume', 'mole-to-volume', 'limiting-reactant'];
+  
+  // Select question type based on difficulty
+  // Basic level focuses on simpler types
+  let types = [];
+  
+  if (difficulty === 0) { // Basic
+    types = ['mass-to-volume', 'volume-to-mass', 'mole-to-volume'];
+  } else if (difficulty === 1) { // Intermediate
+    types = ['mass-to-volume', 'volume-to-mass', 'volume-to-volume', 'mole-to-volume'];
+  } else if (difficulty === 2) { // Advanced
+    types = ['mass-to-volume', 'volume-to-mass', 'volume-to-volume', 'mole-to-volume', 'limiting-reactant'];
+  } else { // Challenging
+    types = ['volume-to-volume', 'mole-to-volume', 'limiting-reactant'];
+  }
+  
   const type = pickRandom(types);
-  // Pick random T and P (not always STP)
-  const T = getRandomInt(250, 350); // K
-  const P = getRandomFloat(0.8, 2.2, 2); // atm
+  // Set temperature and pressure conditions based on difficulty level
+  let T, P;
+  
+  if (difficulty === 0) { // Basic - STP or close to it
+    T = getRandomInt(273, 300); // K, around STP (273.15 K)
+    P = getRandomFloat(0.95, 1.05, 2); // atm, close to 1 atm
+  } else if (difficulty === 1) { // Intermediate - slightly varied conditions
+    T = getRandomInt(250, 350); // K
+    P = getRandomFloat(0.8, 1.5, 2); // atm
+  } else if (difficulty === 2) { // Advanced - more varied conditions
+    T = getRandomInt(220, 380); // K
+    P = getRandomFloat(0.6, 2.0, 2); // atm
+  } else { // Challenging - extreme conditions
+    T = getRandomInt(200, 450); // K
+    P = getRandomFloat(0.4, 2.5, 2); // atm
+  }
 
   // Pick substances
   const allSubstances = [...reaction.reactants, ...reaction.products];
   const gasSubstances = allSubstances.filter(s => s.state === 'g');
   const nonGasSubstances = allSubstances.filter(s => s.state !== 'g');
 
+  // Track problem details
   let known, unknown, knownAmount, prompt, answer, steps;
+  
+  // Educational context based on difficulty
+  let educationalContext = '';
+  if (difficulty >= 1) {
+    const contexts = [
+      'Remember to use the stoichiometric relationships in the balanced equation.',
+      'Apply the ideal gas law PV = nRT where appropriate.',
+      'The ideal gas constant R = 0.0821 L·atm/(mol·K).',
+      'The volume of a gas depends on temperature, pressure, and amount.'
+    ];
+    educationalContext = contexts[Math.floor(Math.random() * contexts.length)];
+  }
 
   // For most questions, pick one known, one unknown, ensure at least one is a gas
   if (type === 'mass-to-volume') {
     known = pickRandom(nonGasSubstances.length ? nonGasSubstances : reaction.reactants);
     unknown = pickRandom(gasSubstances);
     // Defensive: if either is missing, try again
-    if (!known || !unknown) return generateGasStoichProblem();
-    knownAmount = getRandomInt(2, 40); // grams
+    if (!known || !unknown) return generateGasStoichProblem(difficulty);
+    
+    // Scale knownAmount based on difficulty (smaller/rounder for basic, larger/more complex for advanced)
+    if (difficulty === 0) { // Basic
+      knownAmount = getRandomInt(5, 20) * 2; // Even numbers, smaller range
+    } else if (difficulty === 1) { // Intermediate
+      knownAmount = getRandomInt(4, 30); // Wider range
+    } else if (difficulty === 2) { // Advanced
+      knownAmount = getRandomFloat(2.5, 35, 1); // Decimal values
+    } else { // Challenging
+      knownAmount = getRandomFloat(1.8, 40, 2); // More precise decimal values
+    }
     // Calculate moles of known
     const molesKnown = knownAmount / known.molarMass;
     // Stoichiometry
@@ -177,7 +229,28 @@ function generateGasStoichProblem() {
       <>5. Use PV=nRT to find volume: V = nRT/P = ({limitingMoles.toFixed(3)} mol) × ({R}) × ({T} K) / ({P} atm) = {V.toFixed(3)} L</>
     ];
   }
-  return { prompt, answer, steps, type, reaction, T, P };
+  // Include educational context in steps based on difficulty
+  if (difficulty >= 1 && educationalContext) {
+    steps.push(<>4. {educationalContext}</>);
+  }
+  
+  // Include specific guidance based on difficulty level
+  if (difficulty === 2 || difficulty === 3) {
+    steps.push(<>
+      {difficulty === 2 ? 
+        'Advanced Tip: Always check your units throughout calculations to avoid errors.' : 
+        'Challenge Tip: Under non-standard conditions, the behavior of real gases may deviate slightly from ideal gas law predictions.'}
+    </>);
+  }
+  
+  return {
+    type,
+    prompt,
+    answer,
+    steps,
+    reaction,
+    difficulty // Include difficulty in the returned object
+  };
 }
 
 // Utility to render chemical formulas with subscripts/superscripts
@@ -202,7 +275,9 @@ function renderEquation(equation) {
 }
 
 export default function GasStoichiometryActivity({ onBack, onShowPeriodicTable }) {
-  const [problem, setProblem] = useState(generateGasStoichProblem());
+  // State to track selected difficulty level
+  const [selectedDifficulty, setSelectedDifficulty] = useState(null);
+  const [problem, setProblem] = useState(() => generateGasStoichProblem(selectedDifficulty));
   const [userAnswer, setUserAnswer] = useState('');
   const [feedback, setFeedback] = useState(null);
   const [showSteps, setShowSteps] = useState(false);
@@ -224,16 +299,65 @@ export default function GasStoichiometryActivity({ onBack, onShowPeriodicTable }
   }
 
   function handleNext() {
-    setProblem(generateGasStoichProblem());
+    setProblem(generateGasStoichProblem(selectedDifficulty));
     setUserAnswer('');
     setFeedback(null);
     setShowSteps(false);
+  }
+  
+  function handleDifficultyChange(level) {
+    setSelectedDifficulty(level);
+    setProblem(generateGasStoichProblem(level));
+    setUserAnswer('');
+    setFeedback(null);
+    setShowSteps(false);
+  }
+  
+  // Helper function to get difficulty text - consistent with other activities
+  function getDifficultyText(level) {
+    switch(level) {
+      case 0: return 'Basic';
+      case 1: return 'Intermediate';
+      case 2: return 'Advanced';
+      case 3: return 'Challenging';
+      default: return 'Intermediate';
+    }
   }
 
   return (
     <div className="activity-container">
       <div className="activity-card">
         <h2 className="activity-title">Gas Stoichiometry Practice</h2>
+        
+        {/* Difficulty selector - consistent with other activities */}
+        <div className="difficulty-selector" style={{ marginBottom: 15, display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <label style={{ fontWeight: 600, fontSize: '0.95em', color: '#23234a' }}>Select Difficulty Level:</label>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            {[0, 1, 2, 3].map(level => (
+              <button 
+                key={level}
+                onClick={() => handleDifficultyChange(level)}
+                className={selectedDifficulty === level ? 'selected-difficulty' : ''}
+                style={{
+                  padding: '6px 12px',
+                  borderRadius: 8,
+                  background: selectedDifficulty === level ? '#4f46e5' : '#e5e7eb',
+                  color: selectedDifficulty === level ? 'white' : '#4b5563',
+                  fontWeight: 600,
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: '0.9em',
+                  flex: 1,
+                  minWidth: '80px',
+                  transition: 'all 0.2s ease-in-out'
+                }}
+              >
+                {getDifficultyText(level)}
+              </button>
+            ))}
+          </div>
+        </div>
+        
         {onShowPeriodicTable && (
           <div style={{ display: 'flex', justifyContent: 'center', margin: '16px 0 12px 0' }}>
             <button className="activity-btn" type="button" onClick={onShowPeriodicTable}>
@@ -257,7 +381,16 @@ export default function GasStoichiometryActivity({ onBack, onShowPeriodicTable }
             step="any"
           />
           {feedback && (
-            <div className={`feedback-container feedback-${feedback.correct ? 'correct' : 'incorrect'}`}>{feedback.message}</div>
+            <div className={`feedback-container feedback-${feedback.correct ? 'correct' : 'incorrect'}`}>
+              {feedback.correct ? 
+                [
+                  'Excellent! You\'ve mastered the basics of gas stoichiometry.',
+                  'Great job! You\'re handling intermediate gas stoichiometry problems well.',
+                  'Outstanding work! You\'ve tackled an advanced gas stoichiometry problem.',
+                  'Impressive! You\'ve solved a challenging gas stoichiometry problem!'
+                ][problem.difficulty || 0] : 
+                feedback.message}
+            </div>
           )}
           <div className="button-row">
             {!feedback?.correct && (

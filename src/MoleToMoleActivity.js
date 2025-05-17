@@ -347,6 +347,9 @@ const MOLE_CONVERSION_PROBLEMS = [
 ];
 
 const MoleToMoleActivity = ({ onBack, savedState, setSavedState, onPeriodicTable }) => {
+  // Add difficulty selection state consistent with other activities
+  const [selectedDifficulty, setSelectedDifficulty] = useState(savedState?.selectedDifficulty || 0);
+  
   const [currentProblemSet, setCurrentProblemSet] = useState(() => savedState?.currentProblemSet || shuffleArray([...MOLE_CONVERSION_PROBLEMS]));
   const [problemIndex, setProblemIndex] = useState(() => savedState?.problemIndex || 0);
   const [currentQuestion, setCurrentQuestion] = useState(null);
@@ -356,7 +359,36 @@ const MoleToMoleActivity = ({ onBack, savedState, setSavedState, onPeriodicTable
   const [score, setScore] = useState(() => savedState?.score || 0);
   const [questionsAttempted, setQuestionsAttempted] = useState(() => savedState?.questionsAttempted || 0);
 
-  const generateQuestion = useCallback(() => {
+  // Helper function to get difficulty text
+  const getDifficultyText = (level) => {
+    switch(level) {
+      case 0: return 'Basic';
+      case 1: return 'Intermediate';
+      case 2: return 'Advanced';
+      case 3: return 'Challenging';
+      default: return 'Intermediate';
+    }
+  };
+
+  // Handle difficulty change
+  const handleDifficultyChange = (level) => {
+    setSelectedDifficulty(level);
+    // Reset the current activity state with the new difficulty
+    setUserAnswer('');
+    setShowFeedback(false);
+    setFeedback(null);
+    // Save to state
+    if (setSavedState) {
+      setSavedState({
+        ...savedState,
+        selectedDifficulty: level,
+      });
+    }
+    // Generate a new question with this difficulty level
+    generateQuestionWithDifficulty(level);
+  };
+  
+  const generateQuestionWithDifficulty = useCallback((difficultyLevel = selectedDifficulty) => {
     if (problemIndex >= currentProblemSet.length) {
       console.log("Completed all problems in this set!");
       setFeedback({ type: 'info', message: `Set complete! Your score: ${score}/${questionsAttempted}. Starting new set.` });
@@ -368,7 +400,25 @@ const MoleToMoleActivity = ({ onBack, savedState, setSavedState, onPeriodicTable
     const questionTypeIndex = Math.floor(Math.random() * problem.questionTypes.length);
     const questionTemplate = problem.questionTypes[questionTypeIndex];
     
-    const givenMoles = parseFloat((Math.random() * 9 + 1).toFixed(1)); 
+    // Generate mole values based on difficulty level
+    let givenMoles;
+    switch(difficultyLevel) {
+      case 0: // Basic - simpler values
+        givenMoles = parseFloat((Math.random() * 4.5 + 0.5).toFixed(1)); // 0.5-5.0 moles, one decimal
+        break;
+      case 1: // Intermediate
+        givenMoles = parseFloat((Math.random() * 6.5 + 0.5).toFixed(2)); // 0.50-7.00 moles, two decimals
+        break;
+      case 2: // Advanced
+        givenMoles = parseFloat((Math.random() * 8.5 + 0.5).toFixed(2)); // 0.50-9.00 moles, two decimals
+        break;
+      case 3: // Challenging
+        givenMoles = parseFloat((Math.random() * 9.5 + 0.5).toFixed(3)); // 0.500-10.000 moles, three decimals
+        break;
+      default:
+        givenMoles = parseFloat((Math.random() * 9.5 + 0.5).toFixed(2)); // Default: 0.50-10.00 moles, two decimals
+    }
+
     const fromSubstance = questionTemplate.from;
     const toSubstance = questionTemplate.to;
 
@@ -380,20 +430,20 @@ const MoleToMoleActivity = ({ onBack, savedState, setSavedState, onPeriodicTable
     setCurrentQuestion({
       equation: problem.equation,
       text: questionTemplate.text(givenMoles),
-      correctAnswer: parseFloat(correctAnswer.toFixed(3)),
       fromSubstance,
       toSubstance,
-      givenMoles,
-      molesFromCoefficient, 
-      molesToCoefficient   
+      givenMoles: parseFloat(givenMoles),
+      correctAnswer,
+      stoichiometry: problem.stoichiometry,
+      difficulty: difficultyLevel // Add difficulty level to the question
     });
     
     setUserAnswer('');
   }, [problemIndex, currentProblemSet, score, questionsAttempted]);
 
   useEffect(() => {
-    generateQuestion();
-  }, [generateQuestion, problemIndex]); // Regenerate if problemIndex changes (e.g. next question)
+    generateQuestionWithDifficulty(selectedDifficulty);
+  }, [generateQuestionWithDifficulty, problemIndex, selectedDifficulty]); // Regenerate if problemIndex changes (e.g. next question)
 
   // Save state whenever key variables change
   useEffect(() => {
@@ -401,14 +451,15 @@ const MoleToMoleActivity = ({ onBack, savedState, setSavedState, onPeriodicTable
       setSavedState({
         currentProblemSet,
         problemIndex,
+        userAnswer,
+        feedback,
+        showFeedback,
         score,
         questionsAttempted,
-        userAnswer, 
-        feedback,   
-        showFeedback 
+        selectedDifficulty // Add difficulty level to saved state
       });
     }
-  }, [currentProblemSet, problemIndex, score, questionsAttempted, userAnswer, feedback, showFeedback, setSavedState]);
+  }, [currentProblemSet, problemIndex, userAnswer, feedback, showFeedback, score, questionsAttempted, selectedDifficulty, setSavedState]);
 
 
   const checkAnswer = (answerString) => {
@@ -423,8 +474,32 @@ const MoleToMoleActivity = ({ onBack, savedState, setSavedState, onPeriodicTable
 
     setQuestionsAttempted(prev => prev + 1);
 
-    if (Math.abs(answer - currentQuestion.correctAnswer) < 0.01) {
-      setFeedback({ type: 'correct', message: 'Correct! Great job!' });
+    const isCorrect = Math.abs(answer - currentQuestion.correctAnswer) < 0.01;
+
+    if (isCorrect) {
+      // Enhanced feedback based on difficulty level
+      let successMessage;
+      
+      // Difficulty-specific feedback messages
+      const difficulty = currentQuestion.difficulty || 0;
+      switch(difficulty) {
+        case 0:
+          successMessage = 'Correct! You have successfully applied the basic mole-to-mole conversion concepts.'; 
+          break;
+        case 1:
+          successMessage = 'Great job! You are handling these intermediate stoichiometric calculations well.'; 
+          break;
+        case 2:
+          successMessage = 'Excellent work! You have successfully tackled this advanced stoichiometry problem.'; 
+          break;
+        case 3:
+          successMessage = 'Outstanding! You have mastered this challenging mole-to-mole conversion with precision.'; 
+          break;
+        default:
+          successMessage = 'Correct! Great job!';
+      }
+      
+      setFeedback({ type: 'correct', message: successMessage });
       setScore(prev => prev + 1);
     } else {
       const { equation, fromSubstance, toSubstance, givenMoles, correctAnswer, molesFromCoefficient, molesToCoefficient } = currentQuestion;
@@ -456,6 +531,7 @@ const MoleToMoleActivity = ({ onBack, savedState, setSavedState, onPeriodicTable
   const handleNextQuestion = () => {
     setShowFeedback(false);
     setFeedback(null);
+    setUserAnswer('');
 
     if (problemIndex >= currentProblemSet.length -1 && feedback?.type === 'info' && feedback.message.startsWith('Set complete!')) {
         setCurrentProblemSet(shuffleArray([...MOLE_CONVERSION_PROBLEMS]));
@@ -463,6 +539,9 @@ const MoleToMoleActivity = ({ onBack, savedState, setSavedState, onPeriodicTable
     } else if (problemIndex < currentProblemSet.length) {
         setProblemIndex(prev => prev + 1);
     }
+    
+    // Maintain the selected difficulty when generating a new question
+    generateQuestionWithDifficulty(selectedDifficulty);
   };
 
   if (showFeedback && feedback?.type === 'info' && feedback.message.startsWith('Set complete!')) {
@@ -497,6 +576,55 @@ const MoleToMoleActivity = ({ onBack, savedState, setSavedState, onPeriodicTable
     <div className="activity-container">
       <div className="activity-card">
         <h2 className="activity-title">Mole-to-Mole Conversions</h2>
+        
+        {/* Difficulty selector - consistent with other activities */}
+        <div className="difficulty-selector" style={{ marginBottom: 15, display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <label style={{ fontWeight: 600, fontSize: '0.95em', color: '#23234a' }}>Select Difficulty Level:</label>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            {[0, 1, 2, 3].map(level => (
+              <button 
+                key={level}
+                onClick={() => handleDifficultyChange(level)}
+                className={selectedDifficulty === level ? 'selected-difficulty' : ''}
+                style={{
+                  padding: '6px 12px',
+                  borderRadius: 8,
+                  background: selectedDifficulty === level ? '#4f46e5' : '#e5e7eb',
+                  color: selectedDifficulty === level ? 'white' : '#4b5563',
+                  fontWeight: 600,
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: '0.9em',
+                  flex: 1,
+                  minWidth: '80px',
+                  transition: 'all 0.2s ease-in-out'
+                }}
+              >
+                {getDifficultyText(level)}
+              </button>
+            ))}
+          </div>
+        </div>
+        
+        {/* Difficulty indicator */}
+        {currentQuestion && currentQuestion.difficulty !== undefined && (
+          <div style={{
+            display: 'inline-block',
+            background: currentQuestion.difficulty === 0 ? '#4ade80' : 
+                       currentQuestion.difficulty === 1 ? '#60a5fa' : 
+                       currentQuestion.difficulty === 2 ? '#a78bfa' : '#f87171',
+            color: 'white',
+            padding: '4px 10px',
+            borderRadius: '4px',
+            fontSize: '0.85em',
+            fontWeight: 600,
+            textTransform: 'uppercase',
+            letterSpacing: '0.5px',
+            marginBottom: '10px'
+          }}>
+            {getDifficultyText(currentQuestion.difficulty)}
+          </div>
+        )}
         
         <div className="question-area">
           <p className="question-equation">

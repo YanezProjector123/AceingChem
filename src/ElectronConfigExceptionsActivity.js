@@ -65,15 +65,34 @@ function shuffleArray(array) {
   return arr;
 }
 
+// Helper function to get difficulty text - consistent with other activities
+function getDifficultyText(level) {
+  switch(level) {
+    case 0: return 'Basic';
+    case 1: return 'Intermediate';
+    case 2: return 'Advanced';
+    case 3: return 'Challenging';
+    default: return 'Intermediate';
+  }
+}
+
 // Generates feedback (can be enhanced for exceptions)
-function getFeedbackForException(correctElement, userAnswerSymbol, displayedConfig, questionType) {
+function getFeedbackForException(correctElement, userAnswerSymbol, displayedConfig, questionType, difficulty = 0) {
   const isCorrect = userAnswerSymbol === correctElement.symbol; // Assuming type 'config-to-element' for now
   
   if (isCorrect) {
+    // Provide different feedback messages based on difficulty level
+    const successMessages = [
+      `Correct! ${configToSuperscript(displayedConfig)} is the actual configuration for ${correctElement.name} (${correctElement.symbol}).`,
+      `Well done! You've identified that ${configToSuperscript(displayedConfig)} is the actual configuration for ${correctElement.name}.`,
+      `Excellent! ${correctElement.name} (${correctElement.symbol}) is indeed the exception with configuration ${configToSuperscript(displayedConfig)}.`,
+      `Outstanding! You've mastered this challenging electron configuration exception for ${correctElement.name}.`
+    ];
+    
     return {
       type: 'correct',
       userAnswer: userAnswerSymbol,
-      message: `Correct! ${configToSuperscript(displayedConfig)} is the actual configuration for ${correctElement.name} (${correctElement.symbol}).`,
+      message: successMessages[difficulty] || successMessages[0],
       correct: correctElement.symbol,
       tip: correctElement.reason || 'Well done! This is an important exception to remember.',
       missing: [], extra: [], howTo: []
@@ -95,6 +114,9 @@ function getFeedbackForException(correctElement, userAnswerSymbol, displayedConf
 
 
 const ElectronConfigExceptionsActivity = ({ onBack, onPeriodicTable, savedState, setSavedState }) => {
+  // Add difficulty selection state - consistent with other activities
+  const [selectedDifficulty, setSelectedDifficulty] = useState(() => savedState?.selectedDifficulty || null);
+  
   const [availableElements, setAvailableElements] = useState(
     () => (savedState?.availableElements && savedState.availableElements.length > 0)
            ? savedState.availableElements
@@ -105,7 +127,10 @@ const ElectronConfigExceptionsActivity = ({ onBack, onPeriodicTable, savedState,
   const [feedback, setFeedback] = useState(() => savedState?.feedback || null);
   const [showFeedback, setShowFeedback] = useState(() => savedState?.showFeedback || false);
 
-  const generateQuestion = useCallback(() => {
+  const generateQuestion = useCallback((difficultyOverride = null) => {
+    // Set difficulty level (0-3: Basic, Intermediate, Advanced, Challenging)
+    const difficulty = difficultyOverride !== null ? difficultyOverride : Math.floor(Math.random() * 4);
+    
     let elementsToUse = availableElements;
     if (elementsToUse.length === 0) {
       elementsToUse = shuffleArray([...EXCEPTION_ELEMENT_DATA]); // Reshuffle if all used
@@ -113,13 +138,27 @@ const ElectronConfigExceptionsActivity = ({ onBack, onPeriodicTable, savedState,
     const correctElement = elementsToUse[0];
     setAvailableElements(elementsToUse.slice(1));
 
-    // For now, always ask: "Which element has this actual configuration?"
-    const displayedConfig = correctElement.actualConfig;
-    const questionType = 'config-to-element'; // Could be expanded later
-
+    // Determine question type based on difficulty
+    let displayedConfig, questionType;
+    
+    if (difficulty === 0) { // Basic - show actual config and ask for element (easier)
+      displayedConfig = correctElement.actualConfig;
+      questionType = 'config-to-element';
+    } else if (difficulty === 1) { // Intermediate - still show actual config
+      displayedConfig = correctElement.actualConfig;
+      questionType = 'config-to-element';
+    } else { // Advanced/Challenging - may show expected config and ask why it's wrong, or actual config
+      // For now, stick with actual config but with more context
+      displayedConfig = correctElement.actualConfig;
+      questionType = 'config-to-element';
+    }
+    
     // Generate distractors (other element symbols from the exception list or general list)
     const otherExceptionSymbols = EXCEPTION_ELEMENT_DATA.filter(el => el.symbol !== correctElement.symbol).map(el => el.symbol);
-    const distractors = shuffleArray(otherExceptionSymbols).slice(0, 3); // Pick 3 other exception symbols
+    
+    // Vary number of distractors based on difficulty
+    const numDistractors = difficulty < 2 ? 3 : 4; // More options for harder difficulties
+    const distractors = shuffleArray(otherExceptionSymbols).slice(0, numDistractors);
     const options = shuffleArray([correctElement.symbol, ...distractors]);
 
     setCurrentQuestion({
@@ -128,7 +167,8 @@ const ElectronConfigExceptionsActivity = ({ onBack, onPeriodicTable, savedState,
       questionType: questionType,
       options: options,
       correctSymbol: correctElement.symbol,
-      promptText: `Which element, known for its exceptional electron configuration, has the actual configuration:`
+      promptText: `Which element, known for its exceptional electron configuration, has the actual configuration:`,
+      difficulty: difficulty // Include difficulty level in question object
     });
     setUserAnswer('');
     setFeedback(null);
@@ -137,25 +177,48 @@ const ElectronConfigExceptionsActivity = ({ onBack, onPeriodicTable, savedState,
 
   useEffect(() => {
     if (!currentQuestion) {
-      generateQuestion();
+      generateQuestion(selectedDifficulty);
     }
-  }, [currentQuestion, generateQuestion]);
+  }, [currentQuestion, generateQuestion, selectedDifficulty]);
   
   useEffect(() => {
     if (setSavedState) {
-        setSavedState({ availableElements, currentQuestion, userAnswer, feedback, showFeedback });
+        setSavedState({ 
+          availableElements, 
+          currentQuestion, 
+          userAnswer, 
+          feedback, 
+          showFeedback,
+          selectedDifficulty 
+        });
     }
-  }, [availableElements, currentQuestion, userAnswer, feedback, showFeedback, setSavedState]);
+  }, [availableElements, currentQuestion, userAnswer, feedback, showFeedback, selectedDifficulty, setSavedState]);
 
   const handleSubmit = () => {
     if (!userAnswer || !currentQuestion) return;
-    const feedbackResult = getFeedbackForException(currentQuestion.element, userAnswer, currentQuestion.displayedConfig, currentQuestion.questionType);
+    const feedbackResult = getFeedbackForException(
+      currentQuestion.element, 
+      userAnswer, 
+      currentQuestion.displayedConfig, 
+      currentQuestion.questionType,
+      currentQuestion.difficulty // Pass difficulty level to feedback function
+    );
     setFeedback(feedbackResult);
     setShowFeedback(true);
   };
 
   const handleNext = () => {
-    generateQuestion();
+    generateQuestion(selectedDifficulty);
+  };
+  
+  // Handle difficulty change
+  const handleDifficultyChange = (level) => {
+    setSelectedDifficulty(level);
+    // Reset the current activity state
+    generateQuestion(level);
+    setUserAnswer('');
+    setFeedback(null);
+    setShowFeedback(false);
   };
 
   if (!currentQuestion) {
@@ -169,6 +232,35 @@ const ElectronConfigExceptionsActivity = ({ onBack, onPeriodicTable, savedState,
           <span role="img" aria-label="warning" className="shc-title-icon">⚠️</span>
           Electron Configuration Exceptions
         </h2>
+        
+        {/* Difficulty selector - consistent with other activities */}
+        <div style={{ marginBottom: 15, display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <label style={{ fontWeight: 600, fontSize: '0.95em', color: '#f8fafc' }}>Select Difficulty Level:</label>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            {[0, 1, 2, 3].map(level => (
+              <button 
+                key={level}
+                onClick={() => handleDifficultyChange(level)}
+                className={selectedDifficulty === level ? 'selected-difficulty' : ''}
+                style={{
+                  padding: '6px 12px',
+                  borderRadius: 8,
+                  background: selectedDifficulty === level ? '#4f46e5' : '#e5e7eb',
+                  color: selectedDifficulty === level ? 'white' : '#4b5563',
+                  fontWeight: 600,
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: '0.9em',
+                  flex: 1,
+                  minWidth: '80px',
+                  transition: 'all 0.2s ease-in-out'
+                }}
+              >
+                {getDifficultyText(level)}
+              </button>
+            ))}
+          </div>
+        </div>
         
         <div className="shc-form">
           <div className="shc-prompt" style={{ marginBottom: '10px' }}>

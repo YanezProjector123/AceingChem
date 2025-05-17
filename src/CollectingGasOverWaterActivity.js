@@ -17,15 +17,68 @@ const vaporPressureTable = [
   { temp: 40, vp: 55.3 }
 ];
 
-function generateProblem() {
+// Helper function to get difficulty text - consistent with other activities
+function getDifficultyText(level) {
+  switch(level) {
+    case 0: return 'Basic';
+    case 1: return 'Intermediate';
+    case 2: return 'Advanced';
+    case 3: return 'Challenging';
+    default: return 'Intermediate';
+  }
+}
+
+function generateProblem(difficultyOverride = null) {
+  // Set difficulty level (0-3: Basic, Intermediate, Advanced, Challenging)
+  const difficulty = difficultyOverride !== null ? difficultyOverride : Math.floor(Math.random() * 4);
+  
   // Types: find dry gas pressure, find collected gas moles, find collected gas volume
-  const types = ['dryPressure', 'moles', 'volume'];
+  let types = [];
+  
+  // Restrict problem types based on difficulty level
+  if (difficulty === 0) { // Basic level - simple dry pressure problems
+    types = ['dryPressure'];
+  } else if (difficulty === 1) { // Intermediate level - dry pressure and moles
+    types = ['dryPressure', 'moles'];
+  } else if (difficulty === 2) { // Advanced level - all problem types
+    types = ['dryPressure', 'moles', 'volume'];
+  } else { // Challenging level - more complex moles and volume problems
+    types = ['moles', 'volume'];
+  }
+  
   const type = types[getRandomInt(0, types.length - 1)];
-  const tempObj = vaporPressureTable[getRandomInt(0, vaporPressureTable.length - 1)];
+  
+  // Select temperature range based on difficulty
+  let tempIndex;
+  if (difficulty === 0) { // Basic - standard temps (20-25°C)
+    tempIndex = getRandomInt(2, 3);
+  } else if (difficulty === 1) { // Intermediate - common temps (15-30°C)
+    tempIndex = getRandomInt(1, 4);
+  } else if (difficulty === 2) { // Advanced - wider range (10-35°C)
+    tempIndex = getRandomInt(0, 5);
+  } else { // Challenging - all temps including uncommon ones (10-40°C)
+    tempIndex = getRandomInt(0, vaporPressureTable.length - 1);
+  }
+  
+  const tempObj = vaporPressureTable[tempIndex];
   const temp = tempObj.temp;
   const vaporPressure = tempObj.vp;
-  const totalPressure = getRandomInt(740, 780); // torr
-  const collectedVolume = getRandomInt(200, 600) / 10; // 20.0-60.0 L
+  // Adjust parameters based on difficulty level
+  let totalPressure, collectedVolume;
+  
+  if (difficulty === 0) { // Basic - simpler, rounded values
+    totalPressure = getRandomInt(745, 775); // torr, closer to 760 (1 atm)
+    collectedVolume = getRandomInt(25, 50) * 10 / 10; // 25.0-50.0 L, tends to be whole numbers
+  } else if (difficulty === 1) { // Intermediate - standard range
+    totalPressure = getRandomInt(740, 780); // torr
+    collectedVolume = getRandomInt(200, 500) / 10; // 20.0-50.0 L
+  } else if (difficulty === 2) { // Advanced - wider range
+    totalPressure = getRandomInt(720, 790); // torr
+    collectedVolume = getRandomInt(150, 550) / 10; // 15.0-55.0 L
+  } else { // Challenging - extreme values
+    totalPressure = getRandomInt(700, 800); // torr
+    collectedVolume = getRandomInt(125, 625) / 10; // 12.5-62.5 L with more decimal precision
+  }
   const R = 62.4; // L·torr/(mol·K)
   const T = temp + 273.15;
   let dryPressure = totalPressure - vaporPressure;
@@ -50,16 +103,32 @@ function generateProblem() {
     explanation = `First, find dry gas pressure: ${totalPressure} - ${vaporPressure} = ${dryPressure} torr.\nThen use PV = nRT, solve for V:\nV = nRT / P = (${moles} * 62.4 * ${T}) / ${dryPressure} = ${answer} L.`;
   }
 
+  // Add more educational context based on difficulty level
+  if (difficulty >= 1) {
+    explanation += '\n\nRemember: When gas is collected over water, the total pressure equals the sum of the dry gas pressure and water vapor pressure.'
+  }
+  
+  if (difficulty >= 2) {
+    explanation += ` The total pressure includes both the gas you're collecting and the water vapor in the container at ${temp}°C.`
+  }
+  
+  if (difficulty === 3) {
+    explanation += ` Note that vapor pressure of water varies with temperature, so always check the appropriate vapor pressure value for your specific experimental conditions.`
+  }
+  
   return {
     prompt,
     answer,
     explanation,
-    type
+    type,
+    difficulty // Include difficulty level in the returned problem
   };
 }
 
 export default function CollectingGasOverWaterActivity({ onBack, onShowPeriodicTable }) {
-  const [problem, setProblem] = useState(generateProblem());
+  // State to track selected difficulty level
+  const [selectedDifficulty, setSelectedDifficulty] = useState(null);
+  const [problem, setProblem] = useState(() => generateProblem(selectedDifficulty));
   const [userAnswer, setUserAnswer] = useState('');
   const [feedback, setFeedback] = useState(null);
   const [showExplanation, setShowExplanation] = useState(false);
@@ -70,7 +139,10 @@ export default function CollectingGasOverWaterActivity({ onBack, onShowPeriodicT
       return { correct: false, message: 'Please enter a valid number.' };
     }
     let correct = false;
-    let tolerance = 0.01;
+    // Adjust tolerance based on difficulty level - more lenient for basic, stricter for advanced
+    let tolerance = problem.difficulty === 0 ? 0.02 :
+                  problem.difficulty === 1 ? 0.015 :
+                  problem.difficulty === 2 ? 0.01 : 0.005;
     let steps = [];
     if (problem.type === 'dryPressure') {
       tolerance = 0.2;
@@ -100,7 +172,14 @@ export default function CollectingGasOverWaterActivity({ onBack, onShowPeriodicT
       steps.push(`= ${problem.answer} L`);
     }
     if (correct) {
-      return { correct: true, message: 'Correct! Well done.' };
+      // Provide different feedback messages based on difficulty level
+      const successMessages = [
+        'Correct! You\'ve mastered the basics of gas collection over water.',
+        'Great job! You\'re handling gas collection calculations well.',
+        'Excellent work! You\'ve correctly addressed this advanced gas collection problem.',
+        'Outstanding! You\'ve solved a challenging gas collection problem with precision.'
+      ];
+      return { correct: true, message: successMessages[problem.difficulty || 0] };
     }
     return {
       correct: false,
@@ -124,7 +203,15 @@ export default function CollectingGasOverWaterActivity({ onBack, onShowPeriodicT
 
 
   const handleNext = () => {
-    setProblem(generateProblem());
+    setProblem(generateProblem(selectedDifficulty));
+    setUserAnswer('');
+    setFeedback(null);
+    setShowExplanation(false);
+  };
+  
+  const handleDifficultyChange = (level) => {
+    setSelectedDifficulty(level);
+    setProblem(generateProblem(level));
     setUserAnswer('');
     setFeedback(null);
     setShowExplanation(false);
@@ -134,6 +221,36 @@ export default function CollectingGasOverWaterActivity({ onBack, onShowPeriodicT
     <div className="activity-container">
       <div className="activity-card">
         <h2 className="activity-title">Collecting Gas Over Water</h2>
+        
+        {/* Difficulty selector - consistent with other activities */}
+        <div className="difficulty-selector" style={{ marginBottom: 15, display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <label style={{ fontWeight: 600, fontSize: '0.95em', color: '#23234a' }}>Select Difficulty Level:</label>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            {[0, 1, 2, 3].map(level => (
+              <button 
+                key={level}
+                onClick={() => handleDifficultyChange(level)}
+                className={selectedDifficulty === level ? 'selected-difficulty' : ''}
+                style={{
+                  padding: '6px 12px',
+                  borderRadius: 8,
+                  background: selectedDifficulty === level ? '#4f46e5' : '#e5e7eb',
+                  color: selectedDifficulty === level ? 'white' : '#4b5563',
+                  fontWeight: 600,
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: '0.9em',
+                  flex: 1,
+                  minWidth: '80px',
+                  transition: 'all 0.2s ease-in-out'
+                }}
+              >
+                {getDifficultyText(level)}
+              </button>
+            ))}
+          </div>
+        </div>
+        
         <div style={{ display: 'flex', justifyContent: 'center', margin: '16px 0 12px 0' }}>
           <button className="activity-btn" type="button" onClick={onShowPeriodicTable}>
             Periodic Table

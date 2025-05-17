@@ -290,6 +290,9 @@ const MASS_TO_MASS_PROBLEMS = [
 ];
 
 export default function MassToMassActivity({ onBack, onShowPeriodicTable, savedState, setSavedState }) {
+  // Add difficulty selection state consistent with other activities
+  const [selectedDifficulty, setSelectedDifficulty] = useState(savedState?.selectedDifficulty || 0);
+  
   const [currentProblemSet, setCurrentProblemSet] = useState(() => savedState?.currentProblemSet || shuffleArray([...MASS_TO_MASS_PROBLEMS]));
   const [problemIndex, setProblemIndex] = useState(() => savedState?.problemIndex || 0);
   const [currentQuestion, setCurrentQuestion] = useState(null);
@@ -300,7 +303,36 @@ export default function MassToMassActivity({ onBack, onShowPeriodicTable, savedS
   const [questionsAttempted, setQuestionsAttempted] = useState(() => savedState?.questionsAttempted || 0);
   const inputRef = useRef(null);
 
-  const generateQuestion = useCallback(() => {
+  // Helper function to get difficulty text
+  const getDifficultyText = (level) => {
+    switch(level) {
+      case 0: return 'Basic';
+      case 1: return 'Intermediate';
+      case 2: return 'Advanced';
+      case 3: return 'Challenging';
+      default: return 'Intermediate';
+    }
+  };
+
+  // Handle difficulty change
+  const handleDifficultyChange = (level) => {
+    setSelectedDifficulty(level);
+    // Reset the current activity state with the new difficulty
+    setUserAnswer('');
+    setShowFeedback(false);
+    setFeedback(null);
+    // Save to state
+    if (setSavedState) {
+      setSavedState({
+        ...savedState,
+        selectedDifficulty: level,
+      });
+    }
+    // Generate a new question with this difficulty level
+    generateQuestionWithDifficulty(level);
+  };
+  
+  const generateQuestionWithDifficulty = useCallback((difficultyLevel = selectedDifficulty) => {
     if (problemIndex >= currentProblemSet.length) {
       setFeedback({ type: 'info', message: `Set complete! Your score: ${score}/${questionsAttempted}. Starting new set.` });
       setShowFeedback(true);
@@ -329,14 +361,43 @@ export default function MassToMassActivity({ onBack, onShowPeriodicTable, savedS
         return;
     }
     
-    const roundingOptions = [
-      { type: 'default', precision: 3, textSuffix: '', placeholderSuffix: '(e.g., 1.234)' },
-      { type: 'tenth', precision: 1, textSuffix: ' Round to the nearest tenth.', placeholderSuffix: '(e.g., 1.2)' },
-      { type: 'hundredth', precision: 2, textSuffix: ' Round to the nearest hundredth.', placeholderSuffix: '(e.g., 1.23)' },
-    ];
+    // Adjust rounding precision based on difficulty level
+    let roundingOptions;
+    if (difficultyLevel === 0) { // Basic - simpler rounding
+      roundingOptions = [
+        { type: 'default', precision: 1, textSuffix: '', placeholderSuffix: '(e.g., 1.2)' },
+        { type: 'tenth', precision: 1, textSuffix: ' Round to the nearest tenth.', placeholderSuffix: '(e.g., 1.2)' },
+      ];
+    } else if (difficultyLevel === 1) { // Intermediate
+      roundingOptions = [
+        { type: 'default', precision: 2, textSuffix: '', placeholderSuffix: '(e.g., 1.23)' },
+        { type: 'hundredth', precision: 2, textSuffix: ' Round to the nearest hundredth.', placeholderSuffix: '(e.g., 1.23)' },
+      ];
+    } else if (difficultyLevel === 2) { // Advanced
+      roundingOptions = [
+        { type: 'default', precision: 3, textSuffix: '', placeholderSuffix: '(e.g., 1.234)' },
+        { type: 'hundredth', precision: 2, textSuffix: ' Round to the nearest hundredth.', placeholderSuffix: '(e.g., 1.23)' },
+      ];
+    } else { // Challenging
+      roundingOptions = [
+        { type: 'default', precision: 3, textSuffix: '', placeholderSuffix: '(e.g., 1.234)' },
+        { type: 'thousandth', precision: 3, textSuffix: ' Round to the nearest thousandth.', placeholderSuffix: '(e.g., 1.234)' },
+      ];
+    }
+    
     const selectedRounding = roundingOptions[Math.floor(Math.random() * roundingOptions.length)];
 
-    const givenMass = parseFloat((Math.random() * 99 + 1).toFixed(2)); // Random mass between 1.00 and 100.00 g
+    // Adjust mass ranges based on difficulty level
+    let givenMass;
+    if (difficultyLevel === 0) { // Basic - whole numbers
+      givenMass = Math.round(10 + Math.random() * 40); // 10-50g, whole numbers
+    } else if (difficultyLevel === 1) { // Intermediate
+      givenMass = parseFloat((5 + Math.random() * 70).toFixed(1)); // 5-75g, one decimal
+    } else if (difficultyLevel === 2) { // Advanced
+      givenMass = parseFloat((2 + Math.random() * 98).toFixed(2)); // 2-100g, two decimals
+    } else { // Challenging
+      givenMass = parseFloat((1 + Math.random() * 149).toFixed(2)); // 1-150g, two decimals
+    }
 
     // Calculation: Mass Given -> Moles Given -> Moles Find -> Mass Find
     const molesGiven = givenMass / givenMolarMass;
@@ -362,6 +423,7 @@ export default function MassToMassActivity({ onBack, onShowPeriodicTable, savedS
       roundingType: selectedRounding.type,
       precision: selectedRounding.precision,
       placeholderSuffix: selectedRounding.placeholderSuffix,
+      difficulty: difficultyLevel, // Add difficulty level to the question
     });
     setUserAnswer('');
     if (inputRef.current) {
@@ -370,17 +432,17 @@ export default function MassToMassActivity({ onBack, onShowPeriodicTable, savedS
   }, [problemIndex, currentProblemSet, score, questionsAttempted]);
 
   useEffect(() => {
-    generateQuestion();
-  }, [generateQuestion, problemIndex]);
+    generateQuestionWithDifficulty(selectedDifficulty);
+  }, [generateQuestionWithDifficulty, problemIndex, selectedDifficulty]);
 
   useEffect(() => {
     if (setSavedState) {
       setSavedState({
         currentProblemSet, problemIndex, score, questionsAttempted,
-        userAnswer, feedback, showFeedback,
+        userAnswer, feedback, showFeedback, selectedDifficulty,
       });
     }
-  }, [currentProblemSet, problemIndex, score, questionsAttempted, userAnswer, feedback, showFeedback, setSavedState]);
+  }, [currentProblemSet, problemIndex, score, questionsAttempted, userAnswer, feedback, showFeedback, selectedDifficulty, setSavedState]);
 
   const checkAnswer = (answerString) => {
     if (!currentQuestion || showFeedback) return;
@@ -410,7 +472,29 @@ export default function MassToMassActivity({ onBack, onShowPeriodicTable, savedS
     }
 
     if (isCorrect) {
-      setFeedback({ type: 'correct', message: 'Correct! Excellent work!' });
+      // Enhanced feedback based on difficulty level
+      let successMessage;
+      
+      // Difficulty-specific feedback messages
+      const difficulty = currentQuestion.difficulty || 0;
+      switch(difficulty) {
+        case 0:
+          successMessage = 'Correct! You have successfully applied the basic mass-to-mass conversion steps.'; 
+          break;
+        case 1:
+          successMessage = 'Great job! You are handling these intermediate stoichiometric calculations well.'; 
+          break;
+        case 2:
+          successMessage = 'Excellent work! You have successfully tackled this advanced mass-to-mass problem.'; 
+          break;
+        case 3:
+          successMessage = 'Outstanding! You have mastered this challenging stoichiometry problem with precision.'; 
+          break;
+        default:
+          successMessage = 'Correct! Excellent work!';
+      }
+      
+      setFeedback({ type: 'correct', message: successMessage });
       setScore(prev => prev + 1);
     } else {
       const finalCorrectAnswerDisplay = instructedCorrectAnswer.toFixed(precision);
@@ -451,12 +535,17 @@ export default function MassToMassActivity({ onBack, onShowPeriodicTable, savedS
   const handleNextQuestion = () => {
     setShowFeedback(false);
     setFeedback(null);
+    setUserAnswer('');
+    
     if (problemIndex >= currentProblemSet.length - 1) {
         setCurrentProblemSet(shuffleArray([...MASS_TO_MASS_PROBLEMS]));
         setProblemIndex(0);
     } else {
         setProblemIndex(prev => prev + 1);
     }
+    
+    // Maintain the selected difficulty when generating a new question
+    generateQuestionWithDifficulty(selectedDifficulty);
   };
 
   if (!currentQuestion && !(showFeedback && feedback?.type === 'info')) {
@@ -482,6 +571,55 @@ export default function MassToMassActivity({ onBack, onShowPeriodicTable, savedS
     <div className="activity-container">
       <div className="activity-card">
         <h2 className="activity-title">Mass-to-Mass Calculations</h2>
+        
+        {/* Difficulty selector - consistent with other activities */}
+        <div className="difficulty-selector" style={{ marginBottom: 15, display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <label style={{ fontWeight: 600, fontSize: '0.95em', color: '#23234a' }}>Select Difficulty Level:</label>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            {[0, 1, 2, 3].map(level => (
+              <button 
+                key={level}
+                onClick={() => handleDifficultyChange(level)}
+                className={selectedDifficulty === level ? 'selected-difficulty' : ''}
+                style={{
+                  padding: '6px 12px',
+                  borderRadius: 8,
+                  background: selectedDifficulty === level ? '#4f46e5' : '#e5e7eb',
+                  color: selectedDifficulty === level ? 'white' : '#4b5563',
+                  fontWeight: 600,
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: '0.9em',
+                  flex: 1,
+                  minWidth: '80px',
+                  transition: 'all 0.2s ease-in-out'
+                }}
+              >
+                {getDifficultyText(level)}
+              </button>
+            ))}
+          </div>
+        </div>
+        
+        {/* Difficulty indicator */}
+        {currentQuestion && currentQuestion.difficulty !== undefined && (
+          <div style={{
+            display: 'inline-block',
+            background: currentQuestion.difficulty === 0 ? '#4ade80' : 
+                       currentQuestion.difficulty === 1 ? '#60a5fa' : 
+                       currentQuestion.difficulty === 2 ? '#a78bfa' : '#f87171',
+            color: 'white',
+            padding: '4px 10px',
+            borderRadius: '4px',
+            fontSize: '0.85em',
+            fontWeight: 600,
+            textTransform: 'uppercase',
+            letterSpacing: '0.5px',
+            marginBottom: '10px'
+          }}>
+            {getDifficultyText(currentQuestion.difficulty)}
+          </div>
+        )}
         
         {currentQuestion && (
           <>

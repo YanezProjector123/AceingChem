@@ -2,16 +2,41 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 import './ActivityModern.css';
 
-// Helper to shuffle array
-const shuffleArray = (array) => {
-  let currentIndex = array.length, randomIndex;
-  while (currentIndex !== 0) {
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex--;
-    [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
-  }
-  return array;
-};
+function LimitingReactantActivity({ onBack, onShowPeriodicTable, savedState, setSavedState }) {
+  // State declarations
+  const [selectedDifficulty, setSelectedDifficulty] = useState(savedState?.selectedDifficulty || 0);
+  const [currentProblem, setCurrentProblem] = useState(null);
+  const [givenReactant1, setGivenReactant1] = useState({ name: '', mass: 0 });
+  const [givenReactant2, setGivenReactant2] = useState({ name: '', mass: 0 });
+  const [userAnswer, setUserAnswer] = useState('');
+  const [overallFeedback, setOverallFeedback] = useState(null);
+  const [feedbackLR, setFeedbackLR] = useState(null);
+  const [score, setScore] = useState(0);
+  const [questionsAttempted, setQuestionsAttempted] = useState(0);
+  const [showExplanation, setShowExplanation] = useState(false);
+  const [explanationSteps, setExplanationSteps] = useState([]);
+  const [correctLR, setCorrectLR] = useState('');
+  const [targetProduct, setTargetProduct] = useState('');
+  const [questionType, setQuestionType] = useState('');
+  const [targetUnit, setTargetUnit] = useState('g');
+  const [roundingInstruction, setRoundingInstruction] = useState('');
+  const [roundingPrecision, setRoundingPrecision] = useState(2);
+  const [userInputLR, setUserInputLR] = useState('');
+  
+  // Refs
+  const nextQuestionButtonRef = useRef(null);
+  const lastPairRef = useRef(null);
+
+  // Helper to shuffle array
+  const shuffleArray = (array) => {
+    let currentIndex = array.length, randomIndex;
+    while (currentIndex !== 0) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+      [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+    }
+    return array;
+  };
 
 const REACTIONS = [
   {
@@ -324,64 +349,67 @@ const REACTIONS = [
   },
 ];
 
-const round = (value, precision) => {
-    if (precision === null || precision === undefined) return value;
+  // Helper to round values to specified precision
+  const round = (value, precision) => {
     const multiplier = Math.pow(10, precision || 0);
     return Math.round(value * multiplier) / multiplier;
-};
+  };
 
-// Helper to format chemical formulas with subscripts/superscripts
-function formatChemical(formula) {
-  if (!formula) return '';
-  // Replace numbers with <sub>number</sub>
-  let formatted = formula
-    .replace(/([A-Za-z\)\]])(\d+)/g, '$1<sub>$2</sub>') // e.g. H2O -> H<sub>2</sub>O
-    .replace(/_([0-9]+)/g, '<sub>$1</sub>') // e.g. Ca3PO4_2 -> Ca3PO4<sub>2</sub>
-    .replace(/\^([\d\+\-]+)/g, '<sup>$1</sup>'); // e.g. SO4^2- -> SO4<sup>2-</sup>
-  // Replace charges at the end (e.g. Fe3+)
-  formatted = formatted.replace(/([A-Za-z\)\]])([\d]+)([\+\-])/, '$1<sub>$2</sub><sup>$3</sup>');
-  return formatted;
-}
+  // Helper to format chemical formulas with subscripts/superscripts
+  const formatChemical = (formula) => {
+    if (!formula) return '';
+    // Replace numbers with <sub>number</sub>
+    let formatted = formula
+      .replace(/([A-Za-z\)\]])(\d+)/g, '$1<sub>$2</sub>') // e.g. H2O -> H<sub>2</sub>O
+      .replace(/_(\d+)/g, '<sub>$1</sub>') // e.g. Ca3PO4_2 -> Ca3PO4<sub>2</sub>
+      .replace(/\^([\d\+\-]+)/g, '<sup>$1</sup>'); // e.g. SO4^2- -> SO4<sup>2-</sup>
+    // Replace charges at the end (e.g. Fe3+)
+    formatted = formatted.replace(/([A-Za-z\)\]])(\d+)([\+\-])/, '$1<sub>$2</sub><sup>$3</sup>');
+    return formatted;
+  };
 
-// Add helper for random choice
-function randomChoice(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
+  // Helper for random choice
+  const randomChoice = (arr) => {
+    return arr[Math.floor(Math.random() * arr.length)];
+  };
 
-export default function LimitingReactantActivity({ onBack, onShowPeriodicTable, savedState, setSavedState }) {
-  const [currentProblem, setCurrentProblem] = useState(null);
-  const [givenReactant1, setGivenReactant1] = useState({ name: '', mass: 0 });
-  const [givenReactant2, setGivenReactant2] = useState({ name: '', mass: 0 });
-  const [targetProduct, setTargetProduct] = useState('');
-  
-  const [userInputLR, setUserInputLR] = useState(''); // For limiting reactant selection
+  // Helper function to get difficulty text
+  const difficultyLabels = [
+    'Basic',
+    'Intermediate',
+    'Advanced',
+    'Expert'
+  ];
+  const getDifficultyText = (level) => {
+    return difficultyLabels[level] || 'Unknown';
+  };
 
-  const [correctLR, setCorrectLR] = useState('');
-  const [roundingInstruction, setRoundingInstruction] = useState('');
-  const [roundingPrecision, setRoundingPrecision] = useState(2); // Default to 2 decimal places for yield
-
-  const [feedbackLR, setFeedbackLR] = useState('');
-  const [overallFeedback, setOverallFeedback] = useState('');
-  
-  const [score, setScore] = useState(0);
-  const [questionsAttempted, setQuestionsAttempted] = useState(0);
-  const [showExplanation, setShowExplanation] = useState(false);
-  const [explanationSteps, setExplanationSteps] = useState([]);
-
-  const inputTYRef = useRef(null);
-  const nextQuestionButtonRef = useRef(null);
-
-  const [questionType, setQuestionType] = useState('yield');
-  const [targetUnit, setTargetUnit] = useState('g');
-  // Track last used reaction and reactant order
-  const lastPairRef = useRef(null);
-
-  const generateQuestion = useCallback(() => {
-    if (REACTIONS.length === 0) return;
+  const generateQuestion = useCallback((difficultyOverride = null) => {
+    const difficulty = difficultyOverride !== null ? difficultyOverride : Math.floor(Math.random() * 4);
     let problem, reactants, r1Name, r2Name, pairKey;
     let attempts = 0;
+
+    let filteredReactions = [...REACTIONS];
+    if (difficulty === 0) {
+      filteredReactions = REACTIONS.filter(r => 
+        r.reactants.length === 2 && 
+        r.products.length <= 2 && 
+        Object.values(r.stoichiometry).every(c => c <= 3)
+      );
+    } else if (difficulty === 3) {
+      filteredReactions = REACTIONS.filter(r => 
+        r.reactants.length >= 2 || 
+        r.products.length > 1 || 
+        Object.values(r.stoichiometry).some(c => c > 2)
+      );
+    }
+
+    if (filteredReactions.length === 0) {
+      filteredReactions = REACTIONS;
+    }
+
     do {
-      problem = randomChoice(REACTIONS);
+      problem = randomChoice(filteredReactions);
       reactants = [...problem.reactants];
       if (Math.random() < 0.5) reactants.reverse();
       r1Name = reactants[0];
@@ -390,24 +418,33 @@ export default function LimitingReactantActivity({ onBack, onShowPeriodicTable, 
       attempts++;
     } while (lastPairRef.current === pairKey && attempts < 10);
     lastPairRef.current = pairKey;
-    setCurrentProblem(problem);
-    // Expanded mass range and precision
-    const r1Mass = parseFloat((Math.random() * 195 + 5).toFixed(Math.random() < 0.5 ? 1 : 2));
-    const r2Mass = parseFloat((Math.random() * 195 + 5).toFixed(Math.random() < 0.5 ? 1 : 2));
+    setCurrentProblem({...problem, difficulty});
+
+    let r1Mass, r2Mass;
+
+    if (difficulty === 0) {
+      r1Mass = parseFloat((Math.random() * 80 + 20).toFixed(0));
+      r2Mass = parseFloat((Math.random() * 80 + 20).toFixed(0));
+    } else if (difficulty === 1) {
+      r1Mass = parseFloat((Math.random() * 100 + 10).toFixed(1));
+      r2Mass = parseFloat((Math.random() * 100 + 10).toFixed(1));
+    } else if (difficulty === 2) {
+      r1Mass = parseFloat((Math.random() * 150 + 5).toFixed(Math.random() < 0.5 ? 1 : 2));
+      r2Mass = parseFloat((Math.random() * 150 + 5).toFixed(Math.random() < 0.5 ? 1 : 2));
+    } else {
+      r1Mass = parseFloat((Math.random() * 195 + 5).toFixed(2));
+      r2Mass = parseFloat((Math.random() * 195 + 5).toFixed(2));
+    }
     setGivenReactant1({ name: r1Name, mass: r1Mass });
     setGivenReactant2({ name: r2Name, mass: r2Mass });
-    // Randomly select product if multiple
     const product = randomChoice(problem.products);
     setTargetProduct(product);
-    // Randomize question type
     const qTypes = ['yield', 'limiting', 'moles', 'excess'];
     const qType = randomChoice(qTypes);
     setQuestionType(qType);
-    // Randomize units for yield/moles
     let unit = 'g';
     if (qType === 'moles' || (qType === 'yield' && Math.random() < 0.3)) unit = 'mol';
     setTargetUnit(unit);
-    // Rounding
     const roundingOptions = [
       { precision: 1, text: "to the nearest tenth." },
       { precision: 2, text: "to two decimal places." },
@@ -417,7 +454,6 @@ export default function LimitingReactantActivity({ onBack, onShowPeriodicTable, 
     const selectedRounding = randomChoice(roundingOptions);
     setRoundingInstruction(selectedRounding.text);
     setRoundingPrecision(selectedRounding.precision);
-    // Calculate moles
     const molesR1 = r1Mass / problem.molar_masses[r1Name];
     const molesR2 = r2Mass / problem.molar_masses[r2Name];
     const stoichR1 = problem.stoichiometry[r1Name];
@@ -435,8 +471,7 @@ export default function LimitingReactantActivity({ onBack, onShowPeriodicTable, 
       theoreticalMolesProduct = molesProdFromR2;
     }
     setCorrectLR(actualLR);
-    // Set correct answer for each type
-    // (Removed setCorrectTY calls and related variables since only limiting reactant is needed)
+    setUserAnswer('');
     setUserInputLR('');
     setFeedbackLR('');
     setOverallFeedback('');
@@ -444,22 +479,36 @@ export default function LimitingReactantActivity({ onBack, onShowPeriodicTable, 
     setExplanationSteps([]);
     if (setSavedState) {
       setSavedState({
+        selectedDifficulty: difficulty,
         score,
         questionsAttempted,
       });
     }
-  }, [setSavedState, score, questionsAttempted]);
+  }, []); // Remove dependencies to prevent constant rerenders
+
+  const handleDifficultyChange = (level) => {
+    setSelectedDifficulty(level);
+    generateQuestion(level);
+    if (setSavedState) {
+      setSavedState({
+        ...savedState,
+        selectedDifficulty: level,
+        score,
+        questionsAttempted
+      });
+    }
+  };
 
   useEffect(() => {
     if (savedState && savedState.score !== undefined) {
-        setScore(savedState.score);
-        setQuestionsAttempted(savedState.questionsAttempted);
+      setScore(savedState.score);
+      setQuestionsAttempted(savedState.questionsAttempted);
     } else {
-        setScore(0);
-        setQuestionsAttempted(0);
+      setScore(0);
+      setQuestionsAttempted(0);
     }
-    generateQuestion();
-    // eslint-disable-next-line
+    generateQuestion(selectedDifficulty);
+    // Only run this effect once on mount
   }, []);
 
   const checkAnswer = () => {
@@ -474,13 +523,12 @@ export default function LimitingReactantActivity({ onBack, onShowPeriodicTable, 
       lrCorrect = true;
     }
 
-    // Feedback logic: only correct if limiting reactant is correct
     if (lrCorrect) {
       setScore(score + 1);
-      feedbackMsg = '✅ Correct! The limiting reactant is correct.';
+      feedbackMsg = 'Correct! The limiting reactant is correct.';
       feedbackType = 'correct';
     } else {
-      feedbackMsg = '❌ Incorrect.';
+      feedbackMsg = 'Incorrect.';
       feedbackType = 'incorrect';
       feedbackMsg += ' Your limiting reactant selection is incorrect.';
     }
@@ -488,7 +536,6 @@ export default function LimitingReactantActivity({ onBack, onShowPeriodicTable, 
     setFeedbackLR(lrCorrect ? '' : `Limiting Reactant: The correct answer is ${formatChemical(correctLR)}.`);
     setQuestionsAttempted(questionsAttempted + 1);
 
-    // --- Nicer Explanation Formatting ---
     const molesR1 = givenReactant1.mass / currentProblem.molar_masses[givenReactant1.name];
     const molesR2 = givenReactant2.mass / currentProblem.molar_masses[givenReactant2.name];
     const stoichR1 = currentProblem.stoichiometry[givenReactant1.name];
@@ -533,7 +580,7 @@ export default function LimitingReactantActivity({ onBack, onShowPeriodicTable, 
       });
     }
   };
-  
+
   const handleUserSubmit = (e) => {
     e.preventDefault();
     checkAnswer();
@@ -541,10 +588,8 @@ export default function LimitingReactantActivity({ onBack, onShowPeriodicTable, 
 
   const handleNextQuestion = () => {
     setShowExplanation(false);
-    generateQuestion();
-    if (inputTYRef.current) {
-        inputTYRef.current.focus(); 
-    }
+    generateQuestion(selectedDifficulty);
+    nextQuestionButtonRef.current?.blur(); // Remove focus
   };
 
   if (!currentProblem) {
@@ -555,33 +600,74 @@ export default function LimitingReactantActivity({ onBack, onShowPeriodicTable, 
     <div className="activity-container limiting-reactant-activity">
       <div className="activity-card">
         <h2 className="activity-title">Limiting Reactant</h2>
+        
+        {/* Difficulty selector - consistent with other activities */}
+        <div className="difficulty-selector" style={{ marginBottom: 15, display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <label style={{ fontWeight: 600, fontSize: '0.95em', color: '#23234a' }}>Select Difficulty Level:</label>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            {[0, 1, 2, 3].map(level => (
+              <button 
+                key={level}
+                onClick={() => handleDifficultyChange(level)}
+                className={selectedDifficulty === level ? 'selected-difficulty' : ''}
+                style={{
+                  padding: '6px 12px',
+                  borderRadius: 8,
+                  background: selectedDifficulty === level ? '#4f46e5' : '#e5e7eb',
+                  color: selectedDifficulty === level ? 'white' : '#4b5563',
+                  fontWeight: 600,
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: '0.9em',
+                  flex: 1,
+                  minWidth: '80px',
+                  transition: 'all 0.2s ease-in-out'
+                }}
+              >
+                {getDifficultyText(level)}
+              </button>
+            ))}
+          </div>
+        </div>
+        
         <div className="question-area">
           <p className="question-equation">Reaction: <strong dangerouslySetInnerHTML={{__html: formatChemical(currentProblem.equation)}} /></p>
           <p className="question-text">
             Given: <strong>{givenReactant1.mass}g</strong> of <strong dangerouslySetInnerHTML={{__html: formatChemical(givenReactant1.name)}} /> and <strong>{givenReactant2.mass}g</strong> of <strong dangerouslySetInnerHTML={{__html: formatChemical(givenReactant2.name)}} />.
           </p>
-        </div>
-        <form onSubmit={handleUserSubmit} className="answer-form" id="answer-form">
-          <div className="form-group">
-            <label htmlFor="limitingReactant">1. Identify the Limiting Reactant:</label>
-            <select 
-              id="limitingReactant"
-              value={userInputLR}
-              onChange={(e) => setUserInputLR(e.target.value)}
-              className="activity-input"
-              required
-            >
-              <option value="">-- Select Reactant --</option>
-              <option value={givenReactant1.name} dangerouslySetInnerHTML={{__html: formatChemical(givenReactant1.name)}} />
-              <option value={givenReactant2.name} dangerouslySetInnerHTML={{__html: formatChemical(givenReactant2.name)}} />
-            </select>
+          <div>
+            <form id="answer-form" onSubmit={handleUserSubmit}>
+              <div className="question-inputs">
+                <label>Which reactant is limiting?</label>
+                <select 
+                  value={userAnswer} 
+                  onChange={(e) => setUserAnswer(e.target.value)}
+                  disabled={overallFeedback !== null}
+                >
+                  <option value="">-- Select Reactant --</option>
+                  <option value={givenReactant1.name} dangerouslySetInnerHTML={{__html: formatChemical(givenReactant1.name)}} />
+                  <option value={givenReactant2.name} dangerouslySetInnerHTML={{__html: formatChemical(givenReactant2.name)}} />
+                </select>
+              </div>
+            </form>
           </div>
-        </form>
 
         {overallFeedback && (
           <div className={`feedback-section feedback-${overallFeedback.includes('Correct') ? 'correct' : 'incorrect'}`}
             style={{fontSize:'1.08em',lineHeight:1.7}}>
-            <div style={{fontWeight:700,marginBottom:6}}>{overallFeedback}</div>
+            <div style={{fontWeight:700,marginBottom:6}}>
+              {overallFeedback.includes('Correct') ? (
+                // Display different success messages based on difficulty level
+                [
+                  'Excellent! You\'ve correctly identified the limiting reactant in this basic stoichiometry problem.',
+                  'Great job! You\'ve successfully analyzed this intermediate limiting reactant problem.',
+                  'Outstanding work! You\'ve mastered this advanced limiting reactant calculation.',
+                  'Impressive! You\'ve solved this challenging limiting reactant problem with precision.'
+                ][currentProblem?.difficulty || 0]
+              ) : (
+                overallFeedback
+              )}
+            </div>
             {feedbackLR && (
               <div
                 style={{ color: '#222', marginBottom: 2, fontWeight: 600 }}
@@ -590,6 +676,7 @@ export default function LimitingReactantActivity({ onBack, onShowPeriodicTable, 
             )}
           </div>
         )}
+        </div>
 
         <div className="button-row">
           {!overallFeedback && <button type="submit" form="answer-form" className="activity-submit-button activity-btn">Check Answer</button>}
@@ -611,4 +698,6 @@ LimitingReactantActivity.propTypes = {
   onShowPeriodicTable: PropTypes.func.isRequired,
   savedState: PropTypes.object,
   setSavedState: PropTypes.func,
-}; 
+};
+
+export default LimitingReactantActivity;
