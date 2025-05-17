@@ -66,6 +66,7 @@ export default function Welcome({ onNext }) {
             <h3 style={{ color: '#a5b4fc', fontWeight: 800, fontSize: '1.3em', marginBottom: 12 }}>Update Log</h3>
             <div style={{ fontSize: '1.05em', lineHeight: 1.5 }}>
               <b>Recent Updates (Post-June Major Update):</b><br />
+              - Limiting Reactant Activity: Fixed stability issues and improved question generation behavior (May 2025).<br />
               - Mole-to-Mole Activity: Significantly expanded question pool with diverse chemical equations and conversion types for a more challenging and less repetitive experience.<br />
               - Mole-to-Mole Feedback: Enhanced feedback system – messages now persist until 'Next Question', detailed explanations are clearer, and the UI is more polished.<br />
               - Mole-to-Mole Feedback: Themed feedback box to align with the website's dark UI aesthetic.<br />
