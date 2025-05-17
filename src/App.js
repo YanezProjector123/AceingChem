@@ -33,6 +33,14 @@ const MassMoleAndMoleMassActivity = lazy(() => import('./MassMoleAndMoleMassActi
 const MassToMassActivity = lazy(() => import('./MassToMassActivity'));
 const LimitingReactantActivity = lazy(() => import('./LimitingReactantActivity'));
 const TheoreticalPercentYieldActivity = lazy(() => import('./TheoreticalPercentYieldActivity'));
+const IdealGasActivity = lazy(() => import('./IdealGasActivity'));
+const BoylesLawActivity = lazy(() => import('./BoylesLawActivity'));
+const CharlesLawActivity = lazy(() => import('./CharlesLawActivity'));
+const CombinedGasLawActivity = lazy(() => import('./CombinedGasLawActivity'));
+const GasStoichiometryActivity = lazy(() => import('./GasStoichiometryActivity'));
+const DaltonLawActivity = lazy(() => import('./DaltonLawActivity'));
+const GrahamLawActivity = lazy(() => import('./GrahamLawActivity'));
+const CollectingGasOverWaterActivity = lazy(() => import('./CollectingGasOverWaterActivity'));
 
 const LoadingFallback = <div style={{color:'#fff',textAlign:'center',marginTop:40, fontSize: '1.2em'}}>Loading Activity...</div>;
 
@@ -108,12 +116,14 @@ function App() {
       case 'charles-law': setScreen('charles-law'); break;
       case 'combined-gas-law': setScreen('combined-gas-law'); break;
       case 'gas-stoichiometry': setScreen('gas-stoichiometry'); break;
-      case 'daltons-law': setScreen('daltons-law'); break;
-      case 'grahams-law': setScreen('grahams-law'); break;
+      case 'dalton-law': setScreen('dalton-law'); break;
+      case 'graham-law': setScreen('graham-law'); break;
       case 'collecting-gas-over-water': setScreen('collecting-gas-over-water'); break;
       default: setScreen('topics');
     }
   };
+
+
 
   // Restore the previous screen and state
   const handlePTableBack = () => {
@@ -179,6 +189,95 @@ function App() {
             onLongHandConfigActivity={() => setScreen('longHandConfigActivity')}
             onPeriodicActivity={handlePeriodicActivity}
           />
+        );
+      case 'ideal-gas-law':
+        return (
+          <Suspense fallback={LoadingFallback}>
+            <IdealGasActivity
+              onBack={() => setScreen('topics')}
+              onShowPeriodicTable={() => { setHistoryStack(h => [...h, {screen: 'ideal-gas-law'}]); handleTransition('ptable'); }}
+              savedState={null}
+              setSavedState={() => {}}
+            />
+          </Suspense>
+        );
+      case 'boyles-law':
+        return (
+          <Suspense fallback={LoadingFallback}>
+            <BoylesLawActivity
+              onBack={() => setScreen('topics')}
+              onShowPeriodicTable={() => { setHistoryStack(h => [...h, {screen: 'boyles-law'}]); handleTransition('ptable'); }}
+              savedState={null}
+              setSavedState={() => {}}
+            />
+          </Suspense>
+        );
+      case 'charles-law':
+        return (
+          <Suspense fallback={LoadingFallback}>
+            <CharlesLawActivity
+              onBack={() => setScreen('topics')}
+              onShowPeriodicTable={() => { setHistoryStack(h => [...h, {screen: 'charles-law'}]); handleTransition('ptable'); }}
+              savedState={null}
+              setSavedState={() => {}}
+            />
+          </Suspense>
+        );
+      case 'combined-gas-law':
+        return (
+          <Suspense fallback={LoadingFallback}>
+            <CombinedGasLawActivity
+              onBack={() => setScreen('topics')}
+              onShowPeriodicTable={() => { setHistoryStack(h => [...h, {screen: 'combined-gas-law'}]); handleTransition('ptable'); }}
+              savedState={null}
+              setSavedState={() => {}}
+            />
+          </Suspense>
+        );
+      case 'gas-stoichiometry':
+        return (
+          <Suspense fallback={LoadingFallback}>
+            <GasStoichiometryActivity
+              onBack={() => setScreen('topics')}
+              onShowPeriodicTable={() => { setHistoryStack(h => [...h, {screen: 'gas-stoichiometry'}]); handleTransition('ptable'); }}
+            />
+          </Suspense>
+        );
+      case 'daltons-law':
+        return (
+          <Suspense fallback={LoadingFallback}>
+            <DaltonLawActivity
+              onBack={() => setScreen('topics')}
+              onShowPeriodicTable={() => { setHistoryStack(h => [...h, {screen: 'daltons-law'}]); handleTransition('ptable'); }}
+            />
+          </Suspense>
+        );
+      case 'dalton-law':
+        return (
+          <Suspense fallback={LoadingFallback}>
+            <DaltonLawActivity
+              onBack={() => setScreen('topics')}
+              onShowPeriodicTable={() => setShowPeriodicTable(true)}
+            />
+          </Suspense>
+        );
+      case 'graham-law':
+        return (
+          <Suspense fallback={LoadingFallback}>
+            <GrahamLawActivity
+              onBack={() => setScreen('topics')}
+              onShowPeriodicTable={() => setShowPeriodicTable(true)}
+            />
+          </Suspense>
+        );
+      case 'collecting-gas-over-water':
+        return (
+          <Suspense fallback={LoadingFallback}>
+            <CollectingGasOverWaterActivity
+              onBack={() => setScreen('topics')}
+              onShowPeriodicTable={() => setShowPeriodicTable(true)}
+            />
+          </Suspense>
         );
       case 'ionicNamingInstructions':
         return <IonicNamingInstructions onBack={() => setScreen('topics')} onPeriodicTable={state => goToPeriodicTable('ionicNamingInstructions', state)} savedState={ionicNamingState} setSavedState={setIonicNamingState} />;

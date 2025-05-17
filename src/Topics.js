@@ -423,7 +423,12 @@ export default function Topics({
                 backdropFilter: 'blur(4px)', 
                 borderRadius: 18, 
                 boxShadow: '0 4px 32px rgba(16, 185, 129, 0.35), 0 1.5px 0 #fff',
-                display: 'inline-block', 
+                display: 'inline-block',
+                minWidth: 260,
+                maxWidth: 650,
+                width: '95vw',
+                border: '2.5px solid rgba(16, 185, 129, 0.8)',
+                position: 'relative',
                 minWidth: 260, 
                 maxWidth: 650, 
                 width: '95vw', 
@@ -504,9 +509,9 @@ export default function Topics({
                   <li><button className="ptable-btn periodic-btn periodic-trend-btn" style={{ width: '100%', fontFamily: "'Nunito', sans-serif", fontWeight: 700 }} onClick={() => onGasLawActivity('boyles-law')}><span role="img" aria-label="boyle" style={{ marginRight: '8px' }}>🔵</span>Boyle's Law</button></li>
                   <li><button className="ptable-btn periodic-btn periodic-trend-btn" style={{ width: '100%', fontFamily: "'Nunito', sans-serif", fontWeight: 700 }} onClick={() => onGasLawActivity('charles-law')}><span role="img" aria-label="charles" style={{ marginRight: '8px' }}>🟥</span>Charles's Law</button></li>
                   <li><button className="ptable-btn periodic-btn periodic-trend-btn" style={{ width: '100%', fontFamily: "'Nunito', sans-serif", fontWeight: 700 }} onClick={() => onGasLawActivity('combined-gas-law')}><span role="img" aria-label="combined" style={{ marginRight: '8px' }}>🟪</span>Combined Gas Law</button></li>
-                  <li><button className="ptable-btn periodic-btn periodic-trend-btn" style={{ width: '100%', fontFamily: "'Nunito', sans-serif", fontWeight: 700 }} onClick={() => onGasLawActivity('gas-stoichiometry')}><span role="img" aria-label="stoich" style={{ marginRight: '8px' }}>⚗️</span>Gas Stoichiometry (at STP)</button></li>
-                  <li><button className="ptable-btn periodic-btn periodic-trend-btn" style={{ width: '100%', fontFamily: "'Nunito', sans-serif", fontWeight: 700 }} onClick={() => onGasLawActivity('daltons-law')}><span role="img" aria-label="dalton" style={{ marginRight: '8px' }}>⚪</span>Dalton's Law of Partial Pressures</button></li>
-                  <li><button className="ptable-btn periodic-btn periodic-trend-btn" style={{ width: '100%', fontFamily: "'Nunito', sans-serif", fontWeight: 700 }} onClick={() => onGasLawActivity('grahams-law')}><span role="img" aria-label="graham" style={{ marginRight: '8px' }}>🧬</span>Graham's Law of Effusion</button></li>
+                  <li><button className="ptable-btn periodic-btn periodic-trend-btn" style={{ width: '100%', fontFamily: "'Nunito', sans-serif", fontWeight: 700 }} onClick={() => onGasLawActivity('gas-stoichiometry')}><span role="img" aria-label="stoich" style={{ marginRight: '8px' }}>⚗️</span>Gas Stoichiometry (Diverse)</button></li>
+                  <li><button className="ptable-btn periodic-btn periodic-trend-btn" style={{ width: '100%', fontFamily: "'Nunito', sans-serif", fontWeight: 700 }} onClick={() => onGasLawActivity('dalton-law')}><span role="img" aria-label="dalton" style={{ marginRight: '8px' }}>⚪</span>Dalton's Law of Partial Pressures</button></li>
+                  <li><button className="ptable-btn periodic-btn periodic-trend-btn" style={{ width: '100%', fontFamily: "'Nunito', sans-serif", fontWeight: 700 }} onClick={() => onGasLawActivity('graham-law')}><span role="img" aria-label="graham" style={{ marginRight: '8px' }}>🧬</span>Graham's Law of Effusion</button></li>
                   <li><button className="ptable-btn periodic-btn periodic-trend-btn" style={{ width: '100%', fontFamily: "'Nunito', sans-serif", fontWeight: 700 }} onClick={() => onGasLawActivity('collecting-gas-over-water')}><span role="img" aria-label="water" style={{ marginRight: '8px' }}>💧</span>Collecting Gas Over Water</button></li>
                 </ul>
               </div>
